@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import Login from "./auth/Login";
-import Header from "./navbar/Header";
 import Questionaire from "./components/Patient/Questionaire";
+import LandingPage from "./components/LandingPage";
 
 const App = () => {
-  const [currentView, setCurrentView] = useState("login"); // "login", "questionnaire", "main"
+  const [currentView, setCurrentView] = useState("landing"); // "landing", "login", "questionnaire", "main"
   const [user, setUser] = useState(null);
 
   const handleLoginSuccess = (userData) => {
@@ -31,6 +31,8 @@ const App = () => {
 
   const renderCurrentView = () => {
     switch (currentView) {
+      case "landing":
+        return <LandingPage onNavigateToLogin={() => setCurrentView("login")} />;
       case "login":
         return (
           <Login 
@@ -74,7 +76,6 @@ const App = () => {
 
   return (
     <div>
-      <Header />
       {renderCurrentView()}
     </div>
   );
