@@ -1,136 +1,52 @@
-const User = require("../models/User");
-const mongoose = require("mongoose");
+const User = require("../models/user");
+const sendOtp = require("../utils/sendOtp");
 
-// Use this for testing. You can change to real OTPs later.
-const TEST_OTP = "123456";
-
-// ✅ Store OTP on send
 exports.sendOtp = async (req, res) => {
-  const { phoneNumber } = req.body;
+  const { phone } = req.body;
 
-  if (!phoneNumber) {
+  if (!phone)
     return res.status(400).json({ error: "Phone number is required" });
-  }
 
-  // In production, generate OTP dynamically
-  const generatedOtp = TEST_OTP;
+  const otp = generateOTP();
+  const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
 
-  // Upsert user or update existing one
-  const user = await User.findOneAndUpdate(
-    { phoneNumber },
-    { otp: generatedOtp }, // ✅ Store OTP here
-    { new: true }
-  );
-
-  // If user doesn't exist yet, this does not create it
-  // You can choose to auto-create a user skeleton here if needed
-
-  console.log(`OTP for ${phoneNumber}: ${generatedOtp}`);
-
-  res.status(200).json({
-    message: "OTP sent (mock)",
-    otp: generatedOtp, // expose only for testing
-  });
-};
-
-// ✅ Verify OTP & Login
-exports.verifyOtp = async (req, res) => {
-  const { phoneNumber, otp } = req.body;
-
-  if (!phoneNumber || !otp) {
-    return res.status(400).json({ error: "Phone number and OTP are required" });
-  }
-
-  const user = await User.findOne({ phoneNumber });
+  let user = await User.findOne({ phone });
 
   if (!user) {
-    return res.status(404).json({ error: "User not found" });
+    user = new User({ phone, otp: { code: otp, expiresAt } });
+  } else {
+    user.otp = { code: otp, expiresAt };
   }
 
-  if (user.otp !== otp) {
-    return res.status(401).json({ error: "Invalid OTP" });
+  await user.save();
+  await sendOtp(phone, otp);
+
+  return res.status(200).json({ message: "OTP sent" });
+};
+
+const jwt = require("jsonwebtoken");
+
+exports.verifyOtp = async (req, res) => {
+  const { phone, otp } = req.body;
+
+  const user = await User.findOne({ phone });
+
+  if (!user || !user.otp) {
+    return res.status(400).json({ error: "User or OTP not found" });
   }
 
-  // Optional: Clear OTP after use
-  user.otp = null;
+  const isOtpValid = user.otp.code === otp && user.otp.expiresAt > new Date();
+
+  if (!isOtpValid) {
+    return res.status(400).json({ error: "Invalid or expired OTP" });
+  }
+
+  user.otp = undefined;
   await user.save();
 
-  // Load role-specific data
-  const roleModel = mongoose.model(user.roleRef);
-  const roleData = await roleModel.findById(user.refId);
-
-  res.status(200).json({
-    message: "Login successful",
-    role: user.role,
-    data: roleData,
+  const token = jwt.sign({ id: user._id, phone: user.phone }, "SECRET_KEY", {
+    expiresIn: "1h",
   });
-};
 
-exports.registerPregnantLady = async (req, res) => {
-  try {
-    const {
-      name,
-      phoneNumber,
-      village,
-      district,
-      state,
-      currentlyPregnant,
-      firstPregnancy,
-      visitedDoctorOrASHA,
-      monthsPregnant,
-      knownHealthIssues,
-      recentSymptoms,
-      takingSupplements,
-      hasMobileInEmergency,
-    } = req.body;
-
-    const lady = await PregnantLady.create({
-      name,
-      phoneNumber,
-      village,
-      district,
-      state,
-      currentlyPregnant,
-      firstPregnancy,
-      visitedDoctorOrASHA,
-      monthsPregnant,
-      knownHealthIssues,
-      recentSymptoms,
-      takingSupplements,
-      hasMobileInEmergency,
-    });
-
-    await User.create({
-      phoneNumber,
-      role: "pregnant_lady",
-      refId: lady._id,
-      roleRef: "PregnantLady",
-    });
-
-    res.status(201).json({ message: "Registration successful", data: lady });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-// Login
-exports.login = async (req, res) => {
-  try {
-    const { phoneNumber } = req.body;
-
-    const user = await User.findOne({ phoneNumber });
-
-    if (!user) return res.status(404).json({ error: "User not found" });
-
-    const roleModel = mongoose.model(user.roleRef);
-    const userData = await roleModel.findById(user.refId);
-
-    res.status(200).json({
-      message: "Login successful",
-      role: user.role,
-      data: userData,
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  return res.status(200).json({ message: "OTP verified", token });
 };
