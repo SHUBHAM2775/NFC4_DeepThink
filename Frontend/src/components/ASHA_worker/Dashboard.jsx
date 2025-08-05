@@ -1,8 +1,5 @@
-import React from "react";
-import { useTranslation } from 'react-i18next';
+import React, { useEffect, useState } from "react";
 import Header from "../../navbar/Header";
-
-// Use outline (hollow) Heroicons
 import {
   UserGroupIcon,
   FlagIcon,
@@ -13,269 +10,205 @@ import {
   PhoneIcon
 } from "@heroicons/react/24/outline";
 
+const summaryStats = [
+  { label: "Assigned Patients", value: 3, icon: UserGroupIcon },
+  { label: "High Risk", value: 2, icon: FlagIcon },
+  { label: "Missed Logs", value: 4, icon: ExclamationTriangleIcon },
+  { label: "Compliance", value: "85%", icon: CheckBadgeIcon }
+];
+
+const initialPatients = [
+  {
+    name: "Priya Sharma",
+    phoneNumber: "8669212403",
+    due: "2024-03-15",
+    lastLog: "2 days ago",
+    risk: "high",
+    compliance: 60,
+    missed: 3,
+    animation: true
+  },
+  {
+    name: "Anita Patel",
+    phoneNumber: "9876543211",
+    due: "2024-04-20",
+    lastLog: "1 day ago",
+    risk: "medium",
+    compliance: 80,
+    missed: 1,
+    animation: true
+  },
+  {
+    name: "Kavya Singh",
+    phoneNumber: "9876543212",
+    due: "2024-05-10",
+    lastLog: "Today",
+    risk: "low",
+    compliance: 95,
+    missed: 0,
+    animation: true
+  }
+];
+
+const riskMap = {
+  high: "bg-red-100 text-red-700",
+  medium: "bg-blue-100 text-blue-700",
+  low: "bg-green-100 text-green-700"
+};
+
+const missedLogColor = {
+  high: "text-red-500",
+  medium: "text-yellow-500",
+  low: "text-gray-500"
+};
+
 const Dashboard = ({ user }) => {
-  const { t } = useTranslation();
+  const [patients, setPatients] = useState(initialPatients);
+  const [hasAlerted, setHasAlerted] = useState(false);
 
-  // Dummy Data with translations
-  const summaryStats = [
-    { label: t('ashaDashboard.summaryStats.assignedPatients'), value: 3, icon: <UserGroupIcon style={{ width: 32, height: 32, color: "#e53986", margin: "0 auto", display: "block" }} /> },
-    { label: t('ashaDashboard.summaryStats.highRisk'), value: 2, icon: <FlagIcon style={{ width: 32, height: 32, color: "#e53986", margin: "0 auto", display: "block" }} /> },
-    { label: t('ashaDashboard.summaryStats.missedLogs'), value: 4, icon: <ExclamationTriangleIcon style={{ width: 32, height: 32, color: "#ffc857", margin: "0 auto", display: "block" }} /> },
-    { label: t('ashaDashboard.summaryStats.compliance'), value: "85%", icon: <CheckBadgeIcon style={{ width: 32, height: 32, color: "#37b86c", margin: "0 auto", display: "block" }} /> }
-  ];
-
-  const formatTimeText = (timeKey, number = null) => {
-    if (timeKey === 'today') {
-      return t('ashaDashboard.timeLabels.today');
-    } else if (timeKey === 'daysAgo' && number) {
-      return `${number} ${t('ashaDashboard.timeLabels.daysAgo')}`;
-    } else if (timeKey === 'dayAgo' && number) {
-      return `${number} ${t('ashaDashboard.timeLabels.dayAgo')}`;
+  useEffect(() => {
+    if (!hasAlerted) {
+      patients.forEach(p => {
+        if (p.risk === "high") {
+          alert(`🚨 URGENT: ${p.name} is HIGH RISK!\nPlease call her immediately.`);
+          speak(`Alert. ${p.name} is in high risk. Please call her now.`);
+        }
+      });
+      setHasAlerted(true);
     }
-    return t(`ashaDashboard.timeLabels.${timeKey}`);
-  };
+  }, [hasAlerted, patients]);
 
-  const patients = [
-    {
-      name: "Priya Sharma",
-      due: "2024-03-15",
-      lastLog: formatTimeText('daysAgo', 2),
-      risk: "high",
-      compliance: 60,
-      missed: 3
-    },
-    {
-      name: "Anita Patel",
-      due: "2024-04-20",
-      lastLog: formatTimeText('dayAgo', 1),
-      risk: "medium",
-      compliance: 80,
-      missed: 1
-    },
-    {
-      name: "Kavya Singh",
-      due: "2024-05-10",
-      lastLog: formatTimeText('today'),
-      risk: "low",
-      compliance: 95,
-      missed: 0
+  const speak = (text) => {
+    if ("speechSynthesis" in window) {
+      const msg = new SpeechSynthesisUtterance(text);
+      msg.lang = "en-IN";
+      speechSynthesis.speak(msg);
     }
-  ];
-
-  const riskMap = {
-    high: { label: t('ashaDashboard.riskLevels.high'), bg: "#ffd6dc", color: "#c62828" },
-    medium: { label: t('ashaDashboard.riskLevels.medium'), bg: "#e4f4fa", color: "#1580bb" },
-    low: { label: t('ashaDashboard.riskLevels.low'), bg: "#e7faed", color: "#37b86c" }
   };
 
-  const missedLogColor = {
-    high: "#f08383",
-    medium: "#ffc857",
-    low: "#a3a3a3"
+  const handleContact = (name, phoneNumber) => {
+    window.location.href = `tel:${phoneNumber}`;
+    setPatients(prev =>
+      prev.map(p =>
+        p.name === name ? { ...p, animation: false } : p
+      )
+    );
   };
 
-  const handleContact = name => alert(t('ashaDashboard.contactingMessage', { name }));
-  const handleNotes = name => alert(t('ashaDashboard.viewingNotesMessage', { name }));
+  const handleNotes = name => alert(`Viewing notes for ${name}!`);
 
   const handleLogout = () => {
     window.location.reload();
   };
 
   return (
-    <div style={{
-      fontFamily: "sans-serif",
-      background: "#f8f9fb",
-      minHeight: "100vh"
-    }}>
+    <div className="min-h-screen bg-gray-100 font-sans">
+      <style>{`
+        @keyframes shake {
+          10%, 90% { transform: translateX(-1px); }
+          20%, 80% { transform: translateX(2px); }
+          30%, 50%, 70% { transform: translateX(-3px); }
+          40%, 60% { transform: translateX(3px); }
+        }
+        .animate-shake {
+          animation: shake 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse-border {
+          0% { box-shadow: 0 0 0 0 rgba(198, 40, 40, 0.5); }
+          70% { box-shadow: 0 0 0 10px rgba(198, 40, 40, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(198, 40, 40, 0); }
+        }
+        .animate-pulse-border {
+          animation: pulse-border 2s infinite;
+        }
+      `}</style>
+
       <Header
-        user={user || { name: t('ashaDashboard.userName') }}
+        user={user || { name: 'ASHA Worker' }}
         onLogout={handleLogout}
       />
 
-      {/* Summary Cards */}
-      <div style={{
-        display: "flex",
-        gap: 27,
-        margin: "30px auto 22px auto",
-        maxWidth: 1060,
-        justifyContent: "center"
-      }}>
+      <div className="flex flex-wrap justify-center gap-6 py-6 max-w-6xl mx-auto">
         {summaryStats.map((stat, idx) => (
-          <div
-            key={idx}
-            style={{
-              flex: 1,
-              background: "#fff",
-              borderRadius: 11,
-              boxShadow: "0 1.5px 10px #edcce21a",
-              padding: "21px 0",
-              textAlign: "center",
-              minWidth: 170
-            }}
-          >
-            <div style={{ fontSize: 30 }}>
-              {stat.icon}
-            </div>
-            <div style={{
-              fontWeight: 800,
-              fontSize: 23,
-              color: idx === 3 ? "#37b86c" : "#e53986",
-              margin: "7px 0 1px 0"
-            }}>{stat.value}</div>
-            <div style={{ color: "#9595a6", fontSize: 15 }}>{stat.label}</div>
+          <div key={idx} className="bg-white rounded-lg shadow p-5 w-52 text-center">
+            <stat.icon className="w-8 h-8 mx-auto mb-2" color={idx === 2 ? "#ffc857" : idx === 3 ? "#37b86c" : "#e53986"} />
+            <div className={`text-xl font-bold ${idx === 3 ? "text-green-600" : "text-pink-600"}`}>{stat.value}</div>
+            <div className="text-sm text-gray-500">{stat.label}</div>
           </div>
         ))}
       </div>
 
-      {/* My Patients Section */}
-      <div style={{
-        background: "#fff",
-        borderRadius: 13,
-        boxShadow: "0 2.5px 14px #e9ddebdc",
-        maxWidth: 1080,
-        margin: "0 auto 34px auto",
-        padding: "6px 0 22px 0"
-      }}>
-        <h3 style={{
-          color: "#e53986",
-          margin: "22px 0 15px 45px",
-          fontWeight: 700,
-          fontSize: 21.5
-        }}>
-          <UserCircleIcon style={{ width: 23, height: 23, color: "#e53986", marginRight: 6, verticalAlign: "middle", display: "inline" }} />
-          {t('ashaDashboard.myPatients')}
+      <div className="bg-white rounded-xl shadow max-w-6xl mx-auto p-6">
+        <h3 className="text-pink-600 text-xl font-semibold mb-4 flex items-center">
+          <UserCircleIcon className="w-5 h-5 mr-2" />
+          My Patients
         </h3>
-        {patients.map((p, i) => (
-          <div
-            key={p.name}
-            style={{
-              borderRadius: 11,
-              padding: "16px 32px 13px 32px",
-              margin: "0 22px 16px 22px",
-              border: "1.4px solid #f3e4f5",
-              background: "#fff",
-              boxShadow: "0 1px 5px #f4e2f71c",
-              position: "relative"
-            }}
-          >
-            {/* Top Row: Name and risk badge */}
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <span style={{ fontWeight: 700, fontSize: 17, color: "#222" }}>{p.name}</span>
-              <span style={{
-                ...riskMap[p.risk],
-                display: "inline-block",
-                marginLeft: 10,
-                padding: "2.3px 14px",
-                fontSize: 13,
-                fontWeight: 500,
-                borderRadius: 13,
-                textTransform: "capitalize"
-              }}>
-                {riskMap[p.risk].label}
-              </span>
-              {p.missed > 0 &&
-                <span style={{
-                  fontSize: 13,
-                  marginLeft: 11,
-                  color: missedLogColor[p.risk],
-                  fontWeight: 500
-                }}>
-                  {p.missed} {t('ashaDashboard.patientCard.missedLogs')}
-                </span>}
-            </div>
-            {/* Due and last log */}
-            <div style={{
-              fontSize: 13.5,
-              margin: "5px 0 3px 0",
-              color: "#676778"
-            }}>
-              {t('ashaDashboard.patientCard.due')}: {p.due} &nbsp;&nbsp; | &nbsp;&nbsp; {t('ashaDashboard.patientCard.lastLog')}: {p.lastLog}
-            </div>
-            {/* Compliance Score */}
-            <div style={{
-              fontSize: 13,
-              color: "#8b8a90",
-              fontWeight: "bold",
-              marginTop: 5
-            }}>
-              {t('ashaDashboard.patientCard.complianceScore')}
-            </div>
-            {/* Bar */}
-            <div style={{
-              background: "#efe2ee",
-              height: 17,
-              borderRadius: 6,
-              margin: "5px 0 0 0",
-              width: "100%",
-              minWidth: 260,
-              maxWidth: 440,
-              position: "relative",
-              overflow: "hidden"
-            }}>
-              <div style={{
-                height: "100%",
-                width: `${p.compliance}%`,
-                background: "#e53986",
-                borderRadius: "6px 0 0 6px",
-                position: "absolute"
-              }} />
-              <div style={{
-                color: "#2f2f2f",
-                fontSize: 13,
-                position: "absolute",
-                right: 13,
-                top: 2,
-                fontWeight: 600
-              }}>
-                {p.compliance}%
+
+        {patients.map((p, i) => {
+          const isHighRisk = p.risk === 'high';
+          return (
+            <div
+              key={p.name}
+              className={`rounded-lg p-4 mb-5 border relative transition-shadow duration-300 ${
+                isHighRisk
+                  ? `border-red-700 shadow-lg ${
+                      p.animation ? "animate-pulse-border" : ""
+                    }`
+                  : "border-pink-100 shadow"
+              }`}
+
+            >
+              <div className="flex items-center">
+                <span className="font-bold text-base text-gray-900">{p.name}</span>
+                <span className={`ml-3 text-sm font-medium px-3 py-1 rounded-full capitalize ${riskMap[p.risk]}`}>
+                  {p.risk} risk
+                </span>
+                {p.missed > 0 && (
+                  <span className={`ml-3 text-sm font-semibold ${missedLogColor[p.risk]}`}>
+                    {p.missed} missed logs
+                  </span>
+                )}
+              </div>
+              <div className="text-sm text-gray-600 mt-1">
+                Due: {p.due} &nbsp;&nbsp; | &nbsp;&nbsp; Last log: {p.lastLog}
+              </div>
+
+              <div className="text-sm font-semibold text-gray-500 mt-3 mb-1">Compliance Score</div>
+              <div className="w-full max-w-md h-4 bg-pink-100 rounded overflow-hidden relative">
+                <div
+                  className="bg-pink-600 h-full rounded-l"
+                  style={{ width: `${p.compliance}%` }}
+                ></div>
+                <div className="absolute right-3 top-[2px] text-xs font-semibold">
+                  {p.compliance}%
+                </div>
+              </div>
+
+              <div className="flex items-center mt-4">
+                <button
+                  onClick={() => handleNotes(p.name)}
+                  className="bg-gray-100 hover:bg-gray-200 text-sm font-medium px-4 py-2 rounded flex items-center"
+                >
+                  <DocumentTextIcon className="w-4 h-4 mr-2 text-gray-500" />
+                  View Details
+                </button>
+                <button
+                  onClick={() => handleContact(p.name, p.phoneNumber)}
+                  className={`ml-auto px-5 py-2 text-sm font-bold rounded flex items-center border transition-all duration-300 ${
+                    isHighRisk
+                      ? `bg-red-700 text-white border-red-700 ${p.animation ? "animate-shake" : ""}`
+                      : "text-pink-600 border-pink-600 hover:bg-pink-50"
+                  }`}
+                >
+                  <PhoneIcon className="w-4 h-4 mr-2" />
+                  Call
+                </button>
               </div>
             </div>
-            {/* View & Call Buttons Row */}
-            <div style={{ display: "flex", marginTop: 10, alignItems: "center", gap: 0 }}>
-              <button
-                style={{
-                  background: "#faf6fa",
-                  color: "#222",
-                  fontWeight: 500,
-                  fontSize: 14.3,
-                  borderRadius: 6,
-                  border: "none",
-                  padding: "7px 21px",
-                  marginRight: 10,
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                  boxShadow: "0 0.5px 2px #7441a30c"
-                }}
-                onClick={() => handleNotes(p.name)}
-              >
-                <DocumentTextIcon style={{ width: 18, height: 18, color: "#8a94a6", marginRight: 6, verticalAlign: "middle", display: "inline" }} />
-                {t('ashaDashboard.patientCard.viewDetails')}
-              </button>
-              <button
-                style={{
-                  background: "#fff",
-                  color: "#e53986",
-                  fontWeight: 600,
-                  border: "1.5px solid #e53986",
-                  borderRadius: 6,
-                  fontSize: 14.3,
-                  padding: "7px 30px",
-                  marginLeft: "auto",
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer"
-                }}
-                onClick={() => handleContact(p.name)}
-              >
-                <PhoneIcon style={{ width: 18, height: 18, color: "#e53986", marginRight: 6, verticalAlign: "middle", display: "inline" }} />
-                {t('ashaDashboard.patientCard.call')}
-              </button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
-      {/* (Analytics can remain as-is below the cards) */}
     </div>
   );
 };
