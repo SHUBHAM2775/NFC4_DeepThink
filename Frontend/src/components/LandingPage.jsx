@@ -1,4 +1,5 @@
 import React from "react";
+import Header from "../navbar/Header";
 
 // You may customize these icons or use a library like react-icons for better visuals
 const icons = {
@@ -80,7 +81,9 @@ const challenges = [
   }
 ];
 
-const LandingPage = () => (
+const LandingPage = ({ onNavigateToLogin }) => (
+  <>
+  <Header onLoginClick={onNavigateToLogin} />
   <div style={{ background: "#fff", minHeight: "100vh" }}>
     {/* HERO SECTION */}
     <section style={{
@@ -107,16 +110,19 @@ const LandingPage = () => (
           A life-saving maternal health tracking application designed for rural India. Supporting pregnant women with voice-based guidance, emergency assistance, and personalized AI health monitoring.
         </p>
         <div style={{ display: "flex", gap: 18, marginBottom: 36 }}>
-          <button style={{
-            background: "#e53986",
-            color: "#fff",
-            fontWeight: 600,
-            fontSize: 18,
-            padding: "14px 32px",
-            borderRadius: 8,
-            border: "none",
-            cursor: "pointer"
-          }}>
+          <button 
+            onClick={onNavigateToLogin}
+            style={{
+              background: "#e53986",
+              color: "#fff",
+              fontWeight: 600,
+              fontSize: 18,
+              padding: "14px 32px",
+              borderRadius: 8,
+              border: "none",
+              cursor: "pointer"
+            }}
+          >
             Start Tracking Health
           </button>
           <button style={{
@@ -316,6 +322,7 @@ const LandingPage = () => (
       </div>
     </footer>
   </div>
+  </>
 );
 
 export default LandingPage;
