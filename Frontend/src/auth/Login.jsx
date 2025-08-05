@@ -6,6 +6,12 @@ const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
   const { t, i18n } = useTranslation();
   const [isLoginMode, setIsLoginMode] = useState(true);
 
+  // Breadcrumb data
+  const breadcrumbs = [
+    { label: t("nav.home", "Home"), path: "/" },
+    { label: isLoginMode ? t("auth.login") : t("auth.signup"), path: null }
+  ];
+
   // Define roles using translation keys
   const roles = [
     { key: "patient", value: t("auth.roles.patient"), originalValue: "Patient/Family" },
@@ -120,8 +126,36 @@ const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-pink-100 via-white to-pink-50 bg-opacity-80 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative border border-pink-100 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-white to-pink-50">
+      {/* Header Component */}
+      <Header onLoginClick={onClose} />
+      
+      {/* Breadcrumbs */}
+      <nav className="px-8 py-4" aria-label="Breadcrumb">
+        <ol className="flex items-center space-x-2 text-sm">
+          {breadcrumbs.map((crumb, index) => (
+            <li key={index} className="flex items-center">
+              {index > 0 && (
+                <span className="mx-2 text-gray-400">/</span>
+              )}
+              {crumb.path ? (
+                <button 
+                  onClick={onClose}
+                  className="text-pink-600 hover:text-pink-800 hover:underline focus:outline-none"
+                >
+                  {crumb.label}
+                </button>
+              ) : (
+                <span className="text-gray-600 font-medium">{crumb.label}</span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+
+      {/* Modal Content */}
+      <div className="flex items-center justify-center px-4 py-8">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative border border-pink-100 p-8">
 
         {/* Close button */}
         <button
@@ -304,6 +338,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
                 </div>
               </form>
             )}
+        </div>
       </div>
     </div>
   );

@@ -1,8 +1,28 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { QuestionnairePage1, QuestionnairePage2, QuestionnairePage3 } from './index';
 
-function PatientQuestionnaireFlow({ data, onUpdate, onSubmit, isLoading }) {
+function PatientQuestionnaireFlow({ data, onUpdate, onSubmit, isLoading, user }) {
+  const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Breadcrumb data with current page
+  const getBreadcrumbs = () => {
+    const baseBreadcrumbs = [
+      { label: t("nav.home", "Home"), path: "/" },
+      { label: t("nav.dashboard", "Dashboard"), path: "/dashboard" },
+      { label: t("patientQuestionnaire.breadcrumb", "Questionnaire"), path: null }
+    ];
+    
+    if (currentPage > 1) {
+      baseBreadcrumbs.push({
+        label: t(`patientQuestionnaire.pages.page${currentPage}.breadcrumb`, `Page ${currentPage}`),
+        path: null
+      });
+    }
+    
+    return baseBreadcrumbs;
+  };
 
   const handleNext = () => {
     setCurrentPage(currentPage + 1);
@@ -46,6 +66,7 @@ function PatientQuestionnaireFlow({ data, onUpdate, onSubmit, isLoading }) {
             onUpdate={onUpdate}
             onNext={handleNext}
             isValid={isPage1Valid()}
+            user={user}
           />
         );
       case 2:
@@ -56,6 +77,7 @@ function PatientQuestionnaireFlow({ data, onUpdate, onSubmit, isLoading }) {
             onNext={handleNext}
             onPrev={handlePrev}
             isValid={isPage2Valid()}
+            user={user}
           />
         );
       case 3:
@@ -67,6 +89,7 @@ function PatientQuestionnaireFlow({ data, onUpdate, onSubmit, isLoading }) {
             onPrev={handlePrev}
             isValid={isPage3Valid()}
             isLoading={isLoading}
+            user={user}
           />
         );
       default:
