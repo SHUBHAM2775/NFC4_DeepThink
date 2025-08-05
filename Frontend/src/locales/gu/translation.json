@@ -276,5 +276,37 @@
       "ashaWorker": "આશા કાર્યકર: સુનીતા દેવી",
       "nearestHospital": "નજીકની હોસ્પિટલ"
     }
+  },
+  "ashaDashboard": {
+    "title": "આશા કાર્યકર ડેશબોર્ડ",
+    "userName": "સુનીતા દેવી",
+    "summaryStats": {
+      "assignedPatients": "સોંપાયેલા દર્દીઓ",
+      "highRisk": "ઉચ્ચ જોખમ",
+      "missedLogs": "ચૂકેલા લોગ",
+      "compliance": "અનુપાલન"
+    },
+    "myPatients": "મારા દર્દીઓ",
+    "riskLevels": {
+      "high": "ઉચ્ચ જોખમ",
+      "medium": "મધ્યમ જોખમ",
+      "low": "ઓછું જોખમ"
+    },
+    "patientCard": {
+      "missedLogs": "ચૂકેલા લોગ",
+      "due": "નિયત તારીખ",
+      "lastLog": "છેલ્લો લોગ",
+      "complianceScore": "અનુપાલન સ્કોર",
+      "viewDetails": "વિગતો જુઓ",
+      "call": "કોલ કરો"
+    },
+    "timeLabels": {
+      "today": "આજે",
+      "yesterday": "ગઈ કાલે",
+      "daysAgo": "દિવસ પહેલાં",
+      "dayAgo": "દિવસ પહેલાં"
+    },
+    "contactingMessage": "{{name}} નો સંપર્ક કરી રહ્યા છીએ!",
+    "viewingNotesMessage": "{{name}} માટે નોંધો જોઈ રહ્યા છીએ!"
   }
 }

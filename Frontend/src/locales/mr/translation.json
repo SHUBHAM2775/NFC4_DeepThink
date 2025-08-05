@@ -276,5 +276,37 @@
             "ashaWorker": "आशा कार्यकर्ता: सुनीता देवी",
             "nearestHospital": "जवळचे रुग्णालय"
         }
+    },
+    "ashaDashboard": {
+        "title": "आशा कार्यकर्ता डॅशबोर्ड",
+        "userName": "सुनीता देवी",
+        "summaryStats": {
+            "assignedPatients": "नियुक्त रुग्ण",
+            "highRisk": "उच्च धोका",
+            "missedLogs": "चुकलेले लॉग",
+            "compliance": "अनुपालन"
+        },
+        "myPatients": "माझे रुग्ण",
+        "riskLevels": {
+            "high": "उच्च धोका",
+            "medium": "मध्यम धोका",
+            "low": "कमी धोका"
+        },
+        "patientCard": {
+            "missedLogs": "चुकलेले लॉग",
+            "due": "नियत तारीख",
+            "lastLog": "शेवटचा लॉग",
+            "complianceScore": "अनुपालन स्कोर",
+            "viewDetails": "तपशील पहा",
+            "call": "कॉल करा"
+        },
+        "timeLabels": {
+            "today": "आज",
+            "yesterday": "काल",
+            "daysAgo": "दिवस आधी",
+            "dayAgo": "दिवस आधी"
+        },
+        "contactingMessage": "{{name}} शी संपर्क करत आहे!",
+        "viewingNotesMessage": "{{name}} साठी नोट्स पाहत आहे!"
     }
 }

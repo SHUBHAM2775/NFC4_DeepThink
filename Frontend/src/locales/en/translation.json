@@ -277,5 +277,37 @@
       "ashaWorker": "ASHA Worker: Sunita Devi",
       "nearestHospital": "Nearest Hospital"
     }
+  },
+  "ashaDashboard": {
+    "title": "ASHA Worker Dashboard",
+    "userName": "Sunita Devi",
+    "summaryStats": {
+      "assignedPatients": "Assigned Patients",
+      "highRisk": "High Risk",
+      "missedLogs": "Missed Logs",
+      "compliance": "Compliance"
+    },
+    "myPatients": "My Patients",
+    "riskLevels": {
+      "high": "high risk",
+      "medium": "medium risk",
+      "low": "low risk"
+    },
+    "patientCard": {
+      "missedLogs": "missed logs",
+      "due": "Due",
+      "lastLog": "Last log",
+      "complianceScore": "Compliance Score",
+      "viewDetails": "View Details",
+      "call": "Call"
+    },
+    "timeLabels": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "daysAgo": "days ago",
+      "dayAgo": "day ago"
+    },
+    "contactingMessage": "Contacting {{name}}!",
+    "viewingNotesMessage": "Viewing notes for {{name}}!"
   }
 }
