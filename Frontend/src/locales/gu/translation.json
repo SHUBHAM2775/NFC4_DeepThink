@@ -275,6 +275,19 @@
     "defaultContacts": {
       "ashaWorker": "આશા કાર્યકર: સુનીતા દેવી",
       "nearestHospital": "નજીકની હોસ્પિટલ"
+    },
+    "nearbyAshaWorkers": {
+      "title": "નજીકના આશા કાર્યકરો",
+      "loadingMessage": "નજીકના આશા કાર્યકરો લોડ થઈ રહ્યા છે...",
+      "errorMessage": "આશા કાર્યકરો લોડ કરી શકાયા નથી",
+      "noWorkersFound": "કોઈ આશા કાર્યકર નજીક મળ્યા નથી",
+      "distance": "અંતર",
+      "experience": "અનુભવ",
+      "contact": "સંપર્ક",
+      "assign": "મને સોંપો",
+      "assigned": "સોંપાયેલ",
+      "years": "વર્ષ",
+      "callWorker": "આશા કાર્યકરને કોલ કરો"
     }
   },
   "ashaDashboard": {

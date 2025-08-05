@@ -278,6 +278,19 @@
     "defaultContacts": {
       "ashaWorker": "ASHA Worker: Sunita Devi",
       "nearestHospital": "Nearest Hospital"
+    },
+    "nearbyAshaWorkers": {
+      "title": "Nearby ASHA Workers",
+      "loadingMessage": "Loading nearby ASHA workers...",
+      "errorMessage": "Unable to load ASHA workers",
+      "noWorkersFound": "No ASHA workers found nearby",
+      "distance": "Distance",
+      "experience": "Experience",
+      "contact": "Contact",
+      "assign": "Assign to Me",
+      "assigned": "Assigned",
+      "years": "years",
+      "callWorker": "Call ASHA Worker"
     }
   },
   "ashaDashboard": {
