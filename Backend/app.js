@@ -15,4 +15,7 @@ app.use("/api/auth", authRoutes);
 const voiceLogRoutes = require("./routes/voiceLogRoutes");
 app.use("/api/voice", voiceLogRoutes);
 
+const verificationRoutes = require("./routes/verificationRoutes");
+app.use("/api/verification", verificationRoutes);
+
 module.exports = app;
