@@ -6,11 +6,12 @@ import LandingPage from "./components/LandingPage";
 import PatientDashboard from "./components/Patient/Dashboard";
 import AshaDashboard from "./components/ASHA_worker/Dashboard";
 import AdminDashboard from "./components/Admin_Panel/Dashboard";
+import VoiceLog from "./components/VoiceLog/VoiceLog";
 import Loading from "./components/Loading";
 import { registerAdmin, registerAshaWorker, registerPregnantLady } from "./services/registrationAPI";
 
 const App = () => {
-  const [currentView, setCurrentView] = useState("landing"); // "landing", "login", "questionnaire", "asha-questionnaire", "patient-dashboard", "asha-dashboard", "admin-dashboard", "main"
+  const [currentView, setCurrentView] = useState("landing"); // "landing", "login", "questionnaire", "asha-questionnaire", "patient-dashboard", "asha-dashboard", "admin-dashboard", "voice-log", "main"
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -224,11 +225,13 @@ const App = () => {
           />
         );
       case "patient-dashboard":
-        return <PatientDashboard user={user} />;
+        return <PatientDashboard user={user} onNavigateToVoiceLog={() => setCurrentView("voice-log")} />;
       case "asha-dashboard":
         return <AshaDashboard user={user} />;
       case "admin-dashboard":
         return <AdminDashboard user={user} />;
+      case "voice-log":
+        return <VoiceLog onNavigateBack={() => setCurrentView("patient-dashboard")} />;
       case "main":
         return (
           <div className="p-8">

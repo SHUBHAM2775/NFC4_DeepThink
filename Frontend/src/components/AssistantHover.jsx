@@ -258,7 +258,7 @@ const AssistantHover = () => {
       </div>
 
       {/* Styles for animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes slide-in-from-bottom-2 {
           from {
             transform: translateY(8px);

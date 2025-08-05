@@ -3,7 +3,7 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import { submitVoiceLog } from '../../services/voiceLogAPI';
 
 
-const VoiceLog = () => {
+const VoiceLog = ({ onNavigateBack }) => {
   const [isListening, setIsListening] = useState(false);
 
   const {
@@ -44,7 +44,13 @@ const VoiceLog = () => {
 
   return (
     <div style={styles.container}>
-      <h2>🎙 Daily Voice Log</h2>
+      {/* Header with Back Button */}
+      <div style={styles.header}>
+        <button onClick={onNavigateBack} style={styles.backButton}>
+          ← Back to Dashboard
+        </button>
+        <h2>🎙 Daily Voice Log</h2>
+      </div>
 
       <button onClick={handleToggle} style={styles.button}>
         {isListening ? '🛑 Stop Recording' : '🎤 Start Recording'}
@@ -67,6 +73,24 @@ const styles = {
     margin: 'auto',
     marginTop: '40px',
     textAlign: 'center'
+  },
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: '20px',
+  },
+  backButton: {
+    padding: '8px 16px',
+    fontSize: '14px',
+    backgroundColor: '#6b7280',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    hover: {
+      backgroundColor: '#4b5563'
+    }
   },
   button: {
     padding: '10px 20px',
