@@ -10,7 +10,7 @@ import {
 import { Button, Label, Input } from '../Patient/Questionnaire/UIComponents';
 
 // Single page questionnaire for ASHA Worker registration
-function AshaRegistrationForm({ data, onUpdate, onSubmit, isValid }) {
+function AshaRegistrationForm({ data, onUpdate, onSubmit, isValid, isLoading }) {
   const { t } = useTranslation();
   
   const handleDocumentUpload = (e) => {
@@ -134,16 +134,16 @@ function AshaRegistrationForm({ data, onUpdate, onSubmit, isValid }) {
       <Button
         onClick={onSubmit}
         className="w-full h-12 text-lg font-semibold"
-        disabled={!isValid}
+        disabled={!isValid || isLoading}
       >
-        {t('ashaQuestionnaire.submitButton')}
+        {isLoading ? t('ashaQuestionnaire.submitting') : t('ashaQuestionnaire.submitButton')}
       </Button>
     </div>
   );
 }
 
 // Main wrapper component
-function AshaQuestionaire({ onComplete, user }) {
+function AshaQuestionaire({ onComplete, user, isLoading, error }) {
   const { t } = useTranslation();
   const [data, setData] = useState({});
 
@@ -180,7 +180,14 @@ function AshaQuestionaire({ onComplete, user }) {
             onUpdate={handleUpdate}
             onSubmit={handleSubmit}
             isValid={isValid()}
+            isLoading={isLoading}
           />
+          
+          {error && (
+            <div className="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+              <p className="text-sm">{error}</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

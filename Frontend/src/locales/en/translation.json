@@ -159,7 +159,8 @@
                 "selectedFiles": "Selected files:"
             }
         },
-        "submitButton": "Complete Registration"
+        "submitButton": "Complete Registration",
+        "submitting": "Registering..."
     },
     "patientQuestionnaire": {
         "title": "Health Questionnaire",
@@ -234,7 +235,8 @@
                     "no": "No"
                 },
                 "previousButton": "Previous",
-                "submitButton": "Submit"
+                "submitButton": "Submit",
+                "submitting": "Submitting..."
             }
         }
     }
