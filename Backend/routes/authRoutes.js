@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
-router.get("/test", (req, res) => {
-  res.json({ message: "Auth route working!" });
-});
+const { requestOtp, verifyOtp } = require("../controllers/authController");
+
+router.post("/request-otp", requestOtp);
+router.post("/verify-otp", verifyOtp);
 
 module.exports = router;

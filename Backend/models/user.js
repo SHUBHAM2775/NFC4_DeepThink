@@ -1,6 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
+  name: String, // ⬅️ Add this if you want to store admin name directly
   phoneNumber: {
     type: String,
     required: true,
@@ -13,13 +14,13 @@ const userSchema = new mongoose.Schema({
   },
   refId: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    refPath: 'roleRef'
+    refPath: 'roleRef',
+    default: null // Optional: allow null for admins
   },
   roleRef: {
     type: String,
-    required: true,
-    enum: ['Admin', 'AshaWorker', 'PregnantLady']
+    enum: ['Admin', 'AshaWorker', 'PregnantLady'],
+    required: true
   },
   otp: String,
   createdAt: {
@@ -28,4 +29,4 @@ const userSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model("User", userSchema);

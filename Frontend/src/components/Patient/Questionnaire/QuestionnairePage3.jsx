@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Heart,
   AlertTriangle,
@@ -8,20 +9,22 @@ import {
 import { Button, Label, RadioGroup, RadioGroupItem } from './UIComponents';
 
 function QuestionnairePage3({ data, onUpdate, onNext, onPrev, isValid }) {
+  const { t } = useTranslation();
+  
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-lg font-semibold">Health & Emergency Information</h2>
-        <p className="text-sm text-gray-600">Help us understand your health status and emergency preparedness</p>
+        <h2 className="text-lg font-semibold">{t('patientQuestionnaire.pages.page3.title')}</h2>
+        <p className="text-sm text-gray-600">{t('patientQuestionnaire.pages.page3.subtitle')}</p>
       </div>
       
       {/* Health Issues */}
       <div className="space-y-3">
         <Label className="flex items-center gap-2 text-base font-medium">
           <Heart className="h-4 w-4" />
-          Do you have any known health issues?
+          {t('patientQuestionnaire.pages.page3.hasHealthIssues.label')}
         </Label>
-        <p className="text-sm text-gray-500">e.g. diabetes, high blood pressure, anemia</p>
+        <p className="text-sm text-gray-500">{t('patientQuestionnaire.pages.page3.hasHealthIssues.description')}</p>
         <RadioGroup
           name="hasHealthIssues"
           value={data.hasHealthIssues}
@@ -29,13 +32,13 @@ function QuestionnairePage3({ data, onUpdate, onNext, onPrev, isValid }) {
           className="space-y-3"
         >
           <RadioGroupItem value="true" id="health-yes">
-            Yes
+            {t('patientQuestionnaire.pages.page3.hasHealthIssues.yes')}
           </RadioGroupItem>
           <RadioGroupItem value="false" id="health-no">
-            No
+            {t('patientQuestionnaire.pages.page3.hasHealthIssues.no')}
           </RadioGroupItem>
           <RadioGroupItem value="unsure" id="health-unsure">
-            Not sure
+            {t('patientQuestionnaire.pages.page3.hasHealthIssues.unsure')}
           </RadioGroupItem>
         </RadioGroup>
       </div>
@@ -44,7 +47,7 @@ function QuestionnairePage3({ data, onUpdate, onNext, onPrev, isValid }) {
       <div className="space-y-3">
         <Label className="flex items-center gap-2 text-base font-medium">
           <AlertTriangle className="h-4 w-4" />
-          Have you experienced bleeding, pain, or swelling recently?
+          {t('patientQuestionnaire.pages.page3.hasRecentSymptoms.label')}
         </Label>
         <RadioGroup
           name="hasRecentSymptoms"
@@ -53,10 +56,10 @@ function QuestionnairePage3({ data, onUpdate, onNext, onPrev, isValid }) {
           className="space-y-3"
         >
           <RadioGroupItem value="true" id="symptoms-yes">
-            Yes
+            {t('patientQuestionnaire.pages.page3.hasRecentSymptoms.yes')}
           </RadioGroupItem>
           <RadioGroupItem value="false" id="symptoms-no">
-            No
+            {t('patientQuestionnaire.pages.page3.hasRecentSymptoms.no')}
           </RadioGroupItem>
         </RadioGroup>
       </div>
@@ -65,7 +68,7 @@ function QuestionnairePage3({ data, onUpdate, onNext, onPrev, isValid }) {
       <div className="space-y-3">
         <Label className="flex items-center gap-2 text-base font-medium">
           <Pill className="h-4 w-4" />
-          Are you currently taking prenatal vitamins or iron supplements?
+          {t('patientQuestionnaire.pages.page3.takingVitamins.label')}
         </Label>
         <RadioGroup
           name="takingVitamins"
@@ -74,10 +77,10 @@ function QuestionnairePage3({ data, onUpdate, onNext, onPrev, isValid }) {
           className="space-y-3"
         >
           <RadioGroupItem value="true" id="vitamins-yes">
-            Yes
+            {t('patientQuestionnaire.pages.page3.takingVitamins.yes')}
           </RadioGroupItem>
           <RadioGroupItem value="false" id="vitamins-no">
-            No
+            {t('patientQuestionnaire.pages.page3.takingVitamins.no')}
           </RadioGroupItem>
         </RadioGroup>
       </div>
@@ -86,7 +89,7 @@ function QuestionnairePage3({ data, onUpdate, onNext, onPrev, isValid }) {
       <div className="space-y-3">
         <Label className="flex items-center gap-2 text-base font-medium">
           <Phone className="h-4 w-4" />
-          Do you have access to a mobile phone during emergencies?
+          {t('patientQuestionnaire.pages.page3.hasMobileAccess.label')}
         </Label>
         <RadioGroup
           name="hasMobileAccess"
@@ -95,20 +98,20 @@ function QuestionnairePage3({ data, onUpdate, onNext, onPrev, isValid }) {
           className="space-y-3"
         >
           <RadioGroupItem value="true" id="mobile-yes">
-            Yes
+            {t('patientQuestionnaire.pages.page3.hasMobileAccess.yes')}
           </RadioGroupItem>
           <RadioGroupItem value="false" id="mobile-no">
-            No
+            {t('patientQuestionnaire.pages.page3.hasMobileAccess.no')}
           </RadioGroupItem>
         </RadioGroup>
       </div>
       
       <div className="flex justify-between">
         <Button onClick={onPrev} className="w-36 h-12 text-lg font-semibold">
-          Previous
+          {t('patientQuestionnaire.pages.page3.previousButton')}
         </Button>
         <Button onClick={onNext} className="w-44 h-12 text-lg font-semibold" disabled={!isValid}>
-          Submit
+          {t('patientQuestionnaire.pages.page3.submitButton')}
         </Button>
       </div>
     </div>

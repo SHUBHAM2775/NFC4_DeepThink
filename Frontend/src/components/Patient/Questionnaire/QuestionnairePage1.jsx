@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   MapPin,
   Building,
@@ -7,22 +8,24 @@ import {
 import { Button, Label, Input } from './UIComponents';
 
 function QuestionnairePage1({ data, onUpdate, onNext, isValid }) {
+  const { t } = useTranslation();
+  
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-lg font-semibold">Location Information</h2>
-        <p className="text-sm text-gray-600">Please provide your location details</p>
+        <h2 className="text-lg font-semibold">{t('patientQuestionnaire.pages.page1.title')}</h2>
+        <p className="text-sm text-gray-600">{t('patientQuestionnaire.pages.page1.subtitle')}</p>
       </div>
       
       {/* Village */}
       <div className="space-y-3">
         <Label className="flex items-center gap-2 text-base font-medium">
           <MapPin className="h-4 w-4" />
-          Village
+          {t('patientQuestionnaire.pages.page1.village.label')}
         </Label>
         <Input
           type="text"
-          placeholder="Enter your village name"
+          placeholder={t('patientQuestionnaire.pages.page1.village.placeholder')}
           value={data.village || ''}
           onChange={e => onUpdate({ village: e.target.value })}
           className="h-12 text-lg"
@@ -33,11 +36,11 @@ function QuestionnairePage1({ data, onUpdate, onNext, isValid }) {
       <div className="space-y-3">
         <Label className="flex items-center gap-2 text-base font-medium">
           <Building className="h-4 w-4" />
-          District
+          {t('patientQuestionnaire.pages.page1.district.label')}
         </Label>
         <Input
           type="text"
-          placeholder="Enter your district name"
+          placeholder={t('patientQuestionnaire.pages.page1.district.placeholder')}
           value={data.district || ''}
           onChange={e => onUpdate({ district: e.target.value })}
           className="h-12 text-lg"
@@ -48,11 +51,11 @@ function QuestionnairePage1({ data, onUpdate, onNext, isValid }) {
       <div className="space-y-3">
         <Label className="flex items-center gap-2 text-base font-medium">
           <Globe className="h-4 w-4" />
-          State
+          {t('patientQuestionnaire.pages.page1.state.label')}
         </Label>
         <Input
           type="text"
-          placeholder="Enter your state name"
+          placeholder={t('patientQuestionnaire.pages.page1.state.placeholder')}
           value={data.state || ''}
           onChange={e => onUpdate({ state: e.target.value })}
           className="h-12 text-lg"
@@ -64,7 +67,7 @@ function QuestionnairePage1({ data, onUpdate, onNext, isValid }) {
         className="w-full h-12 text-lg font-semibold"
         disabled={!isValid}
       >
-        Proceed to Questions
+        {t('patientQuestionnaire.pages.page1.nextButton')}
       </Button>
     </div>
   );
