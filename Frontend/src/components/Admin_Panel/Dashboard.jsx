@@ -1,20 +1,42 @@
 import React from "react";
 import Header from "../../navbar/Header";
+import {
+  UserIcon,
+  UserGroupIcon,
+  IdentificationIcon,
+  ClockIcon,
+  PencilSquareIcon,
+  EyeIcon,
+  CheckIcon,
+  BellAlertIcon,
+  DocumentIcon,
+  PhotoIcon,
+} from "@heroicons/react/24/outline";
 
 const Dashboard = ({ user }) => {
   const adminStats = [
-    { label: "Total Users", value: 1247, icon: "👤", color: "text-pink-600" },
+    {
+      label: "Total Users",
+      value: 1247,
+      icon: <UserIcon className="h-8 w-8 text-pink-600 mx-auto" />,
+      color: "text-pink-600",
+    },
     {
       label: "Active Patients",
       value: 892,
-      icon: "🤰",
+      icon: <UserGroupIcon className="h-8 w-8 text-green-600 mx-auto" />,
       color: "text-green-600",
     },
-    { label: "ASHA Workers", value: 156, icon: "👩‍⚕️", color: "text-sky-500" },
+    {
+      label: "ASHA Workers",
+      value: 156,
+      icon: <IdentificationIcon className="h-8 w-8 text-sky-500 mx-auto" />,
+      color: "text-sky-500",
+    },
     {
       label: "Pending Reviews",
       value: 23,
-      icon: "⏰",
+      icon: <ClockIcon className="h-8 w-8 text-yellow-500 mx-auto" />,
       color: "text-yellow-500",
     },
   ];
@@ -57,15 +79,15 @@ const Dashboard = ({ user }) => {
   const getActivityIcon = (type) => {
     switch (type) {
       case "registration":
-        return "📝";
+        return <PencilSquareIcon className="h-6 w-6 mr-1 text-gray-500" />;
       case "review":
-        return "👁️";
+        return <EyeIcon className="h-6 w-6 mr-1 text-gray-500" />;
       case "verification":
-        return "✅";
+        return <CheckIcon className="h-6 w-6 mr-1 text-green-600" />;
       case "emergency":
-        return "🚨";
+        return <BellAlertIcon className="h-6 w-6 mr-1 text-red-500" />;
       default:
-        return "📋";
+        return <PencilSquareIcon className="h-6 w-6 mr-1 text-gray-500" />;
     }
   };
 
@@ -80,6 +102,7 @@ const Dashboard = ({ user }) => {
         userName={user?.name || "Administrator"}
         onLogout={handleLogout}
       />
+
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8 mt-6">
         {adminStats.map((stat, index) => (
@@ -88,7 +111,7 @@ const Dashboard = ({ user }) => {
             className="bg-white p-7 rounded-xl text-center shadow-sm border border-[#f0f0f0]"
           >
             <div className="text-3xl mb-2">{stat.icon}</div>
-            <div className={`text-2xl font-bold ${stat.color} mb-1`}>
+            <div className={`${stat.color} text-2xl font-bold mb-1`}>
               {stat.value.toLocaleString()}
             </div>
             <div className="text-gray-500 text-sm">{stat.label}</div>
@@ -99,7 +122,7 @@ const Dashboard = ({ user }) => {
       <div className="bg-white rounded-xl shadow mb-8 border border-[#f3eaf1] max-w-5xl mx-auto">
         <div className="px-6 pt-6 pb-2">
           <div className="flex items-center mb-1">
-            <span className="text-yellow-500 text-xl mr-2">⏰</span>
+            <ClockIcon className="text-yellow-500 h-6 w-6 mr-2" />
             <span className="text-lg font-semibold text-gray-700">
               Pending Verifications
             </span>
@@ -154,9 +177,9 @@ const Dashboard = ({ user }) => {
                     className="flex items-center px-3 py-1 bg-gray-100 border border-gray-200 rounded text-sm text-gray-700 select-none"
                   >
                     {doc.endsWith(".pdf") ? (
-                      <span className="mr-1.5">📄</span>
+                      <DocumentIcon className="h-5 w-5 mr-1 text-indigo-500" />
                     ) : (
-                      <span className="mr-1.5">🖼️</span>
+                      <PhotoIcon className="h-5 w-5 mr-1 text-pink-400" />
                     )}
                     {doc}
                   </div>
@@ -177,7 +200,8 @@ const Dashboard = ({ user }) => {
                   Reject
                 </button>
                 <button className="flex items-center bg-gray-100 text-gray-700 px-6 py-2 rounded border border-gray-200 hover:bg-gray-200 transition ml-1 whitespace-nowrap">
-                  <span className="mr-1">👁️</span> Review
+                  <EyeIcon className="mr-1 h-5 w-5" />
+                  Review
                 </button>
               </div>
             </div>
@@ -187,7 +211,7 @@ const Dashboard = ({ user }) => {
 
       <div className="bg-white rounded-lg shadow border border-[#f3eaf1] px-7 py-6 max-w-5xl mx-auto mt-8">
         <div className="flex items-center mb-1">
-          <span className="text-pink-600 text-xl mr-2">📊</span>
+          <PencilSquareIcon className="text-pink-600 mr-2 h-6 w-6" />
           <span className="text-lg font-bold text-gray-700">Analytics</span>
         </div>
         <span className="text-gray-500 text-sm block mb-2">
