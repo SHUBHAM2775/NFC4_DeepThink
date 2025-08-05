@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { Button, Label, RadioGroup, RadioGroupItem } from './UIComponents';
 
-function QuestionnairePage3({ data, onUpdate, onNext, onPrev, isValid }) {
+function QuestionnairePage3({ data, onUpdate, onNext, onPrev, isValid, isLoading }) {
   const { t } = useTranslation();
   
   return (
@@ -107,11 +107,11 @@ function QuestionnairePage3({ data, onUpdate, onNext, onPrev, isValid }) {
       </div>
       
       <div className="flex justify-between">
-        <Button onClick={onPrev} className="w-36 h-12 text-lg font-semibold">
+        <Button onClick={onPrev} className="w-36 h-12 text-lg font-semibold" disabled={isLoading}>
           {t('patientQuestionnaire.pages.page3.previousButton')}
         </Button>
-        <Button onClick={onNext} className="w-44 h-12 text-lg font-semibold" disabled={!isValid}>
-          {t('patientQuestionnaire.pages.page3.submitButton')}
+        <Button onClick={onNext} className="w-44 h-12 text-lg font-semibold" disabled={!isValid || isLoading}>
+          {isLoading ? t('patientQuestionnaire.pages.page3.submitting') : t('patientQuestionnaire.pages.page3.submitButton')}
         </Button>
       </div>
     </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Header from "../navbar/Header";
 
-const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
+const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
   const { t, i18n } = useTranslation();
   const [isLoginMode, setIsLoginMode] = useState(true);
 
@@ -231,8 +231,8 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
                   />
                 )} */}
 
-                {error && (
-                  <div className="text-red-500 text-sm text-center">{error}</div>
+                {(error || externalError) && (
+                  <div className="text-red-500 text-sm text-center">{error || externalError}</div>
                 )}
 
                 <button
