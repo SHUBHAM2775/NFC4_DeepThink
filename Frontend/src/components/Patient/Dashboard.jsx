@@ -15,8 +15,9 @@ import {
 } from "@heroicons/react/24/outline";
 import LanguageSwitcher from '../LanguageSwitcher';
 import ReportDiagnosis from "./ReportDiagnosis";
+import AssistantHover from '../AssistantHover';
 
-export default function PatientDashboard() {
+export default function PatientDashboard({ onNavigateToVoiceLog }) {
   const { t } = useTranslation();
 
 
@@ -200,7 +201,10 @@ export default function PatientDashboard() {
             {t('patientDashboard.voiceDailyLog.title')}
           </div>
           <p className="text-sm text-gray-500">{t('patientDashboard.voiceDailyLog.description')}</p>
-          <button className="w-full mt-2 bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 rounded-lg flex items-center justify-center gap-2">
+          <button 
+            onClick={onNavigateToVoiceLog}
+            className="w-full mt-2 bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 rounded-lg flex items-center justify-center gap-2"
+          >
             <MicrophoneIcon className="h-5 w-5" />
             {t('patientDashboard.voiceDailyLog.startRecording')}
           </button>
@@ -230,6 +234,9 @@ export default function PatientDashboard() {
           </button>
         </section>
       </main>
+
+      {/* Assistant Chatbot */}
+      <AssistantHover />
     </div>
   );
 }

@@ -59,11 +59,11 @@ const getAshaWorkerVerificationStatus = async (req, res) => {
 const getHighRiskPatients = async (req, res) => {
   try {
     const patients = await PregnantLady.find({ status: "High" })
-      .select('name phoneNumber monthsPregnant currentlyPregnant')
+      .select("name phoneNumber monthsPregnant currentlyPregnant")
       .limit(50); // Limit for performance
-    
+
     // Transform data for frontend
-    const formattedPatients = patients.map(patient => ({
+    const formattedPatients = patients.map((patient) => ({
       name: patient.name,
       phoneNumber: patient.phoneNumber,
       due: "2024-03-15", // Calculate based on months pregnant
@@ -71,7 +71,7 @@ const getHighRiskPatients = async (req, res) => {
       risk: "high",
       compliance: Math.floor(Math.random() * 40) + 40, // Random between 40-80 for high risk
       missed: Math.floor(Math.random() * 5) + 1, // Random 1-5 missed logs
-      animation: true
+      animation: true,
     }));
 
     res.status(200).json(formattedPatients);
@@ -101,7 +101,7 @@ const getAshaWorkerPatients = async (req, res) => {
         risk: "high",
         compliance: 60,
         missed: 3,
-        animation: true
+        animation: true,
       },
       {
         name: "Anita Patel",
@@ -111,7 +111,7 @@ const getAshaWorkerPatients = async (req, res) => {
         risk: "medium",
         compliance: 80,
         missed: 1,
-        animation: false
+        animation: false,
       },
       {
         name: "Kavya Singh",
@@ -121,8 +121,8 @@ const getAshaWorkerPatients = async (req, res) => {
         risk: "low",
         compliance: 95,
         missed: 0,
-        animation: false
-      }
+        animation: false,
+      },
     ];
 
     res.status(200).json(demoPatients);
@@ -145,13 +145,28 @@ const getAshaWorkerStats = async (req, res) => {
     const stats = {
       assignedPatients: 3,
       missedLogs: 4,
-      compliance: "85%"
+      compliance: "85%",
     };
 
     res.status(200).json(stats);
   } catch (error) {
     console.error("Error fetching ASHA worker statistics:", error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const getPatientsForAshaWorker = async (req, res) => {
+  try {
+    const { ashaWorkerId } = req.params;
+
+    const patients = await PregnantLady.find({
+      assignedAshaWorker: ashaWorkerId,
+    }).lean();
+
+    return res.json({ patients });
+  } catch (err) {
+    console.error("Error fetching patients for ASHA worker:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -162,4 +177,5 @@ module.exports = {
   getHighRiskPatients,
   getAshaWorkerPatients,
   getAshaWorkerStats,
+  getPatientsForAshaWorker,
 };

@@ -12,7 +12,6 @@ const registerAdmin = async (req, res) => {
         .json({ error: "Name and phone number are required" });
     }
 
-    // Check for existing user
     const existingUser = await User.findOne({ phoneNumber });
     if (existingUser) {
       return res
@@ -20,7 +19,6 @@ const registerAdmin = async (req, res) => {
         .json({ error: "User with this phone number already exists" });
     }
 
-    // Create user with role = 'admin'
     const user = await User.create({
       phoneNumber,
       role: "admin",
@@ -40,10 +38,10 @@ const registerAdmin = async (req, res) => {
   }
 };
 
+const { geocodeAddress } = require("../utils/geocode");
+
 const registerAshaWorker = async (req, res) => {
   try {
-    console.log("Received ASHA Worker registration request:", req.body);
-
     const {
       ashaId,
       name,
@@ -55,43 +53,42 @@ const registerAshaWorker = async (req, res) => {
       state,
     } = req.body;
 
-    // Validate required fields
     if (!ashaId || !name || !phoneNumber) {
-      console.log("Missing required fields:", {
-        ashaId: !!ashaId,
-        name: !!name,
-        phoneNumber: !!phoneNumber,
-      });
       return res.status(400).json({
         error: "ashaId, name, and phoneNumber are required",
-        details: {
-          ashaId: !ashaId ? "ASHA ID is required" : null,
-          name: !name ? "Name is required" : null,
-          phoneNumber: !phoneNumber ? "Phone number is required" : null,
-        },
       });
     }
 
-    // Check if phone already exists in User
     const existingUser = await User.findOne({ phoneNumber });
     if (existingUser) {
-      console.log("User with phone number already exists:", phoneNumber);
       return res
         .status(400)
         .json({ error: "User with this phone number already exists" });
     }
 
-    // Check if ASHA ID already exists
     const existingAshaWorker = await AshaWorker.findOne({ ashaId });
     if (existingAshaWorker) {
-      console.log("ASHA worker with this ID already exists:", ashaId);
       return res
         .status(400)
         .json({ error: "ASHA worker with this ID already exists" });
     }
 
-    // Create AshaWorker
-    console.log("Creating ASHA worker with data:", {
+    const fullAddress = `${village || ""}, ${district || ""}, ${state || ""}`;
+    let coordinates;
+
+    try {
+      coordinates = await geocodeAddress(fullAddress);
+    } catch (e) {
+      console.error("Geocoding failed:", e.message);
+    }
+
+    const isValidCoordinates =
+      Array.isArray(coordinates) &&
+      coordinates.length === 2 &&
+      !isNaN(coordinates[0]) &&
+      !isNaN(coordinates[1]);
+
+    const ashaWorkerData = {
       ashaId,
       name,
       phoneNumber,
@@ -100,22 +97,17 @@ const registerAshaWorker = async (req, res) => {
       village,
       district,
       state,
-    });
+    };
 
-    const ashaWorker = await AshaWorker.create({
-      ashaId,
-      name,
-      phoneNumber,
-      documents,
-      phc,
-      village,
-      district,
-      state,
-    });
+    if (isValidCoordinates) {
+      ashaWorkerData.location = {
+        type: "Point",
+        coordinates,
+      };
+    }
 
-    console.log("ASHA worker created successfully:", ashaWorker._id);
+    const ashaWorker = await AshaWorker.create(ashaWorkerData);
 
-    // Create User linked to AshaWorker
     const user = await User.create({
       phoneNumber,
       role: "asha_worker",
@@ -124,8 +116,6 @@ const registerAshaWorker = async (req, res) => {
       name,
     });
 
-    console.log("User created successfully:", user._id);
-
     res.status(201).json({
       message: "Asha Worker registered successfully",
       userId: user._id,
@@ -133,25 +123,6 @@ const registerAshaWorker = async (req, res) => {
     });
   } catch (err) {
     console.error("Error in registerAshaWorker:", err);
-
-    // Handle Mongoose validation errors
-    if (err.name === "ValidationError") {
-      const validationErrors = Object.values(err.errors).map((e) => e.message);
-      return res.status(400).json({
-        error: "Validation error",
-        details: validationErrors,
-      });
-    }
-
-    // Handle duplicate key errors
-    if (err.code === 11000) {
-      const duplicateField = Object.keys(err.keyPattern)[0];
-      return res.status(400).json({
-        error: `${duplicateField} already exists`,
-        details: `A record with this ${duplicateField} already exists in the database`,
-      });
-    }
-
     res.status(500).json({
       error: "Internal server error",
       details: err.message,
@@ -177,9 +148,6 @@ const registerPregnantLady = async (req, res) => {
       hasMobileInEmergency,
     } = req.body;
 
-    console.log("Received data for pregnant lady registration:", req.body);
-
-    // Validate required fields
     if (
       !name ||
       !phoneNumber ||
@@ -195,7 +163,6 @@ const registerPregnantLady = async (req, res) => {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    // Check if phone already exists in User collection
     const existingUser = await User.findOne({ phoneNumber });
     if (existingUser) {
       return res
@@ -203,21 +170,22 @@ const registerPregnantLady = async (req, res) => {
         .json({ error: "User with this phone number already exists" });
     }
 
-    // Helper function to convert boolean to string format expected by model
     const boolToAnswer = (value) => {
       if (value === true || value === "true") return "yes";
       if (value === false || value === "false") return "no";
       if (value === "unsure" || value === "not sure") return "not sure";
-      return "no"; // default fallback
+      return "no";
     };
 
-    // Create PregnantLady record with proper string conversions
+    const fullAddress = `${village || ""}, ${district || ""}, ${state || ""}`;
+    const coordinates = await geocodeAddress(fullAddress);
+
     const lady = await PregnantLady.create({
       name,
       phoneNumber,
-      village: village || "",
-      district: district || "",
-      state: state || "",
+      village,
+      district,
+      state,
       currentlyPregnant: boolToAnswer(currentlyPregnant),
       firstPregnancy: boolToAnswer(firstPregnancy),
       visitedDoctorOrASHA: boolToAnswer(visitedDoctorOrASHA),
@@ -226,9 +194,11 @@ const registerPregnantLady = async (req, res) => {
       recentSymptoms: boolToAnswer(recentSymptoms),
       takingSupplements: boolToAnswer(takingSupplements),
       hasMobileInEmergency: boolToAnswer(hasMobileInEmergency),
+      ...(coordinates && {
+        location: { type: "Point", coordinates },
+      }),
     });
 
-    // Create corresponding User
     const user = await User.create({
       phoneNumber,
       role: "pregnant_lady",

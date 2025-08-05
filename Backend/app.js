@@ -21,4 +21,7 @@ app.use("/api/verification", verificationRoutes);
 const ashaWorkerRoutes = require("./routes/ashaWorkerRoutes");
 app.use("/api/asha-worker", ashaWorkerRoutes);
 
+const pregnantLadyRoutes = require("./routes/pregnantLadyRoutes");
+app.use("/api/pregnant-lady", pregnantLadyRoutes);
+
 module.exports = app;

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const ashaWorkerSchema = new mongoose.Schema({
   ashaId: { type: String, required: true, unique: true },
@@ -7,14 +7,29 @@ const ashaWorkerSchema = new mongoose.Schema({
   documents: { type: [String], default: [] },
   verificationStatus: {
     type: String,
-    enum: ['pending', 'approved', 'rejected'],
-    default: 'pending'
+    enum: ["pending", "approved", "rejected"],
+    default: "pending",
   },
   phc: String,
   village: String,
   district: String,
   state: String,
-  createdAt: { type: Date, default: Date.now }
+
+  location: {
+    type: {
+      type: String,
+      enum: ["Point"],
+      default: "Point",
+    },
+    coordinates: {
+      type: [Number],
+      required: false,
+    },
+  },
+
+  createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('AshaWorker', ashaWorkerSchema);
+ashaWorkerSchema.index({ location: "2dsphere" });
+
+module.exports = mongoose.model("AshaWorker", ashaWorkerSchema);
