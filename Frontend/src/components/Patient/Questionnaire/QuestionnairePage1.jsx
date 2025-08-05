@@ -7,11 +7,14 @@ import {
 } from 'lucide-react';
 import { Button, Label, Input } from './UIComponents';
 
-function QuestionnairePage1({ data, onUpdate, onNext, isValid }) {
+function QuestionnairePage1({ data, onUpdate, onNext, isValid, user }) {
   const { t } = useTranslation();
   
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-2xl mx-auto px-4">
+        <div className="bg-white rounded-lg shadow-lg p-8">
+          <div className="space-y-6">
       <div className="text-center">
         <h2 className="text-lg font-semibold">{t('patientQuestionnaire.pages.page1.title')}</h2>
         <p className="text-sm text-gray-600">{t('patientQuestionnaire.pages.page1.subtitle')}</p>
@@ -69,6 +72,9 @@ function QuestionnairePage1({ data, onUpdate, onNext, isValid }) {
       >
         {t('patientQuestionnaire.pages.page1.nextButton')}
       </Button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

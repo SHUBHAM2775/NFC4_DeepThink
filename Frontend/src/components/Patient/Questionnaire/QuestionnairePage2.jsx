@@ -8,11 +8,14 @@ import {
 } from 'lucide-react';
 import { Button, Label, Input, RadioGroup, RadioGroupItem } from './UIComponents';
 
-function QuestionnairePage2({ data, onUpdate, onNext, onPrev, isValid }) {
+function QuestionnairePage2({ data, onUpdate, onNext, onPrev, isValid, user }) {
   const { t } = useTranslation();
   
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-2xl mx-auto px-4">
+        <div className="bg-white rounded-lg shadow-lg p-8">
+          <div className="space-y-6">
       <div className="text-center">
         <h2 className="text-lg font-semibold">{t('patientQuestionnaire.pages.page2.title')}</h2>
         <p className="text-sm text-gray-600">{t('patientQuestionnaire.pages.page2.subtitle')}</p>
@@ -107,6 +110,9 @@ function QuestionnairePage2({ data, onUpdate, onNext, onPrev, isValid }) {
         <Button onClick={onNext} className="w-44 h-12 text-lg font-semibold" disabled={!isValid}>
           {t('patientQuestionnaire.pages.page2.nextButton')}
         </Button>
+      </div>
+          </div>
+        </div>
       </div>
     </div>
   );
