@@ -155,21 +155,17 @@ const getAshaWorkerStats = async (req, res) => {
   }
 };
 
-const getAllPregnantLadies = async (req, res) => {
+const getPatientsForAshaWorker = async (req, res) => {
   try {
-    const { district, state, village } = req.query; // optional filters
+    const { ashaWorkerId } = req.params;
 
-    // Build query dynamically
-    const query = {};
-    if (district) query.district = district;
-    if (state) query.state = state;
-    if (village) query.village = village;
+    const patients = await PregnantLady.find({
+      assignedAshaWorker: ashaWorkerId,
+    }).lean();
 
-    const pregnantLadies = await PregnantLady.find(query).lean();
-
-    return res.json({ pregnantLadies });
+    return res.json({ patients });
   } catch (err) {
-    console.error("Error fetching pregnant ladies:", err);
+    console.error("Error fetching patients for ASHA worker:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -181,5 +177,5 @@ module.exports = {
   getHighRiskPatients,
   getAshaWorkerPatients,
   getAshaWorkerStats,
-  getAllPregnantLadies,
+  getPatientsForAshaWorker,
 };

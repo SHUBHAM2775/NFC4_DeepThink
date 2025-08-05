@@ -36,6 +36,13 @@ const pregnantLadySchema = new mongoose.Schema({
     },
   },
 
+  // ✅ Add the field here
+  assignedAshaWorker: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "AshaWorker",
+    default: null,
+  },
+
   createdAt: { type: Date, default: Date.now },
 });
 

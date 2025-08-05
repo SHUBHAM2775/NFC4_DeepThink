@@ -47,6 +47,34 @@ const getNearbyAshaWorkers = async (req, res) => {
   }
 };
 
+const assignAshaWorker = async (req, res) => {
+  try {
+    const { pregnantLadyId, ashaWorkerId } = req.body;
+
+    // Check if both exist
+    const lady = await PregnantLady.findById(pregnantLadyId);
+    if (!lady)
+      return res.status(404).json({ error: "Pregnant lady not found" });
+
+    const worker = await AshaWorker.findById(ashaWorkerId);
+    if (!worker)
+      return res.status(404).json({ error: "ASHA worker not found" });
+
+    // Assign
+    lady.assignedAshaWorker = ashaWorkerId;
+    await lady.save();
+
+    return res.json({
+      message: "ASHA worker assigned successfully",
+      pregnantLady: lady,
+    });
+  } catch (err) {
+    console.error("Error assigning ASHA worker:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 module.exports = {
   getNearbyAshaWorkers,
+  assignAshaWorker,
 };
