@@ -32,7 +32,31 @@ const getAshaWorkerName = async (req, res) => {
   }
 };
 
+const getAshaWorkerVerificationStatus = async (req, res) => {
+  try {
+    const { ashaId } = req.params;
+
+    if (!ashaId) {
+      return res.status(400).json({ error: "ashaId is required" });
+    }
+
+    const worker = await AshaWorker.findOne({ ashaId });
+
+    if (!worker) {
+      return res.status(404).json({ error: "ASHA worker not found" });
+    }
+
+    res.status(200).json({
+      verificationStatus: worker.verificationStatus,
+    });
+  } catch (error) {
+    console.error("Error fetching ASHA worker verification status:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   getHighRiskPregnantLadiesCount,
   getAshaWorkerName,
+  getAshaWorkerVerificationStatus,
 };
