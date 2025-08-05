@@ -160,5 +160,82 @@
             }
         },
         "submitButton": "Complete Registration"
+    },
+    "patientQuestionnaire": {
+        "title": "Health Questionnaire",
+        "welcomeMessage": "Welcome {{name}}! Please answer a few questions about your health.",
+        "defaultWelcome": "Welcome User! Please answer a few questions about your health.",
+        "pages": {
+            "page1": {
+                "title": "Location Information",
+                "subtitle": "Please provide your location details",
+                "village": {
+                    "label": "Village",
+                    "placeholder": "Enter your village name"
+                },
+                "district": {
+                    "label": "District",
+                    "placeholder": "Enter your district name"
+                },
+                "state": {
+                    "label": "State",
+                    "placeholder": "Enter your state name"
+                },
+                "nextButton": "Proceed to Questions"
+            },
+            "page2": {
+                "title": "Pregnancy Information",
+                "subtitle": "Help us understand your current situation",
+                "isPregnant": {
+                    "label": "Are you currently pregnant?",
+                    "yes": "Yes",
+                    "no": "No"
+                },
+                "monthsAlong": {
+                    "label": "How many months along are you?",
+                    "placeholder": "Enter months (1-9)"
+                },
+                "isFirstPregnancy": {
+                    "label": "Is this your first pregnancy?",
+                    "yes": "Yes",
+                    "no": "No"
+                },
+                "hasVisitedDoctor": {
+                    "label": "Have you visited a doctor or ASHA worker during this pregnancy?",
+                    "yes": "Yes",
+                    "no": "No"
+                },
+                "previousButton": "Previous",
+                "nextButton": "Next Page"
+            },
+            "page3": {
+                "title": "Health & Emergency Information",
+                "subtitle": "Help us understand your health status and emergency preparedness",
+                "hasHealthIssues": {
+                    "label": "Do you have any known health issues?",
+                    "description": "e.g. diabetes, high blood pressure, anemia",
+                    "yes": "Yes",
+                    "no": "No",
+                    "unsure": "Not sure"
+                },
+                "hasRecentSymptoms": {
+                    "label": "Have you experienced bleeding, pain, or swelling recently?",
+                    "yes": "Yes",
+                    "no": "No"
+                },
+                "takingVitamins": {
+                    "label": "Are you currently taking prenatal vitamins or iron supplements?",
+                    "yes": "Yes",
+                    "no": "No"
+                },
+                "hasMobileAccess": {
+                    "label": "Do you have access to a mobile phone during emergencies?",
+                    "yes": "Yes",
+                    "no": "No"
+                },
+                "previousButton": "Previous",
+                "submitButton": "Submit"
+            }
+        }
     }
 }

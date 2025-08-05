@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import PatientQuestionnaireFlow from './Questionnaire/PatientQuestionnaireFlow';
 
 // Wrapper component for usage example
 function Questionaire({ onComplete, user }) {
+  const { t } = useTranslation();
   const [data, setData] = useState({});
 
   const handleUpdate = (newData) => {
@@ -22,8 +24,13 @@ function Questionaire({ onComplete, user }) {
       <div className="max-w-2xl mx-auto px-4">
         <div className="bg-white rounded-lg shadow-lg p-8">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-pink-700 mb-2">Health Questionnaire</h1>
-            <p className="text-gray-600">Welcome {user?.name || 'User'}! Please answer a few questions about your health.</p>
+            <h1 className="text-2xl font-bold text-pink-700 mb-2">{t('patientQuestionnaire.title')}</h1>
+            <p className="text-gray-600">
+              {user?.name 
+                ? t('patientQuestionnaire.welcomeMessage', { name: user.name })
+                : t('patientQuestionnaire.defaultWelcome')
+              }
+            </p>
           </div>
 
           <PatientQuestionnaireFlow
