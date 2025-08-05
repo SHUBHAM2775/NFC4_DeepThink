@@ -91,5 +91,74 @@
                 "text": "Personalized agentic AI provides guidance, symptom monitoring, and emergency escalation support."
             }
         }
+    },
+    "auth": {
+        "login": "Login",
+        "signup": "Sign Up",
+        "name": "Name",
+        "phonePlaceholder": "+91 Enter your mobile number",
+        "selectRole": "Role",
+        "roles": {
+            "patient": "Patient/Family",
+            "ashaWorker": "ASHA Worker",
+            "admin": "Admin"
+        },
+        "sendOTP": "Send OTP",
+        "submit": "Submit",
+        "sendingOTP": "Sending OTP...",
+        "creatingAccount": "Creating Account...",
+        "enterOTPMessage": "Enter the 4-digit OTP sent to {{phone}}",
+        "enterOTPPlaceholder": "Enter OTP",
+        "back": "← Back",
+        "verifyOTP": "Verify OTP",
+        "verifying": "Verifying...",
+        "errors": {
+            "enterPhone": "Please enter phone number",
+            "selectRole": "Please select a role",
+            "enterName": "Please enter your name",
+            "invalidOTP": "Invalid OTP. Please try again."
+        },
+        "close": "Close"
+    },
+    "header": {
+        "welcomeMessage": "Welcome to Your Health Journey",
+        "appTitle": "Maternal Health Tracker",
+        "logout": "Logout",
+        "loginSignup": "Login / Signup"
+    },
+    "ashaQuestionnaire": {
+        "title": "ASHA Worker Registration",
+        "subtitle": "Please provide your professional details",
+        "welcomeMessage": "Welcome {{name}}! Please complete your registration details.",
+        "defaultWelcome": "Welcome ASHA Worker! Please complete your registration details.",
+        "fields": {
+            "ashaId": {
+                "label": "ASHA ID",
+                "placeholder": "Enter your unique ASHA ID",
+                "required": true
+            },
+            "phc": {
+                "label": "Primary Health Centre (PHC)",
+                "placeholder": "Enter your associated PHC name"
+            },
+            "village": {
+                "label": "Village",
+                "placeholder": "Enter your village name"
+            },
+            "district": {
+                "label": "District",
+                "placeholder": "Enter your district name"
+            },
+            "state": {
+                "label": "State",
+                "placeholder": "Enter your state name"
+            },
+            "documents": {
+                "label": "Upload Documents",
+                "description": "Upload verification documents (certificates, ID proofs, etc.)",
+                "selectedFiles": "Selected files:"
+            }
+        },
+        "submitButton": "Complete Registration"
     }
 }

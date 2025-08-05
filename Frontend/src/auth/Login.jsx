@@ -1,13 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import Header from "../navbar/Header";
 
-const roles = ["Patient/Family", "ASHA Worker", "Admin"];
-
 const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
+  const { t, i18n } = useTranslation();
   const [isLoginMode, setIsLoginMode] = useState(true);
 
+  // Define roles using translation keys
+  const roles = [
+    { key: "patient", value: t("auth.roles.patient"), originalValue: "Patient/Family" },
+    { key: "ashaWorker", value: t("auth.roles.ashaWorker"), originalValue: "ASHA Worker" },
+    { key: "admin", value: t("auth.roles.admin"), originalValue: "Admin" }
+  ];
+
   // Common states
-  const [role, setRole] = useState(roles[0]);
+  const [roleKey, setRoleKey] = useState(roles[0].key); // Store the key instead of translated value
   const [phone, setPhone] = useState("+91 ");
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
@@ -20,12 +27,21 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
   // Reset all form fields and state
   const resetForm = () => {
     setPhone("+91 ");
-    setRole(roles[0]);
+    setRoleKey(roles[0].key); // Reset to first role key
     setOtp("");
     setOtpSent(false);
     setError("");
     setName("");
   };
+
+  // Handle language change - ensure roleKey is still valid
+  useEffect(() => {
+    // Check if current roleKey is still valid, if not reset to first role
+    const validKeys = ["patient", "ashaWorker", "admin"];
+    if (!validKeys.includes(roleKey)) {
+      setRoleKey("patient");
+    }
+  }, [i18n.language, roleKey]);
 
   // Switch login/signup modes, reset form
   const switchMode = (loginMode) => {
@@ -39,18 +55,22 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
   const sendOtp = () => {
     setError("");
     if (phone.length <= 4) { // Only +91 with space without number
-      setError("Please enter phone number");
+      setError(t("auth.errors.enterPhone"));
       return;
     }
-    if (!role) {
-      setError("Please select a role");
+    if (!roleKey) {
+      setError(t("auth.errors.selectRole"));
       return;
     }
+
+    // Get the original English role value for routing
+    const selectedRole = roles.find(r => r.key === roleKey);
+    const originalRoleValue = selectedRole ? selectedRole.originalValue : roles[0].originalValue;
 
     if (!isLoginMode) {
       // Signup validation
       if (!name) {
-        setError("Please enter your name");
+        setError(t("auth.errors.enterName"));
         return;
       }
       // Simulate signup completion
@@ -59,7 +79,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
         setIsLoading(false);
         // Return user data to App.jsx for routing
         const userData = {
-          role,
+          role: originalRoleValue, // Use original English value
           phone,
           name,
         };
@@ -81,14 +101,18 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
   const verifyOtp = () => {
     setError("");
     if (otp !== "1") {
-      setError("Invalid OTP. Please try again.");
+      setError(t("auth.errors.invalidOTP"));
       return;
     }
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
+      // Get the original English role value for routing
+      const selectedRole = roles.find(r => r.key === roleKey);
+      const originalRoleValue = selectedRole ? selectedRole.originalValue : roles[0].originalValue;
+      
       const userData = {
-        role,
+        role: originalRoleValue, // Use original English value
         phone,
       };
       if (onSuccess) onSuccess(userData);
@@ -103,7 +127,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
         <button
           className="absolute top-3 right-4 text-gray-400 hover:text-pink-600 text-2xl font-bold focus:outline-none"
           onClick={onClose}
-          aria-label="Close"
+          aria-label={t("auth.close")}
         >
           ×
         </button>
@@ -119,7 +143,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
               }`}
               type="button"
             >
-              Login
+              {t("auth.login")}
             </button>
             <button
               onClick={() => switchMode(false)}
@@ -129,14 +153,14 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
               }`}
               type="button"
             >
-              Sign Up
+              {t("auth.signup")}
             </button>
           </div>
         </div>
 
         {/* Heading */}
         <h2 className="text-lg font-bold mb-6 text-pink-700 text-center tracking-wide">
-          {isLoginMode ? "Login" : "Sign Up"}
+          {isLoginMode ? t("auth.login") : t("auth.signup")}
         </h2>
 
         {/* Login / Signup Forms */}
@@ -151,7 +175,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
                 {!isLoginMode && (
                   <input
                     type="text"
-                    placeholder="Name"
+                    placeholder={t("auth.name")}
                     className="border border-pink-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-300 transition"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -161,7 +185,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
 
                 <input
                   type="tel"
-                  placeholder="+91 Enter your mobile number"
+                  placeholder={t("auth.phonePlaceholder")}
                   className="border border-pink-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-300 transition"
                   value={phone}
                   onChange={(e) => {
@@ -182,13 +206,13 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
 
                 <select
                   className="border border-pink-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-300 transition"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
+                  value={roleKey}
+                  onChange={(e) => setRoleKey(e.target.value)}
                   required
                 >
                   {roles.map((r) => (
-                    <option key={r} value={r}>
-                      {r}
+                    <option key={r.key} value={r.key}>
+                      {r.value}
                     </option>
                   ))}
                 </select>
@@ -220,11 +244,11 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
                 >
                   {isLoading
                     ? isLoginMode
-                      ? "Sending OTP..."
-                      : "Creating Account..."
+                      ? t("auth.sendingOTP")
+                      : t("auth.creatingAccount")
                     : isLoginMode
-                      ? "Send OTP"
-                      : "Submit"}
+                      ? t("auth.sendOTP")
+                      : t("auth.submit")}
                 </button>
               </form>
             )}
@@ -239,11 +263,11 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
                 className="flex flex-col gap-4"
               >
                 <p className="text-center text-gray-600 mb-2">
-                  Enter the 4-digit OTP sent to {phone}
+                  {t("auth.enterOTPMessage", { phone })}
                 </p>
                 <input
                   type="text"
-                  placeholder="Enter OTP"
+                  placeholder={t("auth.enterOTPPlaceholder")}
                   maxLength="4"
                   className="border border-pink-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-300 transition text-center text-lg tracking-widest"
                   value={otp}
@@ -266,7 +290,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
                     }}
                     className="text-pink-600 hover:text-pink-700 text-sm underline focus:outline-none"
                   >
-                    ← Back
+                    {t("auth.back")}
                   </button>
                   <button
                     type="submit"
@@ -275,7 +299,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
                       isLoading ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                   >
-                    {isLoading ? "Verifying..." : "Verify OTP"}
+                    {isLoading ? t("auth.verifying") : t("auth.verifyOTP")}
                   </button>
                 </div>
               </form>
