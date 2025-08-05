@@ -105,10 +105,12 @@ const registerPregnantLady = async (req, res) => {
       hasMobileInEmergency
     } = req.body;
 
+    console.log("Received data for pregnant lady registration:", req.body);
+
     // Validate required fields
-    if (!name || !phoneNumber || !currentlyPregnant || !firstPregnancy ||
-        !visitedDoctorOrASHA || !monthsPregnant || !knownHealthIssues ||
-        !recentSymptoms || !takingSupplements || !hasMobileInEmergency) {
+    if (!name || !phoneNumber || currentlyPregnant === undefined || firstPregnancy === undefined ||
+        visitedDoctorOrASHA === undefined || !monthsPregnant || knownHealthIssues === undefined ||
+        recentSymptoms === undefined || takingSupplements === undefined || hasMobileInEmergency === undefined) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
@@ -118,21 +120,29 @@ const registerPregnantLady = async (req, res) => {
       return res.status(400).json({ error: "User with this phone number already exists" });
     }
 
-    // Create PregnantLady record
+    // Helper function to convert boolean to string format expected by model
+    const boolToAnswer = (value) => {
+      if (value === true || value === 'true') return 'yes';
+      if (value === false || value === 'false') return 'no';
+      if (value === 'unsure' || value === 'not sure') return 'not sure';
+      return 'no'; // default fallback
+    };
+
+    // Create PregnantLady record with proper string conversions
     const lady = await PregnantLady.create({
       name,
       phoneNumber,
-      village,
-      district,
-      state,
-      currentlyPregnant,
-      firstPregnancy,
-      visitedDoctorOrASHA,
-      monthsPregnant,
-      knownHealthIssues,
-      recentSymptoms,
-      takingSupplements,
-      hasMobileInEmergency
+      village: village || "",
+      district: district || "",
+      state: state || "",
+      currentlyPregnant: boolToAnswer(currentlyPregnant),
+      firstPregnancy: boolToAnswer(firstPregnancy),
+      visitedDoctorOrASHA: boolToAnswer(visitedDoctorOrASHA),
+      monthsPregnant: parseInt(monthsPregnant) || 1,
+      knownHealthIssues: boolToAnswer(knownHealthIssues),
+      recentSymptoms: boolToAnswer(recentSymptoms),
+      takingSupplements: boolToAnswer(takingSupplements),
+      hasMobileInEmergency: boolToAnswer(hasMobileInEmergency)
     });
 
     // Create corresponding User
@@ -152,7 +162,7 @@ const registerPregnantLady = async (req, res) => {
 
   } catch (err) {
     console.error("Error in registerPregnantLady:", err);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: "Internal server error", details: err.message });
   }
 };
 

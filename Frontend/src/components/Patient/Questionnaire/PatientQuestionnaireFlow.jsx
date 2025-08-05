@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { QuestionnairePage1, QuestionnairePage2, QuestionnairePage3 } from './index';
 
-function PatientQuestionnaireFlow({ data, onUpdate, onSubmit }) {
+function PatientQuestionnaireFlow({ data, onUpdate, onSubmit, isLoading }) {
   const [currentPage, setCurrentPage] = useState(1);
 
   const handleNext = () => {
@@ -66,6 +66,7 @@ function PatientQuestionnaireFlow({ data, onUpdate, onSubmit }) {
             onNext={handleFinalSubmit}
             onPrev={handlePrev}
             isValid={isPage3Valid()}
+            isLoading={isLoading}
           />
         );
       default:

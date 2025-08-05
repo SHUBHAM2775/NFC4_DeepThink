@@ -1,0 +1,73 @@
+import axios from 'axios';
+
+const BASE_URL = 'http://localhost:5000/api/register';
+
+// Register Admin
+export const registerAdmin = async (userData) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/admin`, {
+      name: userData.name,
+      phoneNumber: userData.phone.replace(/\s/g, '') // Remove spaces from phone number
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error registering admin:', error);
+    throw error.response?.data || error;
+  }
+};
+
+// Register ASHA Worker
+export const registerAshaWorker = async (userData, questionnaireData) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/asha`, {
+      ashaId: questionnaireData.ashaId,
+      name: userData.name,
+      phoneNumber: userData.phone.replace(/\s/g, ''), // Remove spaces from phone number
+      documents: questionnaireData.documents || [],
+      phc: questionnaireData.phc || '',
+      village: questionnaireData.village || '',
+      district: questionnaireData.district || '',
+      state: questionnaireData.state || ''
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error registering ASHA worker:', error);
+    throw error.response?.data || error;
+  }
+};
+
+// Register Pregnant Lady/Patient
+export const registerPregnantLady = async (userData, questionnaireData) => {
+  try {
+    console.log("Frontend sending pregnant lady data:", {
+      userData,
+      questionnaireData
+    });
+
+    const payload = {
+      name: userData.name,
+      phoneNumber: userData.phone.replace(/\s/g, ''), // Remove spaces from phone number
+      village: questionnaireData.village || '',
+      district: questionnaireData.district || '',
+      state: questionnaireData.state || '',
+      currentlyPregnant: questionnaireData.isPregnant || false,
+      firstPregnancy: questionnaireData.isFirstPregnancy || false,
+      visitedDoctorOrASHA: questionnaireData.hasVisitedDoctor || false,
+      monthsPregnant: questionnaireData.monthsAlong || 1,
+      knownHealthIssues: questionnaireData.hasHealthIssues || false, // This can be 'true', 'false', or 'unsure'
+      recentSymptoms: questionnaireData.hasRecentSymptoms || false,
+      takingSupplements: questionnaireData.takingVitamins || false,
+      hasMobileInEmergency: questionnaireData.hasMobileAccess || false
+    };
+
+    console.log("Final payload being sent to backend:", payload);
+
+    const response = await axios.post(`${BASE_URL}/lady`, payload);
+    return response.data;
+  } catch (error) {
+    console.error('Error registering pregnant lady:', error);
+    console.error('Error response:', error.response?.data);
+    console.error('Status code:', error.response?.status);
+    throw error.response?.data || error;
+  }
+};

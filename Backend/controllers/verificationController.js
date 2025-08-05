@@ -49,4 +49,41 @@ const updateVerificationStatus = async (req, res) => {
   }
 };
 
-module.exports = { getPendingVerifications, updateVerificationStatus };
+const getPendingAshaWorkersCount = async (req, res) => {
+  try {
+    const totalPending = await AshaWorker.countDocuments({
+      verificationStatus: "pending",
+    });
+
+    res.status(200).json({
+      message: "Total pending ASHA workers count fetched successfully",
+      totalPending,
+    });
+  } catch (err) {
+    console.error("Error in getPendingAshaWorkersCount:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+const getVerifiedAshaWorkersCount = async (req, res) => {
+  try {
+    const totalVerified = await AshaWorker.countDocuments({
+      verificationStatus: "approved",
+    });
+
+    res.status(200).json({
+      message: "Total verified ASHA workers count fetched successfully",
+      totalVerified,
+    });
+  } catch (err) {
+    console.error("Error in getVerifiedAshaWorkersCount:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+module.exports = {
+  getPendingVerifications,
+  updateVerificationStatus,
+  getPendingAshaWorkersCount,
+  getVerifiedAshaWorkersCount,
+};

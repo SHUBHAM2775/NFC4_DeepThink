@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import PatientQuestionnaireFlow from './Questionnaire/PatientQuestionnaireFlow';
 
 // Wrapper component for usage example
-function Questionaire({ onComplete, user }) {
+function Questionaire({ onComplete, user, isLoading, error }) {
   const { t } = useTranslation();
   const [data, setData] = useState({});
 
@@ -37,7 +37,14 @@ function Questionaire({ onComplete, user }) {
             data={data}
             onUpdate={handleUpdate}
             onSubmit={handleSubmit}
+            isLoading={isLoading}
           />
+          
+          {error && (
+            <div className="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+              <p className="text-sm">{error}</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

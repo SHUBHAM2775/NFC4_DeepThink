@@ -6,13 +6,18 @@ import LandingPage from "./components/LandingPage";
 import PatientDashboard from "./components/Patient/Dashboard";
 import AshaDashboard from "./components/ASHA_worker/Dashboard";
 import AdminDashboard from "./components/Admin_Panel/Dashboard";
+import Loading from "./components/Loading";
+import { registerAdmin, registerAshaWorker, registerPregnantLady } from "./services/registrationAPI";
 
 const App = () => {
   const [currentView, setCurrentView] = useState("landing"); // "landing", "login", "questionnaire", "asha-questionnaire", "patient-dashboard", "asha-dashboard", "admin-dashboard", "main"
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleLoginSuccess = (userData) => {
+  const handleLoginSuccess = async (userData) => {
     setUser(userData);
+    setError("");
     
     // Route based on user role and whether it's signup or login
     if (userData.name) {
@@ -22,7 +27,19 @@ const App = () => {
       } else if (userData.role === "ASHA Worker") {
         setCurrentView("asha-questionnaire");
       } else if (userData.role === "Admin") {
-        setCurrentView("admin-dashboard");
+        // For Admin, register immediately after signup
+        setIsLoading(true);
+        try {
+          const result = await registerAdmin(userData);
+          console.log("Admin registered successfully:", result);
+          setCurrentView("admin-dashboard");
+        } catch (error) {
+          console.error("Failed to register admin:", error);
+          setError("Failed to register admin. Please try again.");
+          setCurrentView("login");
+        } finally {
+          setIsLoading(false);
+        }
       }
     } else {
       // Login flow - no name field, route directly to dashboards
@@ -38,28 +55,60 @@ const App = () => {
     }
   };
 
-  const handleQuestionnaireComplete = (questionnaireData) => {
-    // Update user data with questionnaire responses
-    setUser({
-      ...user,
-      questionnaireData
-    });
-    // After questionnaire completion, route to appropriate dashboard
-    if (user.role === "Patient/Family") {
+  const handleQuestionnaireComplete = async (questionnaireData) => {
+    setIsLoading(true);
+    setError("");
+    
+    try {
+      // Call the API to register pregnant lady
+      const result = await registerPregnantLady(user, questionnaireData);
+      console.log("Pregnant lady registered successfully:", result);
+      
+      // Update user data with questionnaire responses and registration result
+      setUser({
+        ...user,
+        questionnaireData,
+        userId: result.userId,
+        ladyId: result.ladyId
+      });
+      
+      // After successful registration, route to patient dashboard
       setCurrentView("patient-dashboard");
-    } else {
-      setCurrentView("main");
+    } catch (error) {
+      console.error("Failed to register pregnant lady:", error);
+      setError("Failed to complete registration. Please try again.");
+      // Stay on questionnaire page to allow retry
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleAshaQuestionnaireComplete = (questionnaireData) => {
-    // Update user data with ASHA questionnaire responses
-    setUser({
-      ...user,
-      ashaQuestionnaireData: questionnaireData
-    });
-    // After ASHA questionnaire completion, route to ASHA dashboard
-    setCurrentView("asha-dashboard");
+  const handleAshaQuestionnaireComplete = async (questionnaireData) => {
+    setIsLoading(true);
+    setError("");
+    
+    try {
+      // Call the API to register ASHA worker
+      const result = await registerAshaWorker(user, questionnaireData);
+      console.log("ASHA worker registered successfully:", result);
+      
+      // Update user data with ASHA questionnaire responses and registration result
+      setUser({
+        ...user,
+        ashaQuestionnaireData: questionnaireData,
+        userId: result.userId,
+        ashaWorkerId: result.ashaWorkerId
+      });
+      
+      // After successful registration, route to ASHA dashboard
+      setCurrentView("asha-dashboard");
+    } catch (error) {
+      console.error("Failed to register ASHA worker:", error);
+      setError("Failed to complete registration. Please try again.");
+      // Stay on questionnaire page to allow retry
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const renderCurrentView = () => {
@@ -70,7 +119,11 @@ const App = () => {
         return (
           <Login 
             onSuccess={handleLoginSuccess} 
-            onClose={() => setCurrentView("landing")} 
+            onClose={() => {
+              setCurrentView("landing");
+              setError("");
+            }}
+            externalError={error}
           />
         );
       case "questionnaire":
@@ -78,6 +131,8 @@ const App = () => {
           <Questionaire 
             onComplete={handleQuestionnaireComplete}
             user={user}
+            isLoading={isLoading}
+            error={error}
           />
         );
       case "asha-questionnaire":
@@ -85,6 +140,8 @@ const App = () => {
           <AshaQuestionaire 
             onComplete={handleAshaQuestionnaireComplete}
             user={user}
+            isLoading={isLoading}
+            error={error}
           />
         );
       case "patient-dashboard":
@@ -123,6 +180,7 @@ const App = () => {
   return (
     <div>
       {renderCurrentView()}
+      {isLoading && <Loading message="Registering your account..." />}
     </div>
   );
 };
