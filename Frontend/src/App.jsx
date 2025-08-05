@@ -87,6 +87,11 @@ const App = () => {
     setIsLoading(true);
     setError("");
     
+    console.log("App.jsx - handleAshaQuestionnaireComplete called with:", {
+      user,
+      questionnaireData
+    });
+    
     try {
       // Call the API to register ASHA worker
       const result = await registerAshaWorker(user, questionnaireData);
@@ -104,7 +109,22 @@ const App = () => {
       setCurrentView("asha-dashboard");
     } catch (error) {
       console.error("Failed to register ASHA worker:", error);
-      setError("Failed to complete registration. Please try again.");
+      
+      // Show detailed error message
+      let errorMessage = "Failed to complete registration. Please try again.";
+      if (error.message) {
+        errorMessage = error.message;
+      }
+      if (error.details) {
+        console.log("Error details:", error.details);
+        if (typeof error.details === 'string') {
+          errorMessage += ` Details: ${error.details}`;
+        } else if (Array.isArray(error.details)) {
+          errorMessage += ` Details: ${error.details.join(', ')}`;
+        }
+      }
+      
+      setError(errorMessage);
       // Stay on questionnaire page to allow retry
     } finally {
       setIsLoading(false);

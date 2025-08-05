@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const answerEnum = ['yes', 'no', 'not sure'];
+const answerEnum = ["yes", "no", "not sure"];
 
 const pregnantLadySchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -18,7 +18,14 @@ const pregnantLadySchema = new mongoose.Schema({
   takingSupplements: { type: String, enum: answerEnum, required: true },
   hasMobileInEmergency: { type: String, enum: answerEnum, required: true },
 
-  createdAt: { type: Date, default: Date.now }
+  status: {
+    type: String,
+    enum: ["Low", "Moderate", "High"],
+    required: true,
+    default: "Low",
+  },
+
+  createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('PregnantLady', pregnantLadySchema);
+module.exports = mongoose.model("PregnantLady", pregnantLadySchema);

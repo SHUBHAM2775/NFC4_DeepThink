@@ -122,7 +122,7 @@
   },
   "header": {
     "welcomeMessage": "તમારી આરોગ્ય યાત્રામાં આપનું સ્વાગત છે",
-    "appTitle": "માતૃત્વ આરોગ્ય ટ્રેકર",
+    "appTitle": "સખી સાથી",
     "logout": "લૉગઆઉટ",
     "loginSignup": "લૉગિન / સાઇનઅપ"
   },
@@ -158,7 +158,8 @@
         "selectedFiles": "પસંદ કરેલી ફાઈલો:"
       }
     },
-    "submitButton": "નોંધણી પૂર્ણ કરો"
+    "submitButton": "નોંધણી પૂર્ણ કરો",
+    "submitting": "નોંધણી થઈ રહી છે..."
   },
   "patientQuestionnaire": {
     "title": "આરોગ્ય પ્રશ્નાવલી",
@@ -233,8 +234,79 @@
           "no": "ના"
         },
         "previousButton": "પાછળ",
-        "submitButton": "સબમિટ કરો"
+        "submitButton": "સબમિટ કરો",
+        "submitting": "સબમિટ થઈ રહ્યું છે..."
       }
     }
+  },
+  "patientDashboard": {
+    "welcomeMessage": "તમારી આરોગ્ય યાત્રામાં આપનું સ્વાગત છે",
+    "userName": "પ્રિયા શર્મા",
+    "emergencyContacts": "કટોકટી સંપર્ક",
+    "logout": "લૉગઆઉટ",
+    "emergencyLabor": "કટોકટી પ્રસૂતિ",
+    "voiceDailyLog": {
+      "title": "અવાજ દૈનિક લોગ",
+      "description": "તમારા દૈનિક લક્ષણો અને લાગણીઓ રેકોર્ડ કરો",
+      "startRecording": "રેકોર્ડિંગ શરૂ કરો"
+    },
+    "myReminders": "મારા રિમાઇન્ડર",
+    "reminders": {
+      "ironTablet": "આયર્ન ટેબલેટ",
+      "doctorVisit": "ડૉક્ટરની મુલાકાત",
+      "drinkMilk": "દૂધ પીવો",
+      "tomorrow": "આવતી કાલે",
+      "medication": "દવા",
+      "checkup": "તપાસ",
+      "nutrition": "પોષણ"
+    },
+    "emergencyContactsModal": {
+      "noContacts": "કોઈ કટોકટી સંપર્ક નથી.",
+      "addContact": "+ સંપર્ક ઉમેરો",
+      "addContactTitle": "કટોકટી સંપર્ક ઉમેરો",
+      "contactName": "સંપર્ક નામ",
+      "phoneNumber": "ફોન નંબર (વૈકલ્પિક)",
+      "enterName": "નામ દાખલ કરો",
+      "enterPhone": "ફોન નંબર દાખલ કરો",
+      "cancel": "રદ કરો",
+      "add": "ઉમેરો",
+      "enterContactName": "કૃપા કરીને સંપર્ક નામ દાખલ કરો."
+    },
+    "defaultContacts": {
+      "ashaWorker": "આશા કાર્યકર: સુનીતા દેવી",
+      "nearestHospital": "નજીકની હોસ્પિટલ"
+    }
+  },
+  "ashaDashboard": {
+    "title": "આશા કાર્યકર ડેશબોર્ડ",
+    "userName": "સુનીતા દેવી",
+    "summaryStats": {
+      "assignedPatients": "સોંપાયેલા દર્દીઓ",
+      "highRisk": "ઉચ્ચ જોખમ",
+      "missedLogs": "ચૂકેલા લોગ",
+      "compliance": "અનુપાલન"
+    },
+    "myPatients": "મારા દર્દીઓ",
+    "riskLevels": {
+      "high": "ઉચ્ચ જોખમ",
+      "medium": "મધ્યમ જોખમ",
+      "low": "ઓછું જોખમ"
+    },
+    "patientCard": {
+      "missedLogs": "ચૂકેલા લોગ",
+      "due": "નિયત તારીખ",
+      "lastLog": "છેલ્લો લોગ",
+      "complianceScore": "અનુપાલન સ્કોર",
+      "viewDetails": "વિગતો જુઓ",
+      "call": "કોલ કરો"
+    },
+    "timeLabels": {
+      "today": "આજે",
+      "yesterday": "ગઈ કાલે",
+      "daysAgo": "દિવસ પહેલાં",
+      "dayAgo": "દિવસ પહેલાં"
+    },
+    "contactingMessage": "{{name}} નો સંપર્ક કરી રહ્યા છીએ!",
+    "viewingNotesMessage": "{{name}} માટે નોંધો જોઈ રહ્યા છીએ!"
   }
 }

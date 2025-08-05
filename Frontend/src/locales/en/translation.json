@@ -122,7 +122,7 @@
     },
     "header": {
         "welcomeMessage": "Welcome to Your Health Journey",
-        "appTitle": "Maternal Health Tracker",
+        "appTitle": "Sakhi Saathi",
         "logout": "Logout",
         "loginSignup": "Login / Signup"
     },
@@ -236,8 +236,78 @@
                 },
                 "previousButton": "Previous",
                 "submitButton": "Submit",
-                "submitting": "Submitting..."
-            }
-        }
+                        "submitting": "Submitting..."
+      }
     }
+  },
+  "patientDashboard": {
+    "welcomeMessage": "Welcome to Your Health Journey",
+    "userName": "Priya Sharma",
+    "emergencyContacts": "Emergency Contacts",
+    "logout": "Logout",
+    "emergencyLabor": "Emergency Labor",
+    "voiceDailyLog": {
+      "title": "Voice Daily Log",
+      "description": "Record your daily symptoms and feelings",
+      "startRecording": "Start Recording"
+    },
+    "myReminders": "My Reminders",
+    "reminders": {
+      "ironTablet": "Iron Tablet",
+      "doctorVisit": "Doctor Visit",
+      "drinkMilk": "Drink Milk",
+      "tomorrow": "Tomorrow",
+      "medication": "medication",
+      "checkup": "checkup",
+      "nutrition": "nutrition"
+    },
+    "emergencyContactsModal": {
+      "noContacts": "No emergency contacts.",
+      "addContact": "+ Add Contact",
+      "addContactTitle": "Add Emergency Contact",
+      "contactName": "Contact Name",
+      "phoneNumber": "Phone Number (optional)",
+      "enterName": "Enter name",
+      "enterPhone": "Enter phone number",
+      "cancel": "Cancel",
+      "add": "Add",
+      "enterContactName": "Please enter a contact name."
+    },
+    "defaultContacts": {
+      "ashaWorker": "ASHA Worker: Sunita Devi",
+      "nearestHospital": "Nearest Hospital"
+    }
+  },
+  "ashaDashboard": {
+    "title": "ASHA Worker Dashboard",
+    "userName": "Sunita Devi",
+    "summaryStats": {
+      "assignedPatients": "Assigned Patients",
+      "highRisk": "High Risk",
+      "missedLogs": "Missed Logs",
+      "compliance": "Compliance"
+    },
+    "myPatients": "My Patients",
+    "riskLevels": {
+      "high": "high risk",
+      "medium": "medium risk",
+      "low": "low risk"
+    },
+    "patientCard": {
+      "missedLogs": "missed logs",
+      "due": "Due",
+      "lastLog": "Last log",
+      "complianceScore": "Compliance Score",
+      "viewDetails": "View Details",
+      "call": "Call"
+    },
+    "timeLabels": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "daysAgo": "days ago",
+      "dayAgo": "day ago"
+    },
+    "contactingMessage": "Contacting {{name}}!",
+    "viewingNotesMessage": "Viewing notes for {{name}}!"
+  }
 }

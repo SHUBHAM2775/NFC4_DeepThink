@@ -113,8 +113,7 @@ const Dashboard = ({ user }) => {
       `}</style>
 
       <Header
-        title="ASHA Worker Dashboard"
-        userName={user?.name || "Sunita Devi"}
+        user={user || { name: t('ashaDashboard.userName') }}
         onLogout={handleLogout}
       />
 
