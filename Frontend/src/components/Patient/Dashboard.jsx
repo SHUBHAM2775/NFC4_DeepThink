@@ -1,164 +1,140 @@
-import React from "react";
-import Header from "../../navbar/Header";
+import React, { useState } from "react";
+import {
+  BellIcon,
+  MicrophoneIcon,
+  CalendarIcon,
+  HeartIcon,
+  ExclamationTriangleIcon,
+  PhoneIcon,
+  ChevronDownIcon
+} from "@heroicons/react/24/outline";
 
-const Dashboard = ({ user }) => {
-  const patientData = {
-    name: "Priya Sharma",
-    pregnancyWeek: 28,
-    nextAppointment: "2024-01-25",
-    vitals: {
-      bloodPressure: "120/80",
-      weight: "65 kg",
-      heartRate: "78 bpm"
+export default function PatientDashboard() {
+  const [contactsOpen, setContactsOpen] = useState(false);
+
+  const emergencyContacts = [
+    {
+      label: "ASHA Worker: Sunita Devi",
+      action: () => alert("Calling ASHA Worker...")
+    },
+    {
+      label: "Nearest Hospital",
+      action: () => alert("Calling Hospital...")
     }
-  };
-
-  const recentLogs = [
-    { date: "2024-01-20", type: "Voice Note", status: "Reviewed", concern: "Mild nausea" },
-    { date: "2024-01-18", type: "Checkup", status: "Completed", concern: "Routine visit" },
-    { date: "2024-01-15", type: "Voice Note", status: "Pending", concern: "Back pain" }
   ];
-
-  const upcomingTasks = [
-    "Take iron supplements",
-    "Drink 8 glasses of water daily",
-    "Light exercise - 30 minutes",
-    "Prenatal vitamins"
-  ];
-
-  const handleLogout = () => {
-    window.location.reload(); // Simple logout - reload to go back to landing
-  };
 
   return (
-    <div className="patient-dashboard" style={{ fontFamily: "sans-serif", padding: "20px" }}>
-      <Header 
-        title="Patient Dashboard" 
-        userName={user?.name || patientData.name}
-        onLogout={handleLogout}
-      >
-        <button style={{ 
-          background: "#e53986", 
-          color: "white",
-          border: "none",
-          padding: "8px 16px",
-          borderRadius: "6px",
-          cursor: "pointer",
-          fontWeight: "bold"
-        }}>
-          Profile Settings
-        </button>
-      </Header>
+    <div className="min-h-screen bg-gray-50 font-sans">
+      <div className="relative bg-white shadow px-8 py-4 flex items-center justify-between">
+        {/* Left side: Title and user */}
+        <div>
+          <h1 className="text-2xl font-bold text-pink-700">Welcome to Your Health Journey</h1>
+          <p className="text-sm text-gray-600">Priya Sharma</p>
+        </div>
 
-      {/* Quick Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "20px", marginBottom: "30px" }}>
-        <div style={{ background: "#faf6fa", padding: "20px", borderRadius: "10px", textAlign: "center" }}>
-          <div style={{ fontSize: "24px", fontWeight: "bold", color: "#e53986" }}>{patientData.pregnancyWeek}</div>
-          <div style={{ color: "#666" }}>Weeks Pregnant</div>
-        </div>
-        <div style={{ background: "#faf6fa", padding: "20px", borderRadius: "10px", textAlign: "center" }}>
-          <div style={{ fontSize: "24px", fontWeight: "bold", color: "#e53986" }}>{patientData.vitals.bloodPressure}</div>
-          <div style={{ color: "#666" }}>Blood Pressure</div>
-        </div>
-        <div style={{ background: "#faf6fa", padding: "20px", borderRadius: "10px", textAlign: "center" }}>
-          <div style={{ fontSize: "24px", fontWeight: "bold", color: "#e53986" }}>{patientData.vitals.weight}</div>
-          <div style={{ color: "#666" }}>Current Weight</div>
-        </div>
-        <div style={{ background: "#faf6fa", padding: "20px", borderRadius: "10px", textAlign: "center" }}>
-          <div style={{ fontSize: "24px", fontWeight: "bold", color: "#e53986" }}>{patientData.nextAppointment}</div>
-          <div style={{ color: "#666" }}>Next Appointment</div>
+        {/* Right side: Flex container for Emergency Contacts and Logout */}
+        <div className="flex items-center space-x-6">
+          {/* Emergency Contacts Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setContactsOpen(!contactsOpen)}
+              className="flex items-center px-4 py-2 bg-pink-50 border border-pink-200 rounded-lg text-pink-700 font-medium hover:bg-pink-100 transition"
+            >
+              <PhoneIcon className="h-5 w-5 mr-2" />
+              Emergency Contacts
+              <ChevronDownIcon className="h-4 w-4 ml-1" />
+            </button>
+            {contactsOpen && (
+              <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-10 p-4">
+                {emergencyContacts.map((ec, idx) => (
+                  <div key={idx} className="flex items-center mb-2">
+                    <span className="font-semibold text-gray-700">{ec.label}</span>
+                    <button
+                      onClick={ec.action}
+                      className="ml-2 text-pink-600 hover:text-pink-800"
+                      aria-label={`Call ${ec.label}`}
+                    >
+                      <PhoneIcon className="inline h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Logout Button */}
+          <button className="text-gray-600 hover:text-pink-600">Logout</button>
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "30px" }}>
-        {/* Recent Activity */}
-        <section>
-          <h3 style={{ color: "#e53986", marginBottom: "15px" }}>Recent Activity</h3>
-          <div style={{ background: "#fff", borderRadius: "10px", padding: "20px", boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }}>
-            {recentLogs.map((log, index) => (
-              <div key={index} style={{ 
-                padding: "15px 0", 
-                borderBottom: index < recentLogs.length - 1 ? "1px solid #eee" : "none",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center"
-              }}>
+      <main className="max-w-3xl mx-auto mt-8 space-y-6 pb-12">
+        {/* Emergency Labor */}
+        <div className="w-full">
+          <button className="w-full flex items-center justify-center gap-2 bg-red-600 text-white font-semibold py-4 rounded-lg shadow">
+            <ExclamationTriangleIcon className="h-6 w-6" />
+            Emergency Labor
+          </button>
+        </div>
+
+        {/* Voice Daily Log */}
+        <section className="bg-white p-6 rounded-lg shadow space-y-4">
+          <div className="flex items-center gap-2 text-pink-700 font-semibold text-lg">
+            <MicrophoneIcon className="h-5 w-5" />
+            Voice Daily Log
+          </div>
+          <p className="text-sm text-gray-500">Record your daily symptoms and feelings</p>
+          <button className="w-full mt-2 bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 rounded-lg flex items-center justify-center gap-2">
+            <MicrophoneIcon className="h-5 w-5" />
+            Start Recording
+          </button>
+        </section>
+
+        {/* My Reminders */}
+        <section className="bg-white p-6 rounded-lg shadow">
+          <div className="flex items-center gap-2 mb-4">
+            <BellIcon className="h-5 w-5 text-yellow-400" />
+            <span className="font-semibold">My Reminders</span>
+          </div>
+          <ul className="space-y-4">
+            <li className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <HeartIcon className="h-6 w-6 text-pink-400" />
                 <div>
-                  <div style={{ fontWeight: "bold", marginBottom: "5px" }}>{log.type}</div>
-                  <div style={{ color: "#666", fontSize: "14px" }}>{log.concern}</div>
-                  <div style={{ color: "#999", fontSize: "12px" }}>{log.date}</div>
+                  <div className="font-medium text-gray-800">Iron Tablet</div>
+                  <div className="text-xs text-gray-500">9:00 AM</div>
                 </div>
-                <span style={{ 
-                  padding: "4px 8px", 
-                  borderRadius: "12px", 
-                  fontSize: "12px",
-                  background: log.status === "Completed" ? "#d4edda" : log.status === "Reviewed" ? "#d1ecf1" : "#fff3cd",
-                  color: log.status === "Completed" ? "#155724" : log.status === "Reviewed" ? "#0c5460" : "#856404"
-                }}>
-                  {log.status}
-                </span>
               </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Daily Tasks */}
-        <section>
-          <h3 style={{ color: "#e53986", marginBottom: "15px" }}>Today's Tasks</h3>
-          <div style={{ background: "#fff", borderRadius: "10px", padding: "20px", boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }}>
-            {upcomingTasks.map((task, index) => (
-              <div key={index} style={{ 
-                padding: "10px 0", 
-                borderBottom: index < upcomingTasks.length - 1 ? "1px solid #eee" : "none",
-                display: "flex",
-                alignItems: "center"
-              }}>
-                <input type="checkbox" style={{ marginRight: "10px" }} />
-                <span>{task}</span>
+              <span className="px-3 py-0.5 rounded-full text-xs bg-pink-100 text-pink-600 border border-pink-200">
+                medication
+              </span>
+            </li>
+            <li className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <CalendarIcon className="h-6 w-6 text-blue-400" />
+                <div>
+                  <div className="font-medium text-gray-800">Doctor Visit</div>
+                  <div className="text-xs text-gray-500">Tomorrow 2:00 PM</div>
+                </div>
               </div>
-            ))}
-          </div>
+              <span className="px-3 py-0.5 rounded-full text-xs bg-blue-100 text-blue-600 border border-blue-200">
+                checkup
+              </span>
+            </li>
+            <li className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <HeartIcon className="h-6 w-6 text-green-400" />
+                <div>
+                  <div className="font-medium text-gray-800">Drink Milk</div>
+                  <div className="text-xs text-gray-500">6:00 PM</div>
+                </div>
+              </div>
+              <span className="px-3 py-0.5 rounded-full text-xs bg-green-100 text-green-700 border border-green-200">
+                nutrition
+              </span>
+            </li>
+          </ul>
         </section>
-      </div>
-
-      {/* Quick Actions */}
-      <div style={{ marginTop: "30px", display: "flex", gap: "15px", flexWrap: "wrap" }}>
-        <button style={{
-          background: "#e53986",
-          color: "white",
-          border: "none",
-          padding: "12px 24px",
-          borderRadius: "8px",
-          cursor: "pointer",
-          fontWeight: "bold"
-        }}>
-          Record Voice Note
-        </button>
-        <button style={{
-          background: "#fff",
-          color: "#e53986",
-          border: "2px solid #e53986",
-          padding: "12px 24px",
-          borderRadius: "8px",
-          cursor: "pointer",
-          fontWeight: "bold"
-        }}>
-          Schedule Appointment
-        </button>
-        <button style={{
-          background: "#fff",
-          color: "#e53986",
-          border: "2px solid #e53986",
-          padding: "12px 24px",
-          borderRadius: "8px",
-          cursor: "pointer",
-          fontWeight: "bold"
-        }}>
-          Emergency Contact
-        </button>
-      </div>
+      </main>
     </div>
   );
-};
-
-export default Dashboard;
+}
