@@ -17,4 +17,56 @@ const getPendingVerifications = async (req, res) => {
   }
 };
 
-module.exports = { getPendingVerifications };
+const updateVerificationStatus = async (req, res) => {
+  try {
+    const { ashaId } = req.params;
+    const { status } = req.body;
+
+    const validStatuses = ["pending", "approved", "rejected"];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({
+        error: "Invalid status. Must be 'pending', 'approved', or 'rejected'",
+      });
+    }
+
+    const updatedWorker = await AshaWorker.findOneAndUpdate(
+      { ashaId },
+      { verificationStatus: status },
+      { new: true }
+    ).select("ashaId name phoneNumber verificationStatus");
+
+    if (!updatedWorker) {
+      return res.status(404).json({ error: "ASHA Worker not found" });
+    }
+
+    res.status(200).json({
+      message: `Verification status updated to '${status}' successfully`,
+      data: updatedWorker,
+    });
+  } catch (err) {
+    console.error("Error in updateVerificationStatus:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+const getPendingAshaWorkersCount = async (req, res) => {
+  try {
+    const totalPending = await AshaWorker.countDocuments({
+      verificationStatus: "pending",
+    });
+
+    res.status(200).json({
+      message: "Total pending ASHA workers count fetched successfully",
+      totalPending,
+    });
+  } catch (err) {
+    console.error("Error in getPendingAshaWorkersCount:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+module.exports = {
+  getPendingVerifications,
+  updateVerificationStatus,
+  getPendingAshaWorkersCount,
+};

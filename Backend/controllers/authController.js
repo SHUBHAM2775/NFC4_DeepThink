@@ -1,7 +1,8 @@
 const User = require("../models/user");
 
 // Generate a random 6-digit OTP
-const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
+const generateOTP = () =>
+  Math.floor(100000 + Math.random() * 900000).toString();
 
 // === Step 1: Request OTP ===
 const requestOtp = async (req, res) => {
@@ -27,9 +28,8 @@ const requestOtp = async (req, res) => {
 
     res.status(200).json({
       message: "OTP sent successfully (mocked)",
-      otp // return only in dev mode!
+      otp, // return only in dev mode!
     });
-
   } catch (err) {
     console.error("Error in requestOtp:", err);
     res.status(500).json({ error: "Internal server error" });
@@ -42,7 +42,9 @@ const verifyOtp = async (req, res) => {
     const { phoneNumber, otp } = req.body;
 
     if (!phoneNumber || !otp) {
-      return res.status(400).json({ error: "Phone number and OTP are required" });
+      return res
+        .status(400)
+        .json({ error: "Phone number and OTP are required" });
     }
 
     const user = await User.findOne({ phoneNumber });
@@ -67,17 +69,33 @@ const verifyOtp = async (req, res) => {
         phoneNumber: user.phoneNumber,
         role: user.role,
         roleRef: user.roleRef,
-        refId: user.refId
-      }
+        refId: user.refId,
+      },
     });
-
   } catch (err) {
     console.error("Error in verifyOtp:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
+const getTotalNonAdminUserCount = async (req, res) => {
+  try {
+    const count = await User.countDocuments({
+      role: { $in: ["asha_worker", "pregnant_lady"] },
+    });
+
+    res.status(200).json({
+      message: "Total non-admin user count fetched successfully",
+      totalUsers: count,
+    });
+  } catch (err) {
+    console.error("Error in getTotalNonAdminUserCount:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 module.exports = {
   requestOtp,
-  verifyOtp
+  verifyOtp,
+  getTotalNonAdminUserCount,
 };
