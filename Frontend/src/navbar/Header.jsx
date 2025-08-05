@@ -1,6 +1,8 @@
 import React, { useState, useRef } from "react";
+import { useTranslation } from 'react-i18next';
 
-const Header = ({ user, onLanguageChange, onLogout, onLoginClick, currentLanguage = "en" }) => {
+const Header = ({ user, onLogout, onLoginClick }) => {
+  const { i18n } = useTranslation();
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -12,120 +14,61 @@ const Header = ({ user, onLanguageChange, onLogout, onLoginClick, currentLanguag
   ];
 
   const getCurrentLanguageName = () => {
-    const currentLang = languageOptions.find((lang) => lang.code === currentLanguage);
+    const currentLang = languageOptions.find((lang) => lang.code === i18n.language);
     return currentLang ? currentLang.name : "English";
   };
 
   const handleLanguageChange = (langCode) => {
-    if (onLanguageChange) {
-      onLanguageChange(langCode);
-    }
+    i18n.changeLanguage(langCode);
     setShowLanguageDropdown(false);
   };
 
   return (
-    <header style={{ 
-      background: "#fff", 
-      boxShadow: "0 2px 10px rgba(0,0,0,0.1)", 
-      padding: "16px 32px",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      borderBottom: "1px solid rgba(0,0,0,0.1)"
-    }}>
+    <header className="bg-white shadow-md px-8 py-4 flex items-center justify-between border-b border-black/10">
       {/* Left: Welcome Message */}
       <div>
         {user ? (
           <>
-            <h1 style={{ 
-              fontSize: "24px", 
-              fontWeight: "700", 
-              color: "#e53986", 
-              margin: 0,
-              marginBottom: "4px"
-            }}>
+            <h1 className="text-2xl font-bold text-pink-600 m-0 mb-1">
               Welcome to Your Health Journey
             </h1>
-            <p style={{ 
-              fontSize: "16px", 
-              color: "#5e656e", 
-              margin: 0 
-            }}>
+            <p className="text-base text-gray-600 m-0">
               {user.name || "User"}
             </p>
           </>
         ) : (
-          <h1 style={{ 
-            fontSize: "24px", 
-            fontWeight: "700", 
-            color: "#e53986", 
-            margin: 0
-          }}>
+          <h1 className="text-2xl font-bold text-pink-600 m-0">
             Maternal Health Tracker
           </h1>
         )}
       </div>
 
       {/* Right: Language Dropdown and Logout */}
-      <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+      <div className="flex items-center gap-4">
         {/* Language Dropdown */}
-        <div style={{ position: "relative" }} ref={dropdownRef}>
+        <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              background: "#f7fafd",
-              border: "1px solid #e5e7eb",
-              borderRadius: "8px",
-              padding: "8px 12px",
-              cursor: "pointer",
-              fontSize: "14px",
-              color: "#5e656e",
-              fontWeight: "500"
-            }}
+            className="flex items-center bg-slate-50 border border-gray-200 rounded-lg px-3 py-2 cursor-pointer text-sm text-gray-600 font-medium hover:bg-slate-100 transition-colors"
           >
-            <span style={{ marginRight: "8px", fontSize: "16px" }}>🌐</span>
+            <span className="mr-2 text-base">🌐</span>
             <span>{getCurrentLanguageName()}</span>
-            <span style={{ 
-              marginLeft: "8px", 
-              transform: showLanguageDropdown ? "rotate(180deg)" : "rotate(0deg)",
-              transition: "transform 0.2s"
-            }}>
+            <span className={`ml-2 transition-transform duration-200 ${showLanguageDropdown ? 'rotate-180' : 'rotate-0'}`}>
               ▼
             </span>
           </button>
           
           {showLanguageDropdown && (
-            <div style={{
-              position: "absolute",
-              top: "100%",
-              right: "0",
-              marginTop: "4px",
-              background: "#fff",
-              border: "1px solid #e5e7eb",
-              borderRadius: "8px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-              padding: "4px 0",
-              minWidth: "120px",
-              zIndex: 50
-            }}>
+            <div className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg py-1 min-w-[120px] z-50">
               {languageOptions.map((lang) => (
                 <button
                   key={lang.code}
                   onClick={() => handleLanguageChange(lang.code)}
-                  style={{
-                    width: "100%",
-                    textAlign: "left",
-                    padding: "8px 12px",
-                    border: "none",
-                    background: currentLanguage === lang.code ? "#f0f9ff" : "transparent",
-                    color: currentLanguage === lang.code ? "#0369a1" : "#5e656e",
-                    cursor: "pointer",
-                    fontSize: "14px"
-                  }}
-                  onMouseEnter={(e) => e.target.style.background = "#f3f4f6"}
-                  onMouseLeave={(e) => e.target.style.background = currentLanguage === lang.code ? "#f0f9ff" : "transparent"}
+                  className={`w-full text-left px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 transition-colors ${
+                    i18n.language === lang.code 
+                      ? 'bg-blue-50 text-blue-700' 
+                      : 'text-gray-600'
+                  }`}
                 >
                   {lang.name}
                 </button>
@@ -138,19 +81,7 @@ const Header = ({ user, onLanguageChange, onLogout, onLoginClick, currentLanguag
         {onLogout && (
           <button
             onClick={onLogout}
-            style={{
-              background: "#e53986",
-              color: "#fff",
-              border: "none",
-              borderRadius: "8px",
-              padding: "8px 16px",
-              fontSize: "14px",
-              fontWeight: "600",
-              cursor: "pointer",
-              transition: "background-color 0.2s"
-            }}
-            onMouseEnter={(e) => e.target.style.background = "#d1356e"}
-            onMouseLeave={(e) => e.target.style.background = "#e53986"}
+            className="bg-pink-600 hover:bg-pink-700 text-white border-0 rounded-lg px-4 py-2 text-sm font-semibold cursor-pointer transition-colors"
           >
             Logout
           </button>
@@ -160,19 +91,7 @@ const Header = ({ user, onLanguageChange, onLogout, onLoginClick, currentLanguag
         {!user && onLoginClick && (
           <button
             onClick={onLoginClick}
-            style={{
-              background: "#e53986",
-              color: "#fff",
-              border: "none",
-              borderRadius: "8px",
-              padding: "8px 16px",
-              fontSize: "14px",
-              fontWeight: "600",
-              cursor: "pointer",
-              transition: "background-color 0.2s"
-            }}
-            onMouseEnter={(e) => e.target.style.background = "#d1356e"}
-            onMouseLeave={(e) => e.target.style.background = "#e53986"}
+            className="bg-pink-600 hover:bg-pink-700 text-white border-0 rounded-lg px-4 py-2 text-sm font-semibold cursor-pointer transition-colors"
           >
             Login / Signup
           </button>
