@@ -5,6 +5,7 @@ const {
   getPendingVerifications,
   updateVerificationStatus,
   getPendingAshaWorkersCount,
+  getVerifiedAshaWorkersCount,
 } = require("../controllers/verificationController");
 
 router.get("/pending", getPendingVerifications);
@@ -12,5 +13,7 @@ router.get("/pending", getPendingVerifications);
 router.patch("/:ashaId/status", updateVerificationStatus);
 
 router.get("/pending-asha-workers", getPendingAshaWorkersCount);
+
+router.get("/verified-asha-workers", getVerifiedAshaWorkersCount);
 
 module.exports = router;

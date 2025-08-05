@@ -65,8 +65,25 @@ const getPendingAshaWorkersCount = async (req, res) => {
   }
 };
 
+const getVerifiedAshaWorkersCount = async (req, res) => {
+  try {
+    const totalVerified = await AshaWorker.countDocuments({
+      verificationStatus: "approved",
+    });
+
+    res.status(200).json({
+      message: "Total verified ASHA workers count fetched successfully",
+      totalVerified,
+    });
+  } catch (err) {
+    console.error("Error in getVerifiedAshaWorkersCount:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 module.exports = {
   getPendingVerifications,
   updateVerificationStatus,
   getPendingAshaWorkersCount,
+  getVerifiedAshaWorkersCount,
 };
