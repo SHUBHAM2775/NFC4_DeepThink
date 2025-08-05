@@ -11,6 +11,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import LanguageSwitcher from '../LanguageSwitcher';
+import AssistantHover from '../AssistantHover';
 
 export default function PatientDashboard() {
   const { t } = useTranslation();
@@ -266,6 +267,9 @@ export default function PatientDashboard() {
           </ul>
         </section>
       </main>
+
+      {/* Assistant Chatbot */}
+      <AssistantHover />
     </div>
   );
 }

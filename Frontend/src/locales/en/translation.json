@@ -311,5 +311,30 @@
     },
     "contactingMessage": "Contacting {{name}}!",
     "viewingNotesMessage": "Viewing notes for {{name}}!"
+  },
+  "assistant": {
+    "welcomeMessage": "Hello! I'm your pregnancy assistant. How can I help you today?",
+    "tooltipText": "Need help? Chat with me!",
+    "title": "Pregnancy Assistant",
+    "subtitle": "Here to help you",
+    "quickActions": {
+      "medication": "Medication reminders",
+      "diet": "Diet suggestions",
+      "emergency": "Emergency contacts",
+      "exercise": "Exercise tips"
+    },
+    "quickQuestionsLabel": "Quick questions:",
+    "inputPlaceholder": "Type your message...",
+    "responses": {
+      "pain": "If you're experiencing unusual pain, please contact your doctor immediately. For normal pregnancy discomfort, try gentle stretching or warm compress. Always consult your healthcare provider first.",
+      "medication": "Please take your prescribed medications as directed by your doctor. Never skip iron tablets and folic acid supplements. If you have concerns, contact your ASHA worker or doctor.",
+      "diet": "Maintain a balanced diet with plenty of fruits, vegetables, dairy products, and protein. Avoid raw meat, fish high in mercury, and alcohol. Stay hydrated and take your prenatal vitamins.",
+      "exercise": "Light exercise like walking and prenatal yoga are great during pregnancy. Avoid high-impact activities and always consult your doctor before starting any new exercise routine.",
+      "emergency": "For emergencies, use the red emergency button on your dashboard or call your emergency contacts immediately. For medical concerns, contact your ASHA worker or nearest hospital.",
+      "appointment": "Regular checkups are important. Don't miss your scheduled appointments. If you need to reschedule, contact your healthcare provider in advance.",
+      "baby": "Baby movements are a good sign! You should feel movements regularly after 20 weeks. If you notice decreased movement, contact your doctor immediately.",
+      "sleep": "Getting enough rest is crucial. Sleep on your side, use pillows for support, and aim for 7-9 hours of sleep. If you have trouble sleeping, try relaxation techniques.",
+      "default": "I'm here to help with your pregnancy journey! You can ask me about nutrition, exercise, medications, appointments, or any concerns you have. For medical emergencies, please contact your healthcare provider immediately."
+    }
   }
 }
