@@ -1,12 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
-const { registerAdmin } = require("../controllers/registrationController");
-console.log("✅ registerRoutes loaded");
-router.post("/admin", registerAdmin);
+const { registerAdmin, registerAshaWorker,registerPregnantLady  } = require("../controllers/registrationController");
 
-router.get("/test", (req, res) => {
-  res.send("Register route working!");
-});
+router.post("/admin", registerAdmin);           
+router.post("/asha", registerAshaWorker);  
+router.post("/lady", registerPregnantLady);     
 
 module.exports = router;
