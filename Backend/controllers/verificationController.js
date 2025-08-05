@@ -81,9 +81,26 @@ const getVerifiedAshaWorkersCount = async (req, res) => {
   }
 };
 
+const getAshaWorkerDocuments = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const ashaWorker = await AshaWorker.findOne({ ashaId: id }, "documents");
+
+    if (!ashaWorker) {
+      return res.status(404).json({ error: "AshaWorker not found" });
+    }
+
+    res.status(200).json({ documents: ashaWorker.documents });
+  } catch (err) {
+    console.error("Error in getAshaWorkerDocuments:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 module.exports = {
   getPendingVerifications,
   updateVerificationStatus,
   getPendingAshaWorkersCount,
   getVerifiedAshaWorkersCount,
+  getAshaWorkerDocuments,
 };

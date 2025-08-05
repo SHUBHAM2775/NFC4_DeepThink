@@ -1,9 +1,12 @@
 const User = require("../models/user");
 
 // Generate a random 6-digit OTP
-const generateOTP = () =>
-  Math.floor(100000 + Math.random() * 900000).toString();
+const twilio = require("twilio");
 
+const client = twilio(
+  process.env.TWILIO_ACCOUNT_SID,
+  process.env.TWILIO_AUTH_TOKEN
+);
 // === Step 1: Request OTP ===
 const requestOtp = async (req, res) => {
   try {
@@ -19,24 +22,24 @@ const requestOtp = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const otp = generateOTP();
-    user.otp = otp;
-    await user.save();
-
-    // 🚫 For now, just return the OTP (later: integrate Twilio)
-    console.log(`Generated OTP for ${phoneNumber}: ${otp}`);
+    const verification = await client.verify.v2
+      .services(process.env.TWILIO_VERIFY_SID)
+      .verifications.create({
+        to: `+91${phoneNumber}`,
+        channel: "sms",
+      });
 
     res.status(200).json({
-      message: "OTP sent successfully (mocked)",
-      otp, // return only in dev mode!
+      message: "OTP sent via Twilio",
+      sid: verification.sid,
     });
   } catch (err) {
     console.error("Error in requestOtp:", err);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: "Failed to send OTP" });
   }
 };
 
-// === Step 2: Verify OTP ===
+// === Step 2: Verify OTP using Twilio Verify ===
 const verifyOtp = async (req, res) => {
   try {
     const { phoneNumber, otp } = req.body;
@@ -47,22 +50,25 @@ const verifyOtp = async (req, res) => {
         .json({ error: "Phone number and OTP are required" });
     }
 
+    const verificationCheck = await client.verify.v2
+      .services(process.env.TWILIO_VERIFY_SID)
+      .verificationChecks.create({
+        to: `+91${phoneNumber}`,
+        code: otp,
+      });
+
+    if (verificationCheck.status !== "approved") {
+      return res.status(401).json({ error: "Invalid or expired OTP" });
+    }
+
     const user = await User.findOne({ phoneNumber });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    if (user.otp !== otp) {
-      return res.status(401).json({ error: "Invalid OTP" });
-    }
-
-    // Optional: clear OTP after successful login
-    user.otp = null;
-    await user.save();
-
     res.status(200).json({
-      message: "Login successful",
+      message: "OTP verified. Login successful.",
       user: {
         id: user._id,
         name: user.name,
@@ -74,7 +80,7 @@ const verifyOtp = async (req, res) => {
     });
   } catch (err) {
     console.error("Error in verifyOtp:", err);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: "Failed to verify OTP" });
   }
 };
 
