@@ -1,57 +1,52 @@
-const User = require("../models/User");
-const mongoose = require("mongoose");
-
-const TEST_OTP = "123456";
+const User = require("../models/user");
+const sendOtp = require("../utils/sendOtp");
 
 exports.sendOtp = async (req, res) => {
-  const { phoneNumber } = req.body;
+  const { phone } = req.body;
 
-  if (!phoneNumber) {
+  if (!phone)
     return res.status(400).json({ error: "Phone number is required" });
-  }
 
-  const generatedOtp = TEST_OTP;
+  const otp = generateOTP();
+  const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
 
-  const user = await User.findOneAndUpdate(
-    { phoneNumber },
-    { otp: generatedOtp },
-    { new: true }
-  );
-
-  console.log(`OTP for ${phoneNumber}: ${generatedOtp}`);
-
-  res.status(200).json({
-    message: "OTP sent (mock)",
-    otp: generatedOtp,
-  });
-};
-
-exports.verifyOtp = async (req, res) => {
-  const { phoneNumber, otp } = req.body;
-
-  if (!phoneNumber || !otp) {
-    return res.status(400).json({ error: "Phone number and OTP are required" });
-  }
-
-  const user = await User.findOne({ phoneNumber });
+  let user = await User.findOne({ phone });
 
   if (!user) {
-    return res.status(404).json({ error: "User not found" });
+    user = new User({ phone, otp: { code: otp, expiresAt } });
+  } else {
+    user.otp = { code: otp, expiresAt };
   }
 
-  if (user.otp !== otp) {
-    return res.status(401).json({ error: "Invalid OTP" });
+  await user.save();
+  await sendOtp(phone, otp);
+
+  return res.status(200).json({ message: "OTP sent" });
+};
+
+const jwt = require("jsonwebtoken");
+
+exports.verifyOtp = async (req, res) => {
+  const { phone, otp } = req.body;
+
+  const user = await User.findOne({ phone });
+
+  if (!user || !user.otp) {
+    return res.status(400).json({ error: "User or OTP not found" });
   }
 
-  user.otp = null;
+  const isOtpValid = user.otp.code === otp && user.otp.expiresAt > new Date();
+
+  if (!isOtpValid) {
+    return res.status(400).json({ error: "Invalid or expired OTP" });
+  }
+
+  user.otp = undefined;
   await user.save();
 
-  const roleModel = mongoose.model(user.roleRef);
-  const roleData = await roleModel.findById(user.refId);
-
-  res.status(200).json({
-    message: "Login successful",
-    role: user.role,
-    data: roleData,
+  const token = jwt.sign({ id: user._id, phone: user.phone }, "SECRET_KEY", {
+    expiresIn: "1h",
   });
+
+  return res.status(200).json({ message: "OTP verified", token });
 };
