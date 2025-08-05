@@ -15,7 +15,6 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
 
   // Signup-specific states
   const [name, setName] = useState("");
-  const [docFile, setDocFile] = useState(null);
 
   // Reset all form fields and state
   const resetForm = () => {
@@ -25,7 +24,6 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
     setOtpSent(false);
     setError("");
     setName("");
-    setDocFile(null);
   };
 
   // Switch login/signup modes, reset form
@@ -33,13 +31,6 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
     if (loginMode !== isLoginMode) {
       setIsLoginMode(loginMode);
       resetForm();
-    }
-  };
-
-  // Handle document upload for ASHA Worker verification
-  const handleDocUpload = (e) => {
-    if (e.target.files.length > 0) {
-      setDocFile(e.target.files[0]);
     }
   };
 
@@ -61,10 +52,6 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
         setError("Please enter your name");
         return;
       }
-      if (role === "ASHA Worker" && !docFile) {
-        setError("Please upload verification document");
-        return;
-      }
       // Simulate signup completion
       setIsLoading(true);
       setTimeout(() => {
@@ -74,7 +61,6 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
           role,
           phone,
           name,
-          docFile: role === "ASHA Worker" ? docFile : undefined,
         };
         if (onSuccess) onSuccess(userData);
         else alert(`Welcome ${name}! Account created successfully. Role: ${role}`);
@@ -222,26 +208,6 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
                     required={role === "Patient/Family"}
                   />
                 )} */}
-
-                {!isLoginMode && role === "ASHA Worker" && (
-                  <div>
-                    <label className="block mb-1 font-medium text-gray-700">
-                      Upload Verification Document
-                    </label>
-                    <input
-                      type="file"
-                      accept=".pdf,.jpg,.jpeg,.png"
-                      onChange={handleDocUpload}
-                      required={!docFile}
-                      className="border border-pink-200 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-pink-300 transition w-full"
-                    />
-                    {docFile && (
-                      <p className="text-sm mt-1 text-pink-700">
-                        Selected file: {docFile.name}
-                      </p>
-                    )}
-                  </div>
-                )}
 
                 {error && (
                   <div className="text-red-500 text-sm text-center">{error}</div>

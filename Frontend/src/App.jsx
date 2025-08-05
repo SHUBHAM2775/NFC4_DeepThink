@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import Login from "./auth/Login";
 import Questionaire from "./components/Patient/Questionaire";
+import AshaQuestionaire from "./components/ASHA_worker/Questionaire";
 import LandingPage from "./components/LandingPage";
 
 const App = () => {
-  const [currentView, setCurrentView] = useState("landing"); // "landing", "login", "questionnaire", "main"
+  const [currentView, setCurrentView] = useState("landing"); // "landing", "login", "questionnaire", "asha-questionnaire", "main"
   const [user, setUser] = useState(null);
 
   const handleLoginSuccess = (userData) => {
@@ -12,8 +13,11 @@ const App = () => {
     
     // Route based on user role and signup/login
     if (userData.role === "Patient/Family" && userData.name) {
-      // If it's a Patient signup (has name), go to questionnaire
+      // If it's a Patient signup (has name), go to patient questionnaire
       setCurrentView("questionnaire");
+    } else if (userData.role === "ASHA Worker" && userData.name) {
+      // If it's an ASHA Worker signup (has name), go to ASHA questionnaire
+      setCurrentView("asha-questionnaire");
     } else {
       // For login or other roles, go to main app
       setCurrentView("main");
@@ -25,6 +29,15 @@ const App = () => {
     setUser({
       ...user,
       questionnaireData
+    });
+    setCurrentView("main");
+  };
+
+  const handleAshaQuestionnaireComplete = (questionnaireData) => {
+    // Update user data with ASHA questionnaire responses
+    setUser({
+      ...user,
+      ashaQuestionnaireData: questionnaireData
     });
     setCurrentView("main");
   };
@@ -47,10 +60,17 @@ const App = () => {
             user={user}
           />
         );
+      case "asha-questionnaire":
+        return (
+          <AshaQuestionaire 
+            onComplete={handleAshaQuestionnaireComplete}
+            user={user}
+          />
+        );
       case "main":
         return (
           <div className="p-8">
-            <h1 className="text-2xl font-bold mb-4">Welcome to the Main App!</h1>
+            {/* <h1 className="text-2xl font-bold mb-4">Welcome to the Main App!</h1>
             {user && (
               <div className="bg-pink-100 p-4 rounded-lg">
                 <h2 className="font-semibold">User Info:</h2>
@@ -66,7 +86,7 @@ const App = () => {
               className="mt-4 bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700"
             >
               Back to Login
-            </button>
+            </button> */}
           </div>
         );
       default:
