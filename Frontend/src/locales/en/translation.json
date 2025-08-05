@@ -18,5 +18,78 @@
     "password": "Password",
     "name": "Name",
     "role": "Role",
-    "enterEmailPassword": "Please enter email and password"
+    "enterEmailPassword": "Please enter email and password",
+    "landing": {
+        "headerTagline": "Maternal Health Tracker",
+        "heroTitle": "Empowering",
+        "heroTitleHighlight1": "Rural Mothers",
+        "heroTitleWith": "with",
+        "heroTitleHighlight2": "AI Care",
+        "heroDescription": "A life-saving maternal health tracking application designed for rural India. Supporting pregnant women with voice-based guidance, emergency assistance, and personalized AI health monitoring.",
+        "startTrackingButton": "Start Tracking Health",
+        "learnMoreButton": "Learn More",
+        "emergencySupport": "24/7\nEmergency Support",
+        "localLanguages": "8+\nLocal Languages",
+        "voiceInterface": "Voice\nBased Interface",
+        "aiAssistant": "AI\nHealth Assistant",
+        "challengesTitle": "Addressing Critical Healthcare Challenges",
+        "challengesDescription": "In rural India, maternal healthcare faces significant barriers that put both mothers and babies at risk. Our solution addresses these fundamental challenges.",
+        "solutionTitle": "Our Solution: AI-Powered Maternal Care",
+        "solutionDescription": "We're developing a comprehensive maternal health tracking application that bridges these gaps through voice-based interfaces, multilingual support, offline capabilities, and AI-assisted health monitoring designed specifically for rural communities.",
+        "featuresTitle": "Comprehensive Healthcare Features",
+        "featuresDescription": "Designed specifically for rural Indian communities, our platform bridges the gap between expectant mothers and quality healthcare through innovative technology.",
+        "footerText": "Maternal Health Tracker © {{year}} | Built for rural communities | For queries: care@mama-sahayta.in",
+        "overlayDailyLog": "Daily Health Log",
+        "overlayDailyLogSubtext": "Voice guided tracking",
+        "overlayEmergencyAlert": "Emergency Alert",
+        "overlayEmergencyAlertSubtext": "One-tap GPS location",
+        "challenges": {
+            "lifeThreateningRisks": {
+                "title": "Life-Threatening Risks",
+                "text": "Pregnant women in rural India face severe health risks due to inadequate prenatal care and poor health monitoring systems."
+            },
+            "limitedHealthcareAccess": {
+                "title": "Limited Healthcare Access",
+                "text": "Remote locations with limited connectivity to healthcare providers make timely medical intervention difficult."
+            },
+            "knowledgeGap": {
+                "title": "Knowledge Gap",
+                "text": "Many women are illiterate and unaware of proper nutrition, check-up schedules, or warning signs of complications."
+            },
+            "inadequateSupportTools": {
+                "title": "Inadequate Support Tools",
+                "text": "ASHA workers and family members lack proper tools to effectively guide and monitor maternal health journeys."
+            }
+        },
+        "features": {
+            "voiceBasedDailyLog": {
+                "title": "Voice-Based Daily Log",
+                "text": "Capture symptoms, fetal movement, and nutrition through guided audio prompts in local languages."
+            },
+            "automatedReminders": {
+                "title": "Automated Reminders",
+                "text": "IVR/SMS notifications for medication, check-ups, vaccinations, and nutrition schedules."
+            },
+            "emergencyLaborButton": {
+                "title": "Emergency Labor Button",
+                "text": "One-tap emergency call with GPS location sent to nearest hospital, PHC, or ASHA worker."
+            },
+            "ashaWorkerIntegration": {
+                "title": "ASHA Worker Integration",
+                "text": "Comprehensive dashboard for health workers to track and assist assigned beneficiaries."
+            },
+            "familyMemberAccess": {
+                "title": "Family Member Access",
+                "text": "Allow husbands and family members to receive health reminders and updates on their phones."
+            },
+            "multiLanguageSupport": {
+                "title": "Multi-Language Support",
+                "text": "Available in Marathi, Hindi, Gujarati, and other regional languages for better accessibility."
+            },
+            "aiHealthAssistants": {
+                "title": "AI Health Assistants",
+                "text": "Personalized agentic AI provides guidance, symptom monitoring, and emergency escalation support."
+            }
+        }
+    }
 }

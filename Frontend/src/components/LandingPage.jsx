@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import Header from "../navbar/Header";
 
 // You may customize these icons or use a library like react-icons for better visuals
@@ -23,115 +24,118 @@ const icons = {
 const features = [
   {
     icon: icons.log,
-    title: "Voice-Based Daily Log",
-    text: "Capture symptoms, fetal movement, and nutrition through guided audio prompts in local languages."
+    titleKey: "landing.features.voiceBasedDailyLog.title",
+    textKey: "landing.features.voiceBasedDailyLog.text"
   },
   {
     icon: icons.reminders,
-    title: "Automated Reminders",
-    text: "IVR/SMS notifications for medication, check-ups, vaccinations, and nutrition schedules."
+    titleKey: "landing.features.automatedReminders.title",
+    textKey: "landing.features.automatedReminders.text"
   },
   {
     icon: icons.labor,
-    title: "Emergency Labor Button",
-    text: "One-tap emergency call with GPS location sent to nearest hospital, PHC, or ASHA worker."
+    titleKey: "landing.features.emergencyLaborButton.title",
+    textKey: "landing.features.emergencyLaborButton.text"
   },
   {
     icon: icons.asha,
-    title: "ASHA Worker Integration",
-    text: "Comprehensive dashboard for health workers to track and assist assigned beneficiaries."
+    titleKey: "landing.features.ashaWorkerIntegration.title",
+    textKey: "landing.features.ashaWorkerIntegration.text"
   },
   {
     icon: icons.family,
-    title: "Family Member Access",
-    text: "Allow husbands and family members to receive health reminders and updates on their phones."
+    titleKey: "landing.features.familyMemberAccess.title",
+    textKey: "landing.features.familyMemberAccess.text"
   },
   {
     icon: icons.language,
-    title: "Multi-Language Support",
-    text: "Available in Marathi, Hindi, Gujarati, and other regional languages for better accessibility."
+    titleKey: "landing.features.multiLanguageSupport.title",
+    textKey: "landing.features.multiLanguageSupport.text"
   },
   {
     icon: icons.aiAssistant,
-    title: "AI Health Assistants",
-    text: "Personalized agentic AI provides guidance, symptom monitoring, and emergency escalation support."
+    titleKey: "landing.features.aiHealthAssistants.title",
+    textKey: "landing.features.aiHealthAssistants.text"
   }
 ];
 
 const challenges = [
   {
     icon: icons.risk,
-    title: "Life-Threatening Risks",
-    text: "Pregnant women in rural India face severe health risks due to inadequate prenatal care and poor health monitoring systems."
+    titleKey: "landing.challenges.lifeThreateningRisks.title",
+    textKey: "landing.challenges.lifeThreateningRisks.text"
   },
   {
     icon: icons.access,
-    title: "Limited Healthcare Access",
-    text: "Remote locations with limited connectivity to healthcare providers make timely medical intervention difficult."
+    titleKey: "landing.challenges.limitedHealthcareAccess.title",
+    textKey: "landing.challenges.limitedHealthcareAccess.text"
   },
   {
     icon: icons.knowledge,
-    title: "Knowledge Gap",
-    text: "Many women are illiterate and unaware of proper nutrition, check-up schedules, or warning signs of complications."
+    titleKey: "landing.challenges.knowledgeGap.title",
+    textKey: "landing.challenges.knowledgeGap.text"
   },
   {
     icon: icons.supportTools,
-    title: "Inadequate Support Tools",
-    text: "ASHA workers and family members lack proper tools to effectively guide and monitor maternal health journeys."
+    titleKey: "landing.challenges.inadequateSupportTools.title",
+    textKey: "landing.challenges.inadequateSupportTools.text"
   }
 ];
 
-const LandingPage = ({ onNavigateToLogin }) => (
+const LandingPage = ({ onNavigateToLogin }) => {
+  const { t } = useTranslation();
+  
+  return (
   <>
     <Header onLoginClick={onNavigateToLogin} />
     <div className="bg-white min-h-screen">
       {/* HERO SECTION */}
       <section className="flex justify-between items-center px-[8vw] py-14 pb-10 bg-white">
         <div className="max-w-[540px] text-gray-600">
-          <div className="text-[18px] tracking-wide font-medium text-green-600">Maternal Health Tracker</div>
+          <div className="text-[18px] tracking-wide font-medium text-green-600">{t('landing.headerTagline')}</div>
           <h1 className="text-[44px] font-extrabold leading-tight mt-3 mb-6 text-gray-600">
-            Empowering <span className="text-pink-600">Rural Mothers</span> <br />with <span className="text-pink-600">AI Care</span>
+            {t('landing.heroTitle')} <span className="text-pink-600">{t('landing.heroTitleHighlight1')}</span> <br />{t('landing.heroTitleWith')} <span className="text-pink-600">{t('landing.heroTitleHighlight2')}</span>
           </h1>
           <p className="text-[20px] mb-8">
-            A life-saving maternal health tracking application designed for rural India. Supporting pregnant women with voice-based guidance, emergency assistance, and personalized AI health monitoring.
+            {t('landing.heroDescription')}
           </p>
           <div className="flex gap-4 mb-9">
             <button
               onClick={onNavigateToLogin}
               className="bg-pink-600 text-white font-semibold text-lg px-8 py-3 rounded-md cursor-pointer"
             >
-              Start Tracking Health
+              {t('landing.startTrackingButton')}
             </button>
             <button
               disabled
               className="bg-gray-200 text-gray-400 font-semibold text-lg px-8 py-3 rounded-md cursor-not-allowed"
             >
-              Learn More
+              {t('landing.learnMoreButton')}
             </button>
           </div>
           <div className="flex gap-9">
             <div className="text-center">
               <div className="text-green-600 text-4xl">{icons.emergency}</div>
-              <div className="mt-0.5 text-gray-600 text-base">
-                24/7<br />Emergency Support
+              <div className="mt-0.5 text-gray-600 text-base whitespace-pre-line">
+                {t('landing.emergencySupport')}
               </div>
             </div>
             <div className="text-center">
               <div className="text-green-600 text-4xl">{icons.languages}</div>
-              <div className="mt-0.5 text-gray-600 text-base">
-                8+<br />Local Languages
+              <div className="mt-0.5 text-gray-600 text-base whitespace-pre-line">
+                {t('landing.localLanguages')}
               </div>
             </div>
             <div className="text-center">
               <div className="text-green-600 text-4xl">{icons.voice}</div>
-              <div className="mt-0.5 text-gray-600 text-base">
-                Voice<br />Based Interface
+              <div className="mt-0.5 text-gray-600 text-base whitespace-pre-line">
+                {t('landing.voiceInterface')}
               </div>
             </div>
             <div className="text-center">
               <div className="text-green-600 text-4xl">{icons.ai}</div>
-              <div className="mt-0.5 text-gray-600 text-base">
-                AI<br />Health Assistant
+              <div className="mt-0.5 text-gray-600 text-base whitespace-pre-line">
+                {t('landing.aiAssistant')}
               </div>
             </div>
           </div>
@@ -146,10 +150,10 @@ const LandingPage = ({ onNavigateToLogin }) => (
           />
           {/* Overlays */}
           <div className="absolute top-[20px] left-[18px] bg-white rounded-lg px-4 py-1.5 text-teal-700 font-semibold text-base inline-block">
-            Daily Health Log <span className="text-gray-400 font-normal">Voice guided tracking</span>
+            {t('landing.overlayDailyLog')} <span className="text-gray-400 font-normal">{t('landing.overlayDailyLogSubtext')}</span>
           </div>
           <div className="absolute top-[180px] right-[25px] bg-white rounded-lg px-4 py-1.5 text-pink-600 font-semibold text-base inline-block">
-            Emergency Alert <span className="text-gray-400 font-normal">One-tap GPS location</span>
+            {t('landing.overlayEmergencyAlert')} <span className="text-gray-400 font-normal">{t('landing.overlayEmergencyAlertSubtext')}</span>
           </div>
         </div>
       </section>
@@ -157,9 +161,9 @@ const LandingPage = ({ onNavigateToLogin }) => (
       {/* CHALLENGES SECTION */}
       <section className="bg-[#f7fafd] py-16">
         <div className="max-w-[84vw] mx-auto">
-          <h2 className="text-center text-4xl font-extrabold text-gray-900">Addressing Critical Healthcare Challenges</h2>
+          <h2 className="text-center text-4xl font-extrabold text-gray-900">{t('landing.challengesTitle')}</h2>
           <p className="text-center text-gray-600 text-lg mt-3 max-w-[680px] mx-auto">
-            In rural India, maternal healthcare faces significant barriers that put both mothers and babies at risk. Our solution addresses these fundamental challenges.
+            {t('landing.challengesDescription')}
           </p>
           <div className="grid grid-cols-2 gap-6 mt-12 max-w-[900px] mx-auto">
             {challenges.map((c, idx) => (
@@ -169,8 +173,8 @@ const LandingPage = ({ onNavigateToLogin }) => (
               >
                 <span className="text-pink-600 text-3xl flex-shrink-0">{c.icon}</span>
                 <div>
-                  <h3 className="text-gray-600 font-semibold text-lg mb-1">{c.title}</h3>
-                  <p className="text-gray-500 text-sm">{c.text}</p>
+                  <h3 className="text-gray-600 font-semibold text-lg mb-1">{t(c.titleKey)}</h3>
+                  <p className="text-gray-500 text-sm">{t(c.textKey)}</p>
                 </div>
               </div>
             ))}
@@ -180,24 +184,24 @@ const LandingPage = ({ onNavigateToLogin }) => (
 
       {/* SOLUTION SECTION */}
       <section className="bg-[#f7fafd] py-9 text-center px-4">
-        <h3 className="text-2xl font-extrabold text-pink-600 mb-2">Our Solution: AI-Powered Maternal Care</h3>
+        <h3 className="text-2xl font-extrabold text-pink-600 mb-2">{t('landing.solutionTitle')}</h3>
         <p className="max-w-[820px] mx-auto text-gray-600 text-lg">
-          We're developing a comprehensive maternal health tracking application that bridges these gaps through voice-based interfaces, multilingual support, offline capabilities, and AI-assisted health monitoring designed specifically for rural communities.
+          {t('landing.solutionDescription')}
         </p>
       </section>
 
       {/* FEATURES SECTION */}
       <section className="bg-white py-14">
-        <h2 className="text-center text-3xl font-extrabold text-gray-900">Comprehensive Healthcare Features</h2>
+        <h2 className="text-center text-3xl font-extrabold text-gray-900">{t('landing.featuresTitle')}</h2>
         <p className="text-center text-gray-600 text-lg mt-3 max-w-[760px] mx-auto">
-          Designed specifically for rural Indian communities, our platform bridges the gap between expectant mothers and quality healthcare through innovative technology.
+          {t('landing.featuresDescription')}
         </p>
         <div className="grid grid-cols-3 gap-7 max-w-[1160px] mx-auto mt-12 px-4">
           {features.map((f, idx) => (
             <div key={idx} className="bg-[#f7fafd] rounded-xl p-6 shadow-md">
               <div className="text-pink-600 text-3xl mb-3">{f.icon}</div>
-              <h4 className="text-gray-600 font-semibold text-lg mb-2">{f.title}</h4>
-              <p className="text-gray-500 text-sm">{f.text}</p>
+              <h4 className="text-gray-600 font-semibold text-lg mb-2">{t(f.titleKey)}</h4>
+              <p className="text-gray-500 text-sm">{t(f.textKey)}</p>
             </div>
           ))}
         </div>
@@ -205,10 +209,11 @@ const LandingPage = ({ onNavigateToLogin }) => (
 
       {/* FOOTER */}
       <footer className="bg-[#f7fafd] text-gray-600 font-medium py-7 text-center border-t border-gray-200">
-        Maternal Health Tracker &copy; {new Date().getFullYear()} | Built for rural communities | For queries: care@mama-sahayta.in
+        {t('landing.footerText', { year: new Date().getFullYear() })}
       </footer>
     </div>
   </>
 );
+};
 
 export default LandingPage;
