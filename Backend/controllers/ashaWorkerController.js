@@ -55,8 +55,36 @@ const getAshaWorkerVerificationStatus = async (req, res) => {
   }
 };
 
+const getNearbyAshaWorkers = async (req, res) => {
+  const { lat, lng } = req.query;
+
+  if (!lat || !lng) {
+    return res.status(400).json({ error: "Latitude and Longitude required" });
+  }
+
+  try {
+    const nearby = await AshaWorker.find({
+      location: {
+        $near: {
+          $geometry: {
+            type: "Point",
+            coordinates: [parseFloat(lng), parseFloat(lat)],
+          },
+          $maxDistance: 10000,
+        },
+      },
+    });
+
+    res.json({ ashaWorkers: nearby });
+  } catch (error) {
+    console.error("Error fetching nearby ASHA workers:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 module.exports = {
   getHighRiskPregnantLadiesCount,
   getAshaWorkerName,
   getAshaWorkerVerificationStatus,
+  getNearbyAshaWorkers,
 };

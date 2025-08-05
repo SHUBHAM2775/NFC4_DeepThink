@@ -18,7 +18,27 @@ const pregnantLadySchema = new mongoose.Schema({
   takingSupplements: { type: String, enum: answerEnum, required: true },
   hasMobileInEmergency: { type: String, enum: answerEnum, required: true },
 
+  location: {
+    type: {
+      type: String,
+      enum: ["Point"],
+      default: "Point",
+    },
+    coordinates: {
+      type: [Number],
+      required: true,
+      validate: {
+        validator: function (value) {
+          return Array.isArray(value) && value.length === 2;
+        },
+        message: "Coordinates must be an array of two numbers",
+      },
+    },
+  },
+
   createdAt: { type: Date, default: Date.now },
 });
+
+pregnantLadySchema.index({ location: "2dsphere" });
 
 module.exports = mongoose.model("PregnantLady", pregnantLadySchema);
