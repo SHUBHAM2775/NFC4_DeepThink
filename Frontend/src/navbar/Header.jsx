@@ -30,7 +30,8 @@ const Header = ({ user, onLanguageChange, onLogout, onLoginClick, currentLanguag
       padding: "16px 32px",
       display: "flex",
       alignItems: "center",
-      justifyContent: "space-between"
+      justifyContent: "space-between",
+      borderBottom: "1px solid rgba(0,0,0,0.1)"
     }}>
       {/* Left: Welcome Message */}
       <div>
@@ -133,8 +134,8 @@ const Header = ({ user, onLanguageChange, onLogout, onLoginClick, currentLanguag
           )}
         </div>
 
-        {/* Logout Button */}
-        {user && onLogout && (
+        {/* Logout Button - Always visible when onLogout is provided */}
+        {onLogout && (
           <button
             onClick={onLogout}
             style={{

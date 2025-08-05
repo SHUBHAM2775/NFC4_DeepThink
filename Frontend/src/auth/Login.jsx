@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from "../navbar/Header";
 
 const roles = ["Patient/Family", "ASHA Worker", "Admin"];
 
@@ -63,7 +64,6 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
           name,
         };
         if (onSuccess) onSuccess(userData);
-        else alert(`Welcome ${name}! Account created successfully. Role: ${role}`);
       }, 1000);
       return;
     }
@@ -74,14 +74,13 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
       setIsLoading(false);
       setOtpSent(true);
       setError("");
-      alert("(Mock) OTP sent to " + phone + ". Use 1234 to verify.");
     }, 1200);
   };
 
   // Mock OTP verification
   const verifyOtp = () => {
     setError("");
-    if (otp !== "1234") {
+    if (otp !== "1") {
       setError("Invalid OTP. Please try again.");
       return;
     }
@@ -93,7 +92,6 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
         phone,
       };
       if (onSuccess) onSuccess(userData);
-      else alert(`Welcome! Role: ${role}`);
     }, 1000);
   };
 

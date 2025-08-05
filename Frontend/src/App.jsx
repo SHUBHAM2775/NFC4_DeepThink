@@ -3,24 +3,38 @@ import Login from "./auth/Login";
 import Questionaire from "./components/Patient/Questionaire";
 import AshaQuestionaire from "./components/ASHA_worker/Questionaire";
 import LandingPage from "./components/LandingPage";
+import PatientDashboard from "./components/Patient/Dashboard";
+import AshaDashboard from "./components/ASHA_worker/Dashboard";
+import AdminDashboard from "./components/Admin_Panel/Dashboard";
 
 const App = () => {
-  const [currentView, setCurrentView] = useState("landing"); // "landing", "login", "questionnaire", "asha-questionnaire", "main"
+  const [currentView, setCurrentView] = useState("landing"); // "landing", "login", "questionnaire", "asha-questionnaire", "patient-dashboard", "asha-dashboard", "admin-dashboard", "main"
   const [user, setUser] = useState(null);
 
   const handleLoginSuccess = (userData) => {
     setUser(userData);
     
-    // Route based on user role and signup/login
-    if (userData.role === "Patient/Family" && userData.name) {
-      // If it's a Patient signup (has name), go to patient questionnaire
-      setCurrentView("questionnaire");
-    } else if (userData.role === "ASHA Worker" && userData.name) {
-      // If it's an ASHA Worker signup (has name), go to ASHA questionnaire
-      setCurrentView("asha-questionnaire");
+    // Route based on user role and whether it's signup or login
+    if (userData.name) {
+      // Signup flow - has name field
+      if (userData.role === "Patient/Family") {
+        setCurrentView("questionnaire");
+      } else if (userData.role === "ASHA Worker") {
+        setCurrentView("asha-questionnaire");
+      } else if (userData.role === "Admin") {
+        setCurrentView("admin-dashboard");
+      }
     } else {
-      // For login or other roles, go to main app
-      setCurrentView("main");
+      // Login flow - no name field, route directly to dashboards
+      if (userData.role === "Patient/Family") {
+        setCurrentView("patient-dashboard");
+      } else if (userData.role === "ASHA Worker") {
+        setCurrentView("asha-dashboard");
+      } else if (userData.role === "Admin") {
+        setCurrentView("admin-dashboard");
+      } else {
+        setCurrentView("main");
+      }
     }
   };
 
@@ -30,7 +44,12 @@ const App = () => {
       ...user,
       questionnaireData
     });
-    setCurrentView("main");
+    // After questionnaire completion, route to appropriate dashboard
+    if (user.role === "Patient/Family") {
+      setCurrentView("patient-dashboard");
+    } else {
+      setCurrentView("main");
+    }
   };
 
   const handleAshaQuestionnaireComplete = (questionnaireData) => {
@@ -39,7 +58,8 @@ const App = () => {
       ...user,
       ashaQuestionnaireData: questionnaireData
     });
-    setCurrentView("main");
+    // After ASHA questionnaire completion, route to ASHA dashboard
+    setCurrentView("asha-dashboard");
   };
 
   const renderCurrentView = () => {
@@ -67,6 +87,12 @@ const App = () => {
             user={user}
           />
         );
+      case "patient-dashboard":
+        return <PatientDashboard user={user} />;
+      case "asha-dashboard":
+        return <AshaDashboard user={user} />;
+      case "admin-dashboard":
+        return <AdminDashboard user={user} />;
       case "main":
         return (
           <div className="p-8">
