@@ -1,20 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Header from "../navbar/Header";
 
 const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [isLoginMode, setIsLoginMode] = useState(true);
 
   // Define roles using translation keys
   const roles = [
-    { key: "patient", value: t("auth.roles.patient") },
-    { key: "ashaWorker", value: t("auth.roles.ashaWorker") },
-    { key: "admin", value: t("auth.roles.admin") }
+    { key: "patient", value: t("auth.roles.patient"), originalValue: "Patient/Family" },
+    { key: "ashaWorker", value: t("auth.roles.ashaWorker"), originalValue: "ASHA Worker" },
+    { key: "admin", value: t("auth.roles.admin"), originalValue: "Admin" }
   ];
 
   // Common states
-  const [role, setRole] = useState(roles[0].value);
+  const [roleKey, setRoleKey] = useState(roles[0].key); // Store the key instead of translated value
   const [phone, setPhone] = useState("+91 ");
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
@@ -27,12 +27,21 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
   // Reset all form fields and state
   const resetForm = () => {
     setPhone("+91 ");
-    setRole(roles[0].value);
+    setRoleKey(roles[0].key); // Reset to first role key
     setOtp("");
     setOtpSent(false);
     setError("");
     setName("");
   };
+
+  // Handle language change - ensure roleKey is still valid
+  useEffect(() => {
+    // Check if current roleKey is still valid, if not reset to first role
+    const validKeys = ["patient", "ashaWorker", "admin"];
+    if (!validKeys.includes(roleKey)) {
+      setRoleKey("patient");
+    }
+  }, [i18n.language, roleKey]);
 
   // Switch login/signup modes, reset form
   const switchMode = (loginMode) => {
@@ -49,10 +58,14 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
       setError(t("auth.errors.enterPhone"));
       return;
     }
-    if (!role) {
+    if (!roleKey) {
       setError(t("auth.errors.selectRole"));
       return;
     }
+
+    // Get the original English role value for routing
+    const selectedRole = roles.find(r => r.key === roleKey);
+    const originalRoleValue = selectedRole ? selectedRole.originalValue : roles[0].originalValue;
 
     if (!isLoginMode) {
       // Signup validation
@@ -66,7 +79,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
         setIsLoading(false);
         // Return user data to App.jsx for routing
         const userData = {
-          role,
+          role: originalRoleValue, // Use original English value
           phone,
           name,
         };
@@ -94,8 +107,12 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
+      // Get the original English role value for routing
+      const selectedRole = roles.find(r => r.key === roleKey);
+      const originalRoleValue = selectedRole ? selectedRole.originalValue : roles[0].originalValue;
+      
       const userData = {
-        role,
+        role: originalRoleValue, // Use original English value
         phone,
       };
       if (onSuccess) onSuccess(userData);
@@ -189,12 +206,12 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
 
                 <select
                   className="border border-pink-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-300 transition"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
+                  value={roleKey}
+                  onChange={(e) => setRoleKey(e.target.value)}
                   required
                 >
                   {roles.map((r) => (
-                    <option key={r.key} value={r.value}>
+                    <option key={r.key} value={r.key}>
                       {r.value}
                     </option>
                   ))}

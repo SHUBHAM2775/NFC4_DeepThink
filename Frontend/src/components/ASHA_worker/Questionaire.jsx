@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   MapPin,
   Building,
@@ -10,6 +11,8 @@ import { Button, Label, Input } from '../Patient/Questionnaire/UIComponents';
 
 // Single page questionnaire for ASHA Worker registration
 function AshaRegistrationForm({ data, onUpdate, onSubmit, isValid }) {
+  const { t } = useTranslation();
+  
   const handleDocumentUpload = (e) => {
     const files = Array.from(e.target.files);
     const fileNames = files.map(file => file.name);
@@ -19,19 +22,19 @@ function AshaRegistrationForm({ data, onUpdate, onSubmit, isValid }) {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-lg font-semibold">ASHA Worker Registration</h2>
-        <p className="text-sm text-gray-600">Please provide your professional details</p>
+        <h2 className="text-lg font-semibold">{t('ashaQuestionnaire.title')}</h2>
+        <p className="text-sm text-gray-600">{t('ashaQuestionnaire.subtitle')}</p>
       </div>
       
       {/* ASHA ID */}
       <div className="space-y-3">
         <Label className="flex items-center gap-2 text-base font-medium">
           <User className="h-4 w-4" />
-          ASHA ID *
+          {t('ashaQuestionnaire.fields.ashaId.label')} *
         </Label>
         <Input
           type="text"
-          placeholder="Enter your unique ASHA ID"
+          placeholder={t('ashaQuestionnaire.fields.ashaId.placeholder')}
           value={data.ashaId || ''}
           onChange={e => onUpdate({ ashaId: e.target.value })}
           className="h-12 text-lg"
@@ -43,11 +46,11 @@ function AshaRegistrationForm({ data, onUpdate, onSubmit, isValid }) {
       <div className="space-y-3">
         <Label className="flex items-center gap-2 text-base font-medium">
           <Building className="h-4 w-4" />
-          Primary Health Centre (PHC)
+          {t('ashaQuestionnaire.fields.phc.label')}
         </Label>
         <Input
           type="text"
-          placeholder="Enter your associated PHC name"
+          placeholder={t('ashaQuestionnaire.fields.phc.placeholder')}
           value={data.phc || ''}
           onChange={e => onUpdate({ phc: e.target.value })}
           className="h-12 text-lg"
@@ -58,11 +61,11 @@ function AshaRegistrationForm({ data, onUpdate, onSubmit, isValid }) {
       <div className="space-y-3">
         <Label className="flex items-center gap-2 text-base font-medium">
           <MapPin className="h-4 w-4" />
-          Village
+          {t('ashaQuestionnaire.fields.village.label')}
         </Label>
         <Input
           type="text"
-          placeholder="Enter your village name"
+          placeholder={t('ashaQuestionnaire.fields.village.placeholder')}
           value={data.village || ''}
           onChange={e => onUpdate({ village: e.target.value })}
           className="h-12 text-lg"
@@ -73,11 +76,11 @@ function AshaRegistrationForm({ data, onUpdate, onSubmit, isValid }) {
       <div className="space-y-3">
         <Label className="flex items-center gap-2 text-base font-medium">
           <Building className="h-4 w-4" />
-          District
+          {t('ashaQuestionnaire.fields.district.label')}
         </Label>
         <Input
           type="text"
-          placeholder="Enter your district name"
+          placeholder={t('ashaQuestionnaire.fields.district.placeholder')}
           value={data.district || ''}
           onChange={e => onUpdate({ district: e.target.value })}
           className="h-12 text-lg"
@@ -88,11 +91,11 @@ function AshaRegistrationForm({ data, onUpdate, onSubmit, isValid }) {
       <div className="space-y-3">
         <Label className="flex items-center gap-2 text-base font-medium">
           <Globe className="h-4 w-4" />
-          State
+          {t('ashaQuestionnaire.fields.state.label')}
         </Label>
         <Input
           type="text"
-          placeholder="Enter your state name"
+          placeholder={t('ashaQuestionnaire.fields.state.placeholder')}
           value={data.state || ''}
           onChange={e => onUpdate({ state: e.target.value })}
           className="h-12 text-lg"
@@ -103,9 +106,9 @@ function AshaRegistrationForm({ data, onUpdate, onSubmit, isValid }) {
       <div className="space-y-3">
         <Label className="flex items-center gap-2 text-base font-medium">
           <FileText className="h-4 w-4" />
-          Upload Documents
+          {t('ashaQuestionnaire.fields.documents.label')}
         </Label>
-        <p className="text-sm text-gray-500">Upload verification documents (certificates, ID proofs, etc.)</p>
+        <p className="text-sm text-gray-500">{t('ashaQuestionnaire.fields.documents.description')}</p>
         <input
           type="file"
           multiple
@@ -115,7 +118,7 @@ function AshaRegistrationForm({ data, onUpdate, onSubmit, isValid }) {
         />
         {data.documents && data.documents.length > 0 && (
           <div className="mt-2">
-            <p className="text-sm font-medium text-gray-700">Selected files:</p>
+            <p className="text-sm font-medium text-gray-700">{t('ashaQuestionnaire.fields.documents.selectedFiles')}</p>
             <ul className="text-sm text-gray-600">
               {data.documents.map((doc, index) => (
                 <li key={index} className="flex items-center gap-1">
@@ -133,7 +136,7 @@ function AshaRegistrationForm({ data, onUpdate, onSubmit, isValid }) {
         className="w-full h-12 text-lg font-semibold"
         disabled={!isValid}
       >
-        Complete Registration
+        {t('ashaQuestionnaire.submitButton')}
       </Button>
     </div>
   );
@@ -141,6 +144,7 @@ function AshaRegistrationForm({ data, onUpdate, onSubmit, isValid }) {
 
 // Main wrapper component
 function AshaQuestionaire({ onComplete, user }) {
+  const { t } = useTranslation();
   const [data, setData] = useState({});
 
   const handleUpdate = (newData) => {
@@ -165,8 +169,10 @@ function AshaQuestionaire({ onComplete, user }) {
       <div className="max-w-2xl mx-auto px-4">
         <div className="bg-white rounded-lg shadow-lg p-8">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-pink-700 mb-2">ASHA Worker Registration</h1>
-            <p className="text-gray-600">Welcome {user?.name || 'ASHA Worker'}! Please complete your registration details.</p>
+            <h1 className="text-2xl font-bold text-pink-700 mb-2">{t('ashaQuestionnaire.title')}</h1>
+            <p className="text-gray-600">
+              {user?.name ? t('ashaQuestionnaire.welcomeMessage', { name: user.name }) : t('ashaQuestionnaire.defaultWelcome')}
+            </p>
           </div>
 
           <AshaRegistrationForm

@@ -125,5 +125,40 @@
         "appTitle": "Maternal Health Tracker",
         "logout": "Logout",
         "loginSignup": "Login / Signup"
+    },
+    "ashaQuestionnaire": {
+        "title": "ASHA Worker Registration",
+        "subtitle": "Please provide your professional details",
+        "welcomeMessage": "Welcome {{name}}! Please complete your registration details.",
+        "defaultWelcome": "Welcome ASHA Worker! Please complete your registration details.",
+        "fields": {
+            "ashaId": {
+                "label": "ASHA ID",
+                "placeholder": "Enter your unique ASHA ID",
+                "required": true
+            },
+            "phc": {
+                "label": "Primary Health Centre (PHC)",
+                "placeholder": "Enter your associated PHC name"
+            },
+            "village": {
+                "label": "Village",
+                "placeholder": "Enter your village name"
+            },
+            "district": {
+                "label": "District",
+                "placeholder": "Enter your district name"
+            },
+            "state": {
+                "label": "State",
+                "placeholder": "Enter your state name"
+            },
+            "documents": {
+                "label": "Upload Documents",
+                "description": "Upload verification documents (certificates, ID proofs, etc.)",
+                "selectedFiles": "Selected files:"
+            }
+        },
+        "submitButton": "Complete Registration"
     }
 }
