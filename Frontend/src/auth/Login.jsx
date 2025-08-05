@@ -49,6 +49,16 @@ const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
     }
   }, [i18n.language, roleKey]);
 
+  // Helper function to map database roles to original values
+  const mapDatabaseRoleToOriginalValue = (dbRole) => {
+    const roleMapping = {
+      'pregnant_lady': 'Patient/Family',
+      'asha_worker': 'ASHA Worker',
+      'admin': 'Admin'
+    };
+    return roleMapping[dbRole] || dbRole;
+  };
+
   // Switch login/signup modes, reset form
   const switchMode = (loginMode) => {
     if (loginMode !== isLoginMode) {
@@ -57,8 +67,8 @@ const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
     }
   };
 
-  // Simulate sending OTP (for login) or completing signup (without OTP)
-  const sendOtp = () => {
+  // Send OTP for login or handle signup
+  const sendOtp = async () => {
     setError("");
     if (phone.length <= 4) { // Only +91 with space without number
       setError(t("auth.errors.enterPhone"));
@@ -79,11 +89,10 @@ const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
         setError(t("auth.errors.enterName"));
         return;
       }
-      // Simulate signup completion
+      // For signup, return user data to handle registration flow
       setIsLoading(true);
       setTimeout(() => {
         setIsLoading(false);
-        // Return user data to App.jsx for routing
         const userData = {
           role: originalRoleValue, // Use original English value
           phone,
@@ -94,35 +103,91 @@ const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
       return;
     }
 
-    // For login: send OTP
+    // For login: send real OTP using API
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      // Clean phone number - remove +91 and spaces for API call
+      const cleanPhone = phone.replace(/\+91\s?/, '').trim();
+      
+      const response = await fetch('http://localhost:5000/api/auth/request-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phoneNumber: cleanPhone
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send OTP');
+      }
+
       setOtpSent(true);
       setError("");
-    }, 1200);
+    } catch (err) {
+      console.error('Error sending OTP:', err);
+      setError(err.message || t("auth.errors.failedToSendOTP"));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // Mock OTP verification
-  const verifyOtp = () => {
+  // Real OTP verification using API
+  const verifyOtp = async () => {
     setError("");
-    if (otp !== "1") {
-      setError(t("auth.errors.invalidOTP"));
+    if (otp.length < 6) {
+      setError(t("auth.errors.enterCompleteOTP"));
       return;
     }
+
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      // Get the original English role value for routing
-      const selectedRole = roles.find(r => r.key === roleKey);
-      const originalRoleValue = selectedRole ? selectedRole.originalValue : roles[0].originalValue;
+    try {
+      // Clean phone number - remove +91 and spaces for API call
+      const cleanPhone = phone.replace(/\+91\s?/, '').trim();
       
+      // Get the selected role for routing
+      const selectedRole = roles.find(r => r.key === roleKey);
+      const selectedOriginalRole = selectedRole ? selectedRole.originalValue : roles[0].originalValue;
+
+      const response = await fetch('http://localhost:5000/api/auth/verify-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phoneNumber: cleanPhone,
+          otp: otp,
+          selectedRole: selectedOriginalRole // Send the selected role for routing
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to verify OTP');
+      }
+
+      // Success - get user data and route according to SELECTED role (not database role)
       const userData = {
-        role: originalRoleValue, // Use original English value
-        phone,
+        id: data.user.id,
+        name: data.user.name,
+        role: selectedOriginalRole, // Use the role selected during login
+        phone: data.user.phoneNumber,
+        roleRef: data.user.roleRef,
+        refId: data.user.refId,
+        databaseRole: data.user.role // Keep original database role for reference
       };
+
       if (onSuccess) onSuccess(userData);
-    }, 1000);
+    } catch (err) {
+      console.error('Error verifying OTP:', err);
+      setError(err.message || t("auth.errors.invalidOTP"));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -302,11 +367,11 @@ const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
                 <input
                   type="text"
                   placeholder={t("auth.enterOTPPlaceholder")}
-                  maxLength="4"
+                  maxLength="6"
                   className="border border-pink-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-300 transition text-center text-lg tracking-widest"
                   value={otp}
                   onChange={(e) =>
-                    setOtp(e.target.value.replace(/\D/g, "").slice(0, 4))
+                    setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
                   }
                   required
                   autoFocus

@@ -5,14 +5,26 @@ const BASE_URL = 'http://localhost:5000/api/register';
 // Register Admin
 export const registerAdmin = async (userData) => {
   try {
+    const cleanPhone = userData.phone.replace(/\s/g, '').replace(/\+91/g, '');
     const response = await axios.post(`${BASE_URL}/admin`, {
       name: userData.name,
-      phoneNumber: userData.phone.replace(/\s/g, '') // Remove spaces from phone number
+      phoneNumber: cleanPhone
     });
     return response.data;
   } catch (error) {
     console.error('Error registering admin:', error);
-    throw error.response?.data || error;
+    
+    // Extract detailed error information
+    const errorResponse = error.response?.data;
+    const errorMessage = errorResponse?.error || error.message || "Registration failed";
+    const errorDetails = errorResponse?.details || null;
+    
+    throw {
+      message: errorMessage,
+      details: errorDetails,
+      status: error.response?.status || 500,
+      originalError: errorResponse || error
+    };
   }
 };
 
@@ -61,7 +73,6 @@ export const registerAshaWorker = async (userData, questionnaireData) => {
 
     const response = await axios.post(`${BASE_URL}/asha`, payload);
     return response.data;
-    return response.data;
   } catch (error) {
     console.error('Error registering ASHA worker:', error);
     console.error('Error response:', error.response?.data);
@@ -89,9 +100,10 @@ export const registerPregnantLady = async (userData, questionnaireData) => {
       questionnaireData
     });
 
+    const cleanPhone = userData.phone.replace(/\s/g, '').replace(/\+91/g, '');
     const payload = {
       name: userData.name,
-      phoneNumber: userData.phone.replace(/\s/g, ''), // Remove spaces from phone number
+      phoneNumber: cleanPhone,
       village: questionnaireData.village || '',
       district: questionnaireData.district || '',
       state: questionnaireData.state || '',
@@ -113,6 +125,17 @@ export const registerPregnantLady = async (userData, questionnaireData) => {
     console.error('Error registering pregnant lady:', error);
     console.error('Error response:', error.response?.data);
     console.error('Status code:', error.response?.status);
-    throw error.response?.data || error;
+    
+    // Extract detailed error information
+    const errorResponse = error.response?.data;
+    const errorMessage = errorResponse?.error || error.message || "Registration failed";
+    const errorDetails = errorResponse?.details || null;
+    
+    throw {
+      message: errorMessage,
+      details: errorDetails,
+      status: error.response?.status || 500,
+      originalError: errorResponse || error
+    };
   }
 };

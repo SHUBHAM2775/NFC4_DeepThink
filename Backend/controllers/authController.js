@@ -35,14 +35,34 @@ const requestOtp = async (req, res) => {
     });
   } catch (err) {
     console.error("Error in requestOtp:", err);
-    res.status(500).json({ error: "Failed to send OTP" });
+    
+    // Handle specific Twilio errors
+    if (err.code === 21608) {
+      return res.status(403).json({ 
+        error: "Phone number not verified for trial account",
+        details: "This phone number needs to be verified in Twilio console for trial accounts. Please verify it at twilio.com/console/phone-numbers/verified or use a different verified number."
+      });
+    }
+    
+    if (err.code === 21614) {
+      return res.status(400).json({ 
+        error: "Invalid phone number",
+        details: "The phone number format is invalid. Please check the number and try again."
+      });
+    }
+    
+    // Generic error for other cases
+    res.status(500).json({ 
+      error: "Failed to send OTP",
+      details: err.message || "An unexpected error occurred while sending OTP"
+    });
   }
 };
 
 // === Step 2: Verify OTP using Twilio Verify ===
 const verifyOtp = async (req, res) => {
   try {
-    const { phoneNumber, otp } = req.body;
+    const { phoneNumber, otp, selectedRole } = req.body;
 
     if (!phoneNumber || !otp) {
       return res
@@ -73,14 +93,35 @@ const verifyOtp = async (req, res) => {
         id: user._id,
         name: user.name,
         phoneNumber: user.phoneNumber,
-        role: user.role,
+        role: user.role, // Return database role for reference
         roleRef: user.roleRef,
         refId: user.refId,
       },
+      selectedRole: selectedRole, // Return the selected role for frontend routing
     });
   } catch (err) {
     console.error("Error in verifyOtp:", err);
-    res.status(500).json({ error: "Failed to verify OTP" });
+    
+    // Handle specific Twilio errors
+    if (err.code === 20404) {
+      return res.status(404).json({ 
+        error: "Invalid verification code",
+        details: "The verification code you entered is incorrect or has expired. Please try again."
+      });
+    }
+    
+    if (err.code === 21608) {
+      return res.status(403).json({ 
+        error: "Phone number not verified for trial account",
+        details: "This phone number needs to be verified in Twilio console for trial accounts."
+      });
+    }
+    
+    // Generic error for other cases
+    res.status(500).json({ 
+      error: "Failed to verify OTP",
+      details: err.message || "An unexpected error occurred while verifying OTP"
+    });
   }
 };
 

@@ -108,7 +108,7 @@
     "submit": "जमा करें",
     "sendingOTP": "OTP भेजा जा रहा है...",
     "creatingAccount": "खाता बनाया जा रहा है...",
-    "enterOTPMessage": "{{phone}} पर भेजा गया 4-अंकीय OTP दर्ज करें",
+    "enterOTPMessage": "{{phone}} पर भेजा गया 6-अंकीय OTP दर्ज करें",
     "enterOTPPlaceholder": "OTP दर्ज करें",
     "back": "← वापस",
     "verifyOTP": "OTP सत्यापित करें",
@@ -117,7 +117,9 @@
       "enterPhone": "कृपया फोन नंबर दर्ज करें",
       "selectRole": "कृपया एक भूमिका चुनें",
       "enterName": "कृपया अपना नाम दर्ज करें",
-      "invalidOTP": "गलत OTP। कृपया पुनः प्रयास करें।"
+      "invalidOTP": "गलत OTP। कृपया पुनः प्रयास करें।",
+      "enterCompleteOTP": "कृपया पूरा OTP दर्ज करें",
+      "failedToSendOTP": "OTP भेजने में विफल। कृपया पुनः प्रयास करें।"
     },
     "close": "बंद करें"
   },

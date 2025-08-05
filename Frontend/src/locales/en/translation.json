@@ -107,7 +107,7 @@
         "submit": "Submit",
         "sendingOTP": "Sending OTP...",
         "creatingAccount": "Creating Account...",
-        "enterOTPMessage": "Enter the 4-digit OTP sent to {{phone}}",
+        "enterOTPMessage": "Enter the 6-digit OTP sent to {{phone}}",
         "enterOTPPlaceholder": "Enter OTP",
         "back": "← Back",
         "verifyOTP": "Verify OTP",
@@ -116,7 +116,9 @@
             "enterPhone": "Please enter phone number",
             "selectRole": "Please select a role",
             "enterName": "Please enter your name",
-            "invalidOTP": "Invalid OTP. Please try again."
+            "invalidOTP": "Invalid OTP. Please try again.",
+            "enterCompleteOTP": "Please enter the complete OTP",
+            "failedToSendOTP": "Failed to send OTP. Please try again."
         },
         "close": "Close"
     },

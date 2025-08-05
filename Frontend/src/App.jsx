@@ -20,8 +20,9 @@ const App = () => {
     setError("");
     
     // Route based on user role and whether it's signup or login
-    if (userData.name) {
-      // Signup flow - has name field
+    // Check if this is a signup flow (has name but no id) vs login flow (has id from database)
+    if (userData.name && !userData.id) {
+      // Signup flow - has name field but no database id
       if (userData.role === "Patient/Family") {
         setCurrentView("questionnaire");
       } else if (userData.role === "ASHA Worker") {
@@ -35,14 +36,39 @@ const App = () => {
           setCurrentView("admin-dashboard");
         } catch (error) {
           console.error("Failed to register admin:", error);
-          setError("Failed to register admin. Please try again.");
+          
+          // Show detailed error message
+          let errorMessage = "Failed to register admin. Please try again.";
+          if (error.message) {
+            errorMessage = error.message;
+          }
+          if (error.details) {
+            console.log("Error details:", error.details);
+            if (typeof error.details === 'string') {
+              errorMessage += ` Details: ${error.details}`;
+            } else if (Array.isArray(error.details)) {
+              errorMessage += ` Details: ${error.details.join(', ')}`;
+            } else if (typeof error.details === 'object') {
+              const detailsText = Object.entries(error.details)
+                .filter(([key, value]) => value) // Only include non-null values
+                .map(([key, value]) => value)
+                .join(', ');
+              if (detailsText) {
+                errorMessage += ` Details: ${detailsText}`;
+              }
+            }
+          }
+          
+          setError(errorMessage);
           setCurrentView("login");
         } finally {
           setIsLoading(false);
         }
       }
     } else {
-      // Login flow - no name field, route directly to dashboards
+      // Login flow - route based on SELECTED role (not database role)
+      console.log("Routing based on selected role:", userData.role);
+      
       if (userData.role === "Patient/Family") {
         setCurrentView("patient-dashboard");
       } else if (userData.role === "ASHA Worker") {
@@ -50,6 +76,8 @@ const App = () => {
       } else if (userData.role === "Admin") {
         setCurrentView("admin-dashboard");
       } else {
+        // Fallback for any unexpected role
+        console.warn("Unexpected role:", userData.role);
         setCurrentView("main");
       }
     }
@@ -76,7 +104,30 @@ const App = () => {
       setCurrentView("patient-dashboard");
     } catch (error) {
       console.error("Failed to register pregnant lady:", error);
-      setError("Failed to complete registration. Please try again.");
+      
+      // Show detailed error message
+      let errorMessage = "Failed to complete registration. Please try again.";
+      if (error.message) {
+        errorMessage = error.message;
+      }
+      if (error.details) {
+        console.log("Error details:", error.details);
+        if (typeof error.details === 'string') {
+          errorMessage += ` Details: ${error.details}`;
+        } else if (Array.isArray(error.details)) {
+          errorMessage += ` Details: ${error.details.join(', ')}`;
+        } else if (typeof error.details === 'object') {
+          const detailsText = Object.entries(error.details)
+            .filter(([key, value]) => value) // Only include non-null values
+            .map(([key, value]) => value)
+            .join(', ');
+          if (detailsText) {
+            errorMessage += ` Details: ${detailsText}`;
+          }
+        }
+      }
+      
+      setError(errorMessage);
       // Stay on questionnaire page to allow retry
     } finally {
       setIsLoading(false);
@@ -121,6 +172,14 @@ const App = () => {
           errorMessage += ` Details: ${error.details}`;
         } else if (Array.isArray(error.details)) {
           errorMessage += ` Details: ${error.details.join(', ')}`;
+        } else if (typeof error.details === 'object') {
+          const detailsText = Object.entries(error.details)
+            .filter(([key, value]) => value) // Only include non-null values
+            .map(([key, value]) => value)
+            .join(', ');
+          if (detailsText) {
+            errorMessage += ` Details: ${detailsText}`;
+          }
         }
       }
       
