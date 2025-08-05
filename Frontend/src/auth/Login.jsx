@@ -112,12 +112,12 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-green-100 via-white to-green-50 bg-opacity-80 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative border border-green-100 p-8">
+    <div className="fixed inset-0 bg-gradient-to-br from-pink-100 via-white to-pink-50 bg-opacity-80 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative border border-pink-100 p-8">
 
         {/* Close button */}
         <button
-          className="absolute top-3 right-4 text-gray-400 hover:text-green-600 text-2xl font-bold focus:outline-none"
+          className="absolute top-3 right-4 text-gray-400 hover:text-pink-600 text-2xl font-bold focus:outline-none"
           onClick={onClose}
           aria-label="Close"
         >
@@ -126,12 +126,12 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
 
         {/* Top toggle switch centered */}
         <div className="mb-8 flex justify-center">
-          <div className="inline-flex bg-green-200 rounded-full p-1 text-sm font-semibold select-none">
+          <div className="inline-flex bg-pink-200 rounded-full p-1 text-sm font-semibold select-none">
             <button
               onClick={() => switchMode(true)}
               aria-pressed={isLoginMode}
               className={`px-6 py-2 rounded-full transition-colors ${
-                isLoginMode ? "bg-green-600 text-white" : "text-green-800 hover:bg-green-300"
+                isLoginMode ? "bg-pink-600 text-white" : "text-pink-800 hover:bg-pink-300"
               }`}
               type="button"
             >
@@ -141,7 +141,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
               onClick={() => switchMode(false)}
               aria-pressed={!isLoginMode}
               className={`px-6 py-2 rounded-full transition-colors ${
-                !isLoginMode ? "bg-green-600 text-white" : "text-green-800 hover:bg-green-300"
+                !isLoginMode ? "bg-pink-600 text-white" : "text-pink-800 hover:bg-pink-300"
               }`}
               type="button"
             >
@@ -151,7 +151,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
         </div>
 
         {/* Heading */}
-        <h2 className="text-lg font-bold mb-6 text-green-700 text-center tracking-wide">
+        <h2 className="text-lg font-bold mb-6 text-pink-700 text-center tracking-wide">
           {isLoginMode ? "Login" : "Sign Up"}
         </h2>
 
@@ -168,7 +168,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
                   <input
                     type="text"
                     placeholder="Name"
-                    className="border border-green-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-300 transition"
+                    className="border border-pink-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-300 transition"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required={!isLoginMode}
@@ -178,7 +178,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
                 <input
                   type="tel"
                   placeholder="+91 Enter your mobile number"
-                  className="border border-green-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-300 transition"
+                  className="border border-pink-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-300 transition"
                   value={phone}
                   onChange={(e) => {
                     const value = e.target.value;
@@ -197,7 +197,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
                 />
 
                 <select
-                  className="border border-green-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-300 transition"
+                  className="border border-pink-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-300 transition"
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
                   required
@@ -233,10 +233,10 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
                       accept=".pdf,.jpg,.jpeg,.png"
                       onChange={handleDocUpload}
                       required={!docFile}
-                      className="border border-green-200 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-green-300 transition w-full"
+                      className="border border-pink-200 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-pink-300 transition w-full"
                     />
                     {docFile && (
-                      <p className="text-sm mt-1 text-green-700">
+                      <p className="text-sm mt-1 text-pink-700">
                         Selected file: {docFile.name}
                       </p>
                     )}
@@ -250,7 +250,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className={`bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg mt-2 shadow-md transition-all ${
+                  className={`bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 rounded-lg mt-2 shadow-md transition-all ${
                     isLoading ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                 >
@@ -281,7 +281,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
                   type="text"
                   placeholder="Enter OTP"
                   maxLength="4"
-                  className="border border-green-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-300 transition text-center text-lg tracking-widest"
+                  className="border border-pink-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-300 transition text-center text-lg tracking-widest"
                   value={otp}
                   onChange={(e) =>
                     setOtp(e.target.value.replace(/\D/g, "").slice(0, 4))
@@ -300,14 +300,14 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
                       setOtp("");
                       setError("");
                     }}
-                    className="text-green-600 hover:text-green-700 text-sm underline focus:outline-none"
+                    className="text-pink-600 hover:text-pink-700 text-sm underline focus:outline-none"
                   >
                     ← Back
                   </button>
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className={`bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-all ${
+                    className={`bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-all ${
                       isLoading ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                   >

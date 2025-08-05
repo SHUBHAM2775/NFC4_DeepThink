@@ -37,7 +37,7 @@ const App = () => {
         return (
           <Login 
             onSuccess={handleLoginSuccess} 
-            onClose={() => setCurrentView("main")} 
+            onClose={() => setCurrentView("landing")} 
           />
         );
       case "questionnaire":
@@ -52,7 +52,7 @@ const App = () => {
           <div className="p-8">
             <h1 className="text-2xl font-bold mb-4">Welcome to the Main App!</h1>
             {user && (
-              <div className="bg-green-100 p-4 rounded-lg">
+              <div className="bg-pink-100 p-4 rounded-lg">
                 <h2 className="font-semibold">User Info:</h2>
                 <p>Role: {user.role}</p>
                 <p>Phone: {user.phone}</p>
@@ -63,7 +63,7 @@ const App = () => {
             )}
             <button 
               onClick={() => setCurrentView("login")} 
-              className="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              className="mt-4 bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700"
             >
               Back to Login
             </button>

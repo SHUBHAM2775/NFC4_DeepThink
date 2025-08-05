@@ -59,7 +59,7 @@ const Dashboard = () => {
       {/* Header */}
       <header className="dashboard-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 0" }}>
         <div>
-          <h2 style={{ color: "#d12b7c", marginBottom: 0 }}>Admin Dashboard</h2>
+          <h2 style={{ color: "#e53986", marginBottom: 0 }}>Admin Dashboard</h2>
           <div style={{ fontSize: 14, color: "#7a7a7a" }}>Dr. Rajesh Kumar</div>
         </div>
         <button className="logout-btn" style={{ background: "none", border: "none", fontWeight: "bold", cursor: "pointer" }}>Logout</button>
@@ -79,7 +79,7 @@ const Dashboard = () => {
             }}
           >
             <div style={{ fontSize: 32 }}>{stat.icon}</div>
-            <div style={{ fontWeight: 700, fontSize: 25, color: "#d02c7e" }}>{stat.value}</div>
+            <div style={{ fontWeight: 700, fontSize: 25, color: "#e53986" }}>{stat.value}</div>
             <div style={{ color: "#8a94a6", fontSize: 16 }}>{stat.label}</div>
           </div>
         ))}
@@ -87,7 +87,7 @@ const Dashboard = () => {
 
       {/* Pending verifications */}
       <section className="pending-verifications-section" style={{ marginBottom: 28 }}>
-        <h3 style={{ color: "#e7b505", marginBottom: 0 }}>Pending Verifications</h3>
+        <h3 style={{ color: "#e53986", marginBottom: 0 }}>Pending Verifications</h3>
         <div style={{ color: "#525252", fontSize: 14, marginBottom: 17 }}>Review and approve ASHA worker applications</div>
         {pendingVerifications.map((item, idx) => (
           <div key={idx} className="pending-item" style={{ background: "#fff", borderRadius: 9, marginBottom: 18, padding: 20, boxShadow: "0 1px 2px #0001" }}>
@@ -98,7 +98,7 @@ const Dashboard = () => {
                 <div style={{ color: "#595959", fontSize: 14 }}>Area: {item.area}</div>
                 <div style={{ color: "#595959", fontSize: 14 }}>Submitted: {item.submitted}</div>
                 <div style={{ color: "#7c7c7c", fontSize: 14, margin: "2px 0" }}>
-                  Status: <span style={{ color: "#ffb400" }}>{item.status}</span>
+                  Status: <span style={{ color: "#e53986" }}>{item.status}</span>
                 </div>
                 <div>
                   <b>Uploaded Documents:</b>
@@ -128,7 +128,7 @@ const Dashboard = () => {
                 <div>
                   <button
                     style={{
-                      background: "#34cc73",
+                      background: "#e53986",
                       color: "#fff",
                       padding: "9px 32px",
                       marginRight: 10,
@@ -181,7 +181,7 @@ const Dashboard = () => {
 
       {/* Analytics */}
       <section className="analytics-section" style={{ marginBottom: 28 }}>
-        <h3 style={{ color: "#d12b7c" }}>Analytics</h3>
+        <h3 style={{ color: "#e53986" }}>Analytics</h3>
         <div className="analytics-overview" style={{ display: "flex", justifyContent: "space-between", gap: 80, fontSize: 15 }}>
           <div>
             <b>User Activity (Last 30 Days)</b>
@@ -191,9 +191,9 @@ const Dashboard = () => {
           </div>
           <div>
             <b>System Health</b>
-            <div>Server Uptime: <span style={{ color: "#34cc73" }}>{analytics.serverUptime}</span></div>
-            <div>Data Sync Success Rate: <span style={{ color: "#34cc73" }}>{analytics.dataSyncRate}</span></div>
-            <div>Average Response Time: <span style={{ color: "#34cc73" }}>{analytics.avgResponseTime}</span></div>
+            <div>Server Uptime: <span style={{ color: "#e53986" }}>{analytics.serverUptime}</span></div>
+            <div>Data Sync Success Rate: <span style={{ color: "#e53986" }}>{analytics.dataSyncRate}</span></div>
+            <div>Average Response Time: <span style={{ color: "#e53986" }}>{analytics.avgResponseTime}</span></div>
           </div>
         </div>
       </section>

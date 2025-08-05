@@ -83,7 +83,7 @@ function PatientQuestionnaireFlow({ data, onUpdate, onSubmit }) {
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                   page <= currentPage
-                    ? 'bg-green-600 text-white'
+                    ? 'bg-pink-600 text-white'
                     : 'bg-gray-200 text-gray-600'
                 }`}
               >
@@ -92,7 +92,7 @@ function PatientQuestionnaireFlow({ data, onUpdate, onSubmit }) {
               {page < 3 && (
                 <div
                   className={`w-8 h-1 mx-2 ${
-                    page < currentPage ? 'bg-green-600' : 'bg-gray-200'
+                    page < currentPage ? 'bg-pink-600' : 'bg-gray-200'
                   }`}
                 />
               )}
