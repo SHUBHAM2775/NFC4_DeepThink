@@ -1,52 +1,63 @@
 const User = require("../models/user");
 const sendOtp = require("../utils/sendOtp");
+const jwt = require("jsonwebtoken");
+const twilio = require("twilio");
 
 exports.sendOtp = async (req, res) => {
   const { phone } = req.body;
 
-  if (!phone)
+  if (!phone) {
     return res.status(400).json({ error: "Phone number is required" });
-
-  const otp = generateOTP();
-  const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
-
-  let user = await User.findOne({ phone });
-
-  if (!user) {
-    user = new User({ phone, otp: { code: otp, expiresAt } });
-  } else {
-    user.otp = { code: otp, expiresAt };
   }
 
-  await user.save();
-  await sendOtp(phone, otp);
-
-  return res.status(200).json({ message: "OTP sent" });
+  try {
+    // Twilio handles sending OTP
+    await sendOtp(phone);
+    return res.status(200).json({ message: "OTP sent" });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: "Failed to send OTP", details: error.message });
+  }
 };
-
-const jwt = require("jsonwebtoken");
 
 exports.verifyOtp = async (req, res) => {
   const { phone, otp } = req.body;
 
-  const user = await User.findOne({ phone });
-
-  if (!user || !user.otp) {
-    return res.status(400).json({ error: "User or OTP not found" });
+  if (!phone || !otp) {
+    return res.status(400).json({ error: "Phone and OTP are required" });
   }
 
-  const isOtpValid = user.otp.code === otp && user.otp.expiresAt > new Date();
+  try {
+    const client = twilio(
+      process.env.TWILIO_SID,
+      process.env.TWILIO_AUTH_TOKEN
+    );
 
-  if (!isOtpValid) {
-    return res.status(400).json({ error: "Invalid or expired OTP" });
+    // Verify OTP using Twilio
+    const verificationCheck = await client.verify.v2
+      .services(process.env.TWILIO_VERIFY_SID)
+      .verificationChecks.create({ to: phone, code: otp });
+
+    if (verificationCheck.status !== "approved") {
+      return res.status(400).json({ error: "Invalid or expired OTP" });
+    }
+
+    // Check if user exists or create new
+    let user = await User.findOne({ phone });
+    if (!user) {
+      user = new User({ phone });
+      await user.save();
+    }
+
+    const token = jwt.sign({ id: user._id, phone: user.phone }, "SECRET_KEY", {
+      expiresIn: "1h",
+    });
+
+    return res.status(200).json({ message: "OTP verified", token });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: "OTP verification failed", details: error.message });
   }
-
-  user.otp = undefined;
-  await user.save();
-
-  const token = jwt.sign({ id: user._id, phone: user.phone }, "SECRET_KEY", {
-    expiresIn: "1h",
-  });
-
-  return res.status(200).json({ message: "OTP verified", token });
 };

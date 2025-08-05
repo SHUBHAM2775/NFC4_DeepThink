@@ -1,11 +1,10 @@
-import express from "express";
-import authRoutes from "./authRoutes";
-import registerRoutes from "./registerRoutes";
+const express = require("express");
+const authRoutes = require("./authRoutes");
+const voiceLogRoutes = require("./voiceLogRoutes");
 
 const router = express.Router();
 
-// Use authentication routes
 router.use("/auth", authRoutes);
-router.use("/register", registerRoutes);
+router.use("/voice", voiceLogRoutes);
 
-export default router;
+module.exports = router;
