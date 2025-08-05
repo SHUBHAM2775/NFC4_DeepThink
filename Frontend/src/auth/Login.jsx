@@ -15,7 +15,6 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
 
   // Signup-specific states
   const [name, setName] = useState("");
-  const [monthsPregnant, setMonthsPregnant] = useState("");
   const [docFile, setDocFile] = useState(null);
 
   // Reset all form fields and state
@@ -26,7 +25,6 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
     setOtpSent(false);
     setError("");
     setName("");
-    setMonthsPregnant("");
     setDocFile(null);
   };
 
@@ -63,10 +61,6 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
         setError("Please enter your name");
         return;
       }
-      if (role === "Patient/Family" && !monthsPregnant) {
-        setError("Please enter months pregnant");
-        return;
-      }
       if (role === "ASHA Worker" && !docFile) {
         setError("Please upload verification document");
         return;
@@ -80,7 +74,6 @@ const LoginSignupToggleTop = ({ onSuccess, onClose }) => {
           role,
           phone,
           name,
-          monthsPregnant: role === "Patient/Family" ? monthsPregnant : undefined,
           docFile: role === "ASHA Worker" ? docFile : undefined,
         };
         if (onSuccess) onSuccess(userData);
