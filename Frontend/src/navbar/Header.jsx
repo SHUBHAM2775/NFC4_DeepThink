@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { useTranslation } from 'react-i18next';
 
 const Header = ({ user, onLogout, onLoginClick }) => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -30,7 +30,7 @@ const Header = ({ user, onLogout, onLoginClick }) => {
         {user ? (
           <>
             <h1 className="text-2xl font-bold text-pink-600 m-0 mb-1">
-              Welcome to Your Health Journey
+              {t("header.welcomeMessage")}
             </h1>
             <p className="text-base text-gray-600 m-0">
               {user.name || "User"}
@@ -38,7 +38,7 @@ const Header = ({ user, onLogout, onLoginClick }) => {
           </>
         ) : (
           <h1 className="text-2xl font-bold text-pink-600 m-0">
-            Maternal Health Tracker
+            {t("header.appTitle")}
           </h1>
         )}
       </div>
@@ -83,7 +83,7 @@ const Header = ({ user, onLogout, onLoginClick }) => {
             onClick={onLogout}
             className="bg-pink-600 hover:bg-pink-700 text-white border-0 rounded-lg px-4 py-2 text-sm font-semibold cursor-pointer transition-colors"
           >
-            Logout
+            {t("header.logout")}
           </button>
         )}
 
@@ -93,7 +93,7 @@ const Header = ({ user, onLogout, onLoginClick }) => {
             onClick={onLoginClick}
             className="bg-pink-600 hover:bg-pink-700 text-white border-0 rounded-lg px-4 py-2 text-sm font-semibold cursor-pointer transition-colors"
           >
-            Login / Signup
+            {t("header.loginSignup")}
           </button>
         )}
       </div>

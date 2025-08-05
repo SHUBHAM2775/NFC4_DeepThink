@@ -119,5 +119,11 @@
             "invalidOTP": "Invalid OTP. Please try again."
         },
         "close": "Close"
+    },
+    "header": {
+        "welcomeMessage": "Welcome to Your Health Journey",
+        "appTitle": "Maternal Health Tracker",
+        "logout": "Logout",
+        "loginSignup": "Login / Signup"
     }
 }
