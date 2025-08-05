@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../navbar/Header";
 import {
   UserGroupIcon,
@@ -17,7 +17,7 @@ const summaryStats = [
   { label: "Compliance", value: "85%", icon: CheckBadgeIcon }
 ];
 
-const patients = [
+const initialPatients = [
   {
     name: "Priya Sharma",
     phoneNumber: "8669212403",
@@ -25,7 +25,8 @@ const patients = [
     lastLog: "2 days ago",
     risk: "high",
     compliance: 60,
-    missed: 3
+    missed: 3,
+    animation: true
   },
   {
     name: "Anita Patel",
@@ -34,7 +35,8 @@ const patients = [
     lastLog: "1 day ago",
     risk: "medium",
     compliance: 80,
-    missed: 1
+    missed: 1,
+    animation: true
   },
   {
     name: "Kavya Singh",
@@ -43,7 +45,8 @@ const patients = [
     lastLog: "Today",
     risk: "low",
     compliance: 95,
-    missed: 0
+    missed: 0,
+    animation: true
   }
 ];
 
@@ -60,14 +63,20 @@ const missedLogColor = {
 };
 
 const Dashboard = ({ user }) => {
+  const [patients, setPatients] = useState(initialPatients);
+  const [hasAlerted, setHasAlerted] = useState(false);
+
   useEffect(() => {
-    patients.forEach(p => {
-      if (p.risk === "high") {
-        alert(`🚨 URGENT: ${p.name} is HIGH RISK!\nPlease call her immediately.`);
-        speak(`Alert. ${p.name} is in high risk. Please call her now.`);
-      }
-    });
-  }, []);
+    if (!hasAlerted) {
+      patients.forEach(p => {
+        if (p.risk === "high") {
+          alert(`🚨 URGENT: ${p.name} is HIGH RISK!\nPlease call her immediately.`);
+          speak(`Alert. ${p.name} is in high risk. Please call her now.`);
+        }
+      });
+      setHasAlerted(true);
+    }
+  }, [hasAlerted, patients]);
 
   const speak = (text) => {
     if ("speechSynthesis" in window) {
@@ -78,9 +87,12 @@ const Dashboard = ({ user }) => {
   };
 
   const handleContact = (name, phoneNumber) => {
-    if (window.confirm(`Call ${name}?`)) {
-      window.location.href = `tel:${phoneNumber}`;
-    }
+    window.location.href = `tel:${phoneNumber}`;
+    setPatients(prev =>
+      prev.map(p =>
+        p.name === name ? { ...p, animation: false } : p
+      )
+    );
   };
 
   const handleNotes = name => alert(`Viewing notes for ${name}!`);
@@ -113,7 +125,7 @@ const Dashboard = ({ user }) => {
       `}</style>
 
       <Header
-        user={user || { name: t('ashaDashboard.userName') }}
+        user={user || { name: 'ASHA Worker' }}
         onLogout={handleLogout}
       />
 
@@ -138,11 +150,14 @@ const Dashboard = ({ user }) => {
           return (
             <div
               key={p.name}
-              className={`rounded-lg p-4 mb-5 border relative ${
+              className={`rounded-lg p-4 mb-5 border relative transition-shadow duration-300 ${
                 isHighRisk
-                  ? "border-red-700 shadow-lg animate-pulse-border"
+                  ? `border-red-700 shadow-lg ${
+                      p.animation ? "animate-pulse-border" : ""
+                    }`
                   : "border-pink-100 shadow"
               }`}
+
             >
               <div className="flex items-center">
                 <span className="font-bold text-base text-gray-900">{p.name}</span>
@@ -182,7 +197,7 @@ const Dashboard = ({ user }) => {
                   onClick={() => handleContact(p.name, p.phoneNumber)}
                   className={`ml-auto px-5 py-2 text-sm font-bold rounded flex items-center border transition-all duration-300 ${
                     isHighRisk
-                      ? "bg-red-700 text-white border-red-700 animate-shake"
+                      ? `bg-red-700 text-white border-red-700 ${p.animation ? "animate-shake" : ""}`
                       : "text-pink-600 border-pink-600 hover:bg-pink-50"
                   }`}
                 >
