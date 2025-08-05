@@ -92,5 +92,33 @@
         "text": "व्यक्तिगत एजेंटिक AI मार्गदर्शन, लक्षण निगरानी, और आपातकालीन वृद्धि सहायता प्रदान करता है।"
       }
     }
+  },
+  "auth": {
+    "login": "लॉगिन",
+    "signup": "साइनअप",
+    "name": "नाम",
+    "phonePlaceholder": "+91 अपना मोबाइल नंबर दर्ज करें",
+    "selectRole": "भूमिका",
+    "roles": {
+      "patient": "मरीज/परिवार",
+      "ashaWorker": "आशा कार्यकर्ता",
+      "admin": "प्रशासक"
+    },
+    "sendOTP": "OTP भेजें",
+    "submit": "जमा करें",
+    "sendingOTP": "OTP भेजा जा रहा है...",
+    "creatingAccount": "खाता बनाया जा रहा है...",
+    "enterOTPMessage": "{{phone}} पर भेजा गया 4-अंकीय OTP दर्ज करें",
+    "enterOTPPlaceholder": "OTP दर्ज करें",
+    "back": "← वापस",
+    "verifyOTP": "OTP सत्यापित करें",
+    "verifying": "सत्यापित कर रहा है...",
+    "errors": {
+      "enterPhone": "कृपया फोन नंबर दर्ज करें",
+      "selectRole": "कृपया एक भूमिका चुनें",
+      "enterName": "कृपया अपना नाम दर्ज करें",
+      "invalidOTP": "गलत OTP। कृपया पुनः प्रयास करें।"
+    },
+    "close": "बंद करें"
   }
 }
