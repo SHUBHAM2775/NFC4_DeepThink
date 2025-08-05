@@ -155,6 +155,25 @@ const getAshaWorkerStats = async (req, res) => {
   }
 };
 
+const getAllPregnantLadies = async (req, res) => {
+  try {
+    const { district, state, village } = req.query; // optional filters
+
+    // Build query dynamically
+    const query = {};
+    if (district) query.district = district;
+    if (state) query.state = state;
+    if (village) query.village = village;
+
+    const pregnantLadies = await PregnantLady.find(query).lean();
+
+    return res.json({ pregnantLadies });
+  } catch (err) {
+    console.error("Error fetching pregnant ladies:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 module.exports = {
   getHighRiskPregnantLadiesCount,
   getAshaWorkerName,
@@ -162,4 +181,5 @@ module.exports = {
   getHighRiskPatients,
   getAshaWorkerPatients,
   getAshaWorkerStats,
+  getAllPregnantLadies,
 };

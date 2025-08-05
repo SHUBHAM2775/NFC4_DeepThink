@@ -41,4 +41,22 @@ const pregnantLadySchema = new mongoose.Schema({
 
 pregnantLadySchema.index({ location: "2dsphere" });
 
+pregnantLadySchema.virtual("currentMonthsPregnant").get(function () {
+  const now = new Date();
+  const createdAt = this.createdAt;
+
+  const diffInMonths =
+    (now.getFullYear() - createdAt.getFullYear()) * 12 +
+    (now.getMonth() - createdAt.getMonth());
+
+  let updatedMonths = this.monthsPregnant + diffInMonths;
+
+  if (updatedMonths > 9) updatedMonths = 9;
+
+  return updatedMonths;
+});
+
+pregnantLadySchema.set("toJSON", { virtuals: true });
+pregnantLadySchema.set("toObject", { virtuals: true });
+
 module.exports = mongoose.model("PregnantLady", pregnantLadySchema);
