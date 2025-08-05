@@ -18,4 +18,7 @@ app.use("/api/voice", voiceLogRoutes);
 const verificationRoutes = require("./routes/verificationRoutes");
 app.use("/api/verification", verificationRoutes);
 
+const ashaWorkerRoutes = require("./routes/ashaWorkerRoutes");
+app.use("/api/asha-worker", ashaWorkerRoutes);
+
 module.exports = app;
