@@ -18,13 +18,6 @@ const pregnantLadySchema = new mongoose.Schema({
   takingSupplements: { type: String, enum: answerEnum, required: true },
   hasMobileInEmergency: { type: String, enum: answerEnum, required: true },
 
-  status: {
-    type: String,
-    enum: ["Low", "Moderate", "High"],
-    required: true,
-    default: "Low",
-  },
-
   createdAt: { type: Date, default: Date.now },
 });
 
