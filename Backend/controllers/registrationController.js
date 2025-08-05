@@ -41,20 +41,42 @@ const registerAdmin = async (req, res) => {
 
 const registerAshaWorker = async (req, res) => {
   try {
+    console.log("Received ASHA Worker registration request:", req.body);
+    
     const { ashaId, name, phoneNumber, documents, phc, village, district, state } = req.body;
 
     // Validate required fields
     if (!ashaId || !name || !phoneNumber) {
-      return res.status(400).json({ error: "ashaId, name, and phoneNumber are required" });
+      console.log("Missing required fields:", { ashaId: !!ashaId, name: !!name, phoneNumber: !!phoneNumber });
+      return res.status(400).json({ 
+        error: "ashaId, name, and phoneNumber are required",
+        details: {
+          ashaId: !ashaId ? "ASHA ID is required" : null,
+          name: !name ? "Name is required" : null,
+          phoneNumber: !phoneNumber ? "Phone number is required" : null
+        }
+      });
     }
 
     // Check if phone already exists in User
     const existingUser = await User.findOne({ phoneNumber });
     if (existingUser) {
+      console.log("User with phone number already exists:", phoneNumber);
       return res.status(400).json({ error: "User with this phone number already exists" });
     }
 
+    // Check if ASHA ID already exists
+    const existingAshaWorker = await AshaWorker.findOne({ ashaId });
+    if (existingAshaWorker) {
+      console.log("ASHA worker with this ID already exists:", ashaId);
+      return res.status(400).json({ error: "ASHA worker with this ID already exists" });
+    }
+
     // Create AshaWorker
+    console.log("Creating ASHA worker with data:", {
+      ashaId, name, phoneNumber, documents, phc, village, district, state
+    });
+    
     const ashaWorker = await AshaWorker.create({
       ashaId,
       name,
@@ -66,6 +88,8 @@ const registerAshaWorker = async (req, res) => {
       state
     });
 
+    console.log("ASHA worker created successfully:", ashaWorker._id);
+
     // Create User linked to AshaWorker
     const user = await User.create({
       phoneNumber,
@@ -75,6 +99,8 @@ const registerAshaWorker = async (req, res) => {
       name
     });
 
+    console.log("User created successfully:", user._id);
+
     res.status(201).json({
       message: "Asha Worker registered successfully",
       userId: user._id,
@@ -83,7 +109,29 @@ const registerAshaWorker = async (req, res) => {
 
   } catch (err) {
     console.error("Error in registerAshaWorker:", err);
-    res.status(500).json({ error: "Internal server error" });
+    
+    // Handle Mongoose validation errors
+    if (err.name === 'ValidationError') {
+      const validationErrors = Object.values(err.errors).map(e => e.message);
+      return res.status(400).json({ 
+        error: "Validation error", 
+        details: validationErrors 
+      });
+    }
+    
+    // Handle duplicate key errors
+    if (err.code === 11000) {
+      const duplicateField = Object.keys(err.keyPattern)[0];
+      return res.status(400).json({ 
+        error: `${duplicateField} already exists`,
+        details: `A record with this ${duplicateField} already exists in the database`
+      });
+    }
+    
+    res.status(500).json({ 
+      error: "Internal server error",
+      details: err.message 
+    });
   }
 };
 

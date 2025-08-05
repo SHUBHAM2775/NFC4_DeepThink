@@ -19,20 +19,65 @@ export const registerAdmin = async (userData) => {
 // Register ASHA Worker
 export const registerAshaWorker = async (userData, questionnaireData) => {
   try {
-    const response = await axios.post(`${BASE_URL}/asha`, {
-      ashaId: questionnaireData.ashaId,
-      name: userData.name,
-      phoneNumber: userData.phone.replace(/\s/g, ''), // Remove spaces from phone number
+    console.log("Frontend sending ASHA worker data:", {
+      userData,
+      questionnaireData
+    });
+
+    // Validate required fields before sending
+    if (!userData?.name) {
+      console.error("Validation failed: User name is missing");
+      throw new Error("User name is required");
+    }
+    if (!userData?.phone) {
+      console.error("Validation failed: User phone is missing");
+      throw new Error("User phone number is required");
+    }
+    if (!questionnaireData?.ashaId) {
+      console.error("Validation failed: ASHA ID is missing");
+      throw new Error("ASHA ID is required");
+    }
+
+    // Clean and validate phone number
+    const cleanPhone = userData.phone.replace(/\s/g, '').replace(/\+91/g, '');
+    console.log("Cleaned phone number:", cleanPhone);
+
+    const payload = {
+      ashaId: questionnaireData.ashaId.trim(),
+      name: userData.name.trim(),
+      phoneNumber: cleanPhone,
       documents: questionnaireData.documents || [],
       phc: questionnaireData.phc || '',
       village: questionnaireData.village || '',
       district: questionnaireData.district || '',
       state: questionnaireData.state || ''
-    });
+    };
+
+    console.log("Final payload being sent to backend:", payload);
+    console.log("Payload validation:");
+    console.log("- ashaId:", payload.ashaId, "Length:", payload.ashaId.length);
+    console.log("- name:", payload.name, "Length:", payload.name.length);
+    console.log("- phoneNumber:", payload.phoneNumber, "Length:", payload.phoneNumber.length);
+
+    const response = await axios.post(`${BASE_URL}/asha`, payload);
+    return response.data;
     return response.data;
   } catch (error) {
     console.error('Error registering ASHA worker:', error);
-    throw error.response?.data || error;
+    console.error('Error response:', error.response?.data);
+    console.error('Status code:', error.response?.status);
+    console.error('Full error object:', error);
+    
+    // Return detailed error information
+    const errorMessage = error.response?.data?.error || error.message || "Unknown error occurred";
+    const errorDetails = error.response?.data?.details || null;
+    
+    throw {
+      message: errorMessage,
+      details: errorDetails,
+      status: error.response?.status,
+      originalError: error.response?.data || error
+    };
   }
 };
 
