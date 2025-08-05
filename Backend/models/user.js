@@ -1,30 +1,26 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-
-  phone: {
+  phoneNumber: {
     type: String,
     required: true,
     unique: true,
   },
-
   role: {
     type: String,
-    enum: ["pregnant_woman", "asha_worker", "admin"],
+    enum: ["admin", "asha_worker", "pregnant_lady"],
     required: true,
   },
-
-  ashaIdImage: {
-    type: String,
-    required: function () {
-      return this.role === "asha_worker";
-    },
+  refId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    refPath: "roleRef",
   },
-
+  roleRef: {
+    type: String,
+    required: true,
+    enum: ["Admin", "AshaWorker", "PregnantLady"],
+  },
   otp: {
     code: String,
     expiresAt: Date,
