@@ -123,7 +123,7 @@
   },
   "header": {
     "welcomeMessage": "आपकी स्वास्थ्य यात्रा में आपका स्वागत है",
-    "appTitle": "मातृत्व स्वास्थ्य ट्रैकर",
+    "appTitle": "सखी साथी",
     "logout": "लॉगआउट",
     "loginSignup": "लॉगिन / साइनअप"
   },
@@ -159,7 +159,8 @@
         "selectedFiles": "चयनित फाइलें:"
       }
     },
-    "submitButton": "पंजीकरण पूरा करें"
+    "submitButton": "पंजीकरण पूरा करें",
+    "submitting": "पंजीकरण हो रहा है..."
   },
   "patientQuestionnaire": {
     "title": "स्वास्थ्य प्रश्नावली",
@@ -234,8 +235,47 @@
           "no": "नहीं"
         },
         "previousButton": "पिछला",
-        "submitButton": "जमा करें"
+        "submitButton": "जमा करें",
+        "submitting": "जमा कर रहा है..."
       }
+    }
+  },
+  "patientDashboard": {
+    "welcomeMessage": "आपकी स्वास्थ्य यात्रा में आपका स्वागत है",
+    "userName": "प्रिया शर्मा",
+    "emergencyContacts": "आपातकालीन संपर्क",
+    "logout": "लॉगआउट",
+    "emergencyLabor": "आपातकालीन प्रसव",
+    "voiceDailyLog": {
+      "title": "आवाज़ दैनिक लॉग",
+      "description": "अपने दैनिक लक्षण और भावनाओं को रिकॉर्ड करें",
+      "startRecording": "रिकॉर्डिंग शुरू करें"
+    },
+    "myReminders": "मेरे रिमाइंडर",
+    "reminders": {
+      "ironTablet": "आयरन टैबलेट",
+      "doctorVisit": "डॉक्टर की मुलाकात",
+      "drinkMilk": "दूध पिएं",
+      "tomorrow": "कल",
+      "medication": "दवा",
+      "checkup": "जांच",
+      "nutrition": "पोषण"
+    },
+    "emergencyContactsModal": {
+      "noContacts": "कोई आपातकालीन संपर्क नहीं।",
+      "addContact": "+ संपर्क जोड़ें",
+      "addContactTitle": "आपातकालीन संपर्क जोड़ें",
+      "contactName": "संपर्क नाम",
+      "phoneNumber": "फोन नंबर (वैकल्पिक)",
+      "enterName": "नाम दर्ज करें",
+      "enterPhone": "फोन नंबर दर्ज करें",
+      "cancel": "रद्द करें",
+      "add": "जोड़ें",
+      "enterContactName": "कृपया संपर्क नाम दर्ज करें।"
+    },
+    "defaultContacts": {
+      "ashaWorker": "आशा कार्यकर्ता: सुनीता देवी",
+      "nearestHospital": "निकटतम अस्पताल"
     }
   }
 }
