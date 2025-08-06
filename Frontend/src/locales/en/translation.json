@@ -291,6 +291,11 @@
       "assigned": "Assigned",
       "years": "years",
       "callWorker": "Call ASHA Worker"
+    },
+    "reportAnalysis": {
+      "title": "Medical Reports",
+      "description": "Upload your medical reports for AI-powered analysis and personalized insights",
+      "uploadButton": "Upload & Analyze Reports"
     }
   },
   "ashaDashboard": {

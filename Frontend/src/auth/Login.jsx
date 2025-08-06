@@ -273,9 +273,9 @@ const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
           <div className="flex items-center justify-center">
             <span className="text-yellow-800 text-sm font-medium">
               {!otpSent ? (
-                "📱 Enter phone number - 10 digits for real OTP, others for demo mode"
+                "📱 Enter phone number - All 10-digit numbers accepted"
               ) : useRealOtp ? (
-                "🔐 Real OTP sent to your phone"
+                "🔐 Real OTP sent to your phone via SMS"
               ) : (
                 "🚀 Demo Mode - Use OTP '1'"
               )}
@@ -387,9 +387,9 @@ const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
                     {t("auth.enterOTPMessage", { phone })}
                   </p>
                   {!useRealOtp && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-3">
-                      <p className="text-blue-800 text-sm font-medium">
-                        🎯 Demo Mode: Enter "1" as OTP
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-3">
+                      <p className="text-green-800 text-sm font-medium">
+                        🎯 Demo Mode: Enter "1" as OTP (All numbers except 9619200100)
                       </p>
                     </div>
                   )}
