@@ -1,4 +1,4 @@
-# 🤱 DeepThink - AI Pregnancy Care Platform
+# 🤱 Sakhi Saathi - AI Pregnancy Care Platform
 
 [![Need For Code 4.0](https://img.shields.io/badge/Need%20For%20Code-4.0-orange)](https://hackathon.com)
 [![React](https://img.shields.io/badge/React-19.1.0-blue)](https://reactjs.org/)
