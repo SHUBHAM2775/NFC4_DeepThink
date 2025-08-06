@@ -131,15 +131,12 @@ pip install -r requirements.txt
 ## 👥 Team
 
 **Built with ❤️ during Need For Code 4.0 Hackathon**
-
+- **Leader**:    [Shreya Shuka](https://github.com/Shreyaa983)
+- **Developer**: [Raseeca Kashelkar](https://github.com/ItsMeRaseeca)
+- **Developer**: [Om Mhaske](https://github.com/om-mhaske7)
 - **Developer**: [Shubham Upadhyay](https://github.com/SHUBHAM2775)
 - **Stack**: Full-stack + AI integration
 - **Timeline**: 48 hours hackathon build
-
-## 📞 Contact
-
-- **GitHub**: [@SHUBHAM2775](https://github.com/SHUBHAM2775)
-- **Repository**: [NFC4_DeepThink](https://github.com/SHUBHAM2775/NFC4_DeepThink)
 
 ---
 
