@@ -24,4 +24,8 @@ app.use("/api/asha-worker", ashaWorkerRoutes);
 const pregnantLadyRoutes = require("./routes/pregnantLadyRoutes");
 app.use("/api/pregnant-lady", pregnantLadyRoutes);
 
+// Add reminder routes for AI-powered personalized reminders
+const reminderRoutes = require("./routes/reminderRoutes");
+app.use("/api/reminders", reminderRoutes);
+
 module.exports = app;

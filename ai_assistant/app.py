@@ -443,7 +443,285 @@ def generate_chat_response(message, context, recent_logs, language=None):
         # Fallback response
         return "I'm here to help with your pregnancy questions. While I can provide general guidance, please consult your healthcare provider for personalized medical advice."
 
-@app.route('/test/multilingual', methods=['POST'])
+def get_default_reminders():
+    """Fallback default reminders"""
+    return [
+        {
+            'id': 'reminder_1',
+            'text': 'Take prenatal vitamins with breakfast',
+            'category': 'medication',
+            'icon': '💊',
+            'priority': 'high'
+        },
+        {
+            'id': 'reminder_2',
+            'text': 'Drink 8-10 glasses of water throughout the day',
+            'category': 'nutrition',
+            'icon': '💧',
+            'priority': 'high'
+        },
+        {
+            'id': 'reminder_3',
+            'text': '20-minute gentle walk or prenatal yoga',
+            'category': 'exercise',
+            'icon': '🧘‍♀️',
+            'priority': 'medium'
+        },
+        {
+            'id': 'reminder_4',
+            'text': 'Monitor baby movements and kick counts',
+            'category': 'monitoring',
+            'icon': '👶',
+            'priority': 'medium'
+        },
+        {
+            'id': 'reminder_5',
+            'text': 'Schedule next prenatal checkup appointment',
+            'category': 'appointment',
+            'icon': '👩‍⚕️',
+            'priority': 'medium'
+        }
+    ]
+
+def get_default_reminders_for_symptoms(symptoms, conditions, pregnancy_week):
+    """Generate default reminders based on specific symptoms/conditions"""
+    reminders = []
+    
+    # Anemia-related reminders
+    if any(symptom in ['anemia', 'fatigue', 'dizziness'] for symptom in symptoms + conditions):
+        reminders.append({
+            'id': 'reminder_iron',
+            'text': 'Take iron supplement after meals to prevent anemia',
+            'category': 'medication',
+            'icon': '💊',
+            'priority': 'high'
+        })
+    
+    # Diabetes-related reminders  
+    if any(condition in ['diabetes', 'gestational diabetes'] for condition in conditions):
+        reminders.append({
+            'id': 'reminder_glucose',
+            'text': 'Check blood sugar levels as prescribed',
+            'category': 'monitoring',
+            'icon': '📊',
+            'priority': 'high'
+        })
+    
+    # Add default reminders to fill up to 5
+    default_reminders = get_default_reminders()
+    for reminder in default_reminders:
+        if len(reminders) >= 5:
+            break
+        if reminder['id'] not in [r['id'] for r in reminders]:
+            reminders.append(reminder)
+    
+    return reminders[:5]
+
+def parse_ai_reminders_response(ai_response, symptoms, conditions):
+    """Parse AI response and structure into reminder objects"""
+    
+    lines = [line.strip() for line in ai_response.split('\n') if line.strip()]
+    reminders = []
+    
+    # Category mapping for icons and types
+    category_mapping = {
+        'iron': {'category': 'medication', 'icon': '💊'},
+        'vitamin': {'category': 'medication', 'icon': '💊'},
+        'supplement': {'category': 'medication', 'icon': '💊'},
+        'water': {'category': 'nutrition', 'icon': '💧'},
+        'drink': {'category': 'nutrition', 'icon': '🥛'},
+        'eat': {'category': 'nutrition', 'icon': '🥗'},
+        'walk': {'category': 'exercise', 'icon': '🚶‍♀️'},
+        'exercise': {'category': 'exercise', 'icon': '🧘‍♀️'},
+        'check': {'category': 'monitoring', 'icon': '📋'},
+        'monitor': {'category': 'monitoring', 'icon': '📊'},
+        'appointment': {'category': 'appointment', 'icon': '👩‍⚕️'},
+        'visit': {'category': 'appointment', 'icon': '🏥'},
+        'doctor': {'category': 'appointment', 'icon': '👩‍⚕️'}
+    }
+    
+    for i, line in enumerate(lines[:5]):  # Limit to 5 reminders
+        # Clean up the line
+        clean_line = line.replace('-', '').replace('*', '').replace(f'{i+1}.', '').strip()
+        if not clean_line:
+            continue
+            
+        # Determine category and icon
+        category = 'medication'  # default
+        icon = '⚕️'  # default
+        
+        for keyword, mapping in category_mapping.items():
+            if keyword in clean_line.lower():
+                category = mapping['category']
+                icon = mapping['icon']
+                break
+        
+        # Determine priority based on symptoms and conditions
+        priority = 'medium'
+        if any(symptom in ['anemia', 'fatigue', 'dizziness'] for symptom in symptoms):
+            if 'iron' in clean_line.lower():
+                priority = 'high'
+        
+        if any(condition in ['diabetes', 'hypertension'] for condition in conditions):
+            if any(word in clean_line.lower() for word in ['blood', 'pressure', 'sugar']):
+                priority = 'high'
+        
+        reminders.append({
+            'id': f'reminder_{i+1}',
+            'text': clean_line,
+            'category': category,
+            'icon': icon,
+            'priority': priority
+        })
+    
+    # Ensure we have exactly 5 reminders
+    while len(reminders) < 5:
+        reminders.extend(get_default_reminders()[:5-len(reminders)])
+    
+    return reminders[:5]
+
+def generate_personalized_reminders(voice_logs, user_profile, user_id):
+    """Generate personalized weekly reminders using AI analysis"""
+    
+    # Extract symptoms and concerns from voice logs
+    all_symptoms = []
+    all_concerns = []
+    medication_mentions = []
+    
+    for log in voice_logs:
+        transcript = log.get('transcript', '').lower()
+        symptoms = log.get('symptoms', [])
+        
+        all_symptoms.extend(symptoms)
+        
+        # Analyze transcript for medication mentions
+        if any(med in transcript for med in ['iron', 'tablet', 'vitamin', 'supplement', 'medicine']):
+            medication_mentions.append(transcript)
+            
+        # Extract concerns
+        if any(concern in transcript for concern in ['forgot', 'missed', 'worried', 'concerned', 'pain']):
+            all_concerns.append(transcript)
+    
+    # Build context for AI
+    pregnancy_week = user_profile.get('pregnancy_week', 20)
+    conditions = user_profile.get('conditions', [])
+    age = user_profile.get('age', 28)
+    
+    system_prompt = """You are a pregnancy health assistant. Generate exactly 5 daily health reminders 
+    for a pregnant woman based on her recent voice logs and health profile. Focus on medication adherence, 
+    nutrition, exercise, monitoring, and appointments. Each reminder should be actionable and specific."""
+    
+    context_info = f"""
+    Patient Profile:
+    - Pregnancy Week: {pregnancy_week}
+    - Age: {age}
+    - Health Conditions: {', '.join(conditions) if conditions else 'None specified'}
+    
+    Recent Voice Log Analysis:
+    - Common Symptoms: {', '.join(set(all_symptoms)) if all_symptoms else 'None reported'}
+    - Medication Mentions: {len(medication_mentions)} instances
+    - Health Concerns: {len(all_concerns)} mentioned
+    
+    Voice Log Samples:
+    {chr(10).join([f"- {log.get('transcript', '')[:100]}..." for log in voice_logs[:3]])}
+    """
+    
+    prompt = f"""
+    {context_info}
+    
+    Generate exactly 5 personalized daily health reminders for this pregnant woman. 
+    Each reminder should be:
+    1. Specific and actionable
+    2. Relevant to her symptoms/conditions
+    3. Safe for pregnancy
+    4. Easy to track daily
+    
+    Format each reminder as: "Action - Time/Frequency"
+    Categories to include: medication, nutrition, exercise, monitoring, appointments
+    
+    Examples:
+    - "Take iron supplement after breakfast"
+    - "Drink 8 glasses of water throughout the day"
+    - "20-minute gentle walk in the evening"
+    - "Check blood pressure every morning"
+    - "Schedule weekly prenatal checkup"
+    """
+    
+    try:
+        # Generate AI response
+        ai_response = local_ai.generate_response(
+            prompt=prompt,
+            system_prompt=system_prompt,
+            context="",
+            user_language=None
+        )
+        
+        # Parse AI response into structured reminders
+        reminders = parse_ai_reminders_response(ai_response, all_symptoms, conditions)
+        
+        return reminders
+        
+    except Exception as e:
+        print(f"AI reminder generation error: {str(e)}")
+        return get_default_reminders_for_symptoms(all_symptoms, conditions, pregnancy_week)
+
+@app.route('/generate-reminders', methods=['POST'])
+
+def generate_reminders():
+    """
+    Generate weekly personalized reminders based on voice log analysis.
+    
+    Expected JSON input:
+    {
+        "user_id": "user123",
+        "voice_logs": [
+            {
+                "transcript": "I forgot to take my iron tablets yesterday",
+                "week": 20,
+                "symptoms": ["fatigue", "dizziness"],
+                "date": "2025-08-01"
+            }
+        ],
+        "user_profile": {
+            "age": 28,
+            "pregnancy_week": 20,
+            "conditions": ["anemia", "gestational diabetes"]
+        }
+    }
+    """
+    try:
+        data = request.get_json()
+        user_id = data.get('user_id', 'anonymous')
+        voice_logs = data.get('voice_logs', [])
+        user_profile = data.get('user_profile', {})
+        
+        if not voice_logs:
+            return jsonify({
+                "error": "No voice logs provided",
+                "reminders": [],
+                "compliance_percentage": 0
+            }), 400
+        
+        # Analyze voice logs and generate personalized reminders
+        reminders = generate_personalized_reminders(voice_logs, user_profile, user_id)
+        
+        return jsonify({
+            "reminders": reminders,
+            "user_id": user_id,
+            "week_generated": user_profile.get('pregnancy_week', 20),
+            "based_on_logs": len(voice_logs),
+            "ai_confidence": "high"
+        })
+        
+    except Exception as e:
+        print(f"Reminder generation error: {str(e)}")
+        return jsonify({
+            "error": "Failed to generate reminders",
+            "reminders": get_default_reminders(),
+            "message": str(e)
+        }), 500
+
+# The rest of the code remains unchanged.
 def test_multilingual():
     """Test endpoint for multilingual support"""
     try:
@@ -482,7 +760,8 @@ if __name__ == '__main__':
     print("  POST /monitor - Symptom monitoring and escalation")
     print("  POST /guidance - AI-powered pregnancy guidance with memory")
     print("  POST /voice-guidance - Process voice logs and provide AI guidance")
-    print("  POST /chat - Conversational AI assistant for pregnancy questions")
+    print("  POST /chat - Conversational AI assistant for pregnancy questions") 
+    print("  POST /generate-reminders - Generate personalized weekly reminders")
     print()
     
     # Start the server on port 5002 to avoid conflict with Node.js backend

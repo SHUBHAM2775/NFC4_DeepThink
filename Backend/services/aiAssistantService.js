@@ -121,6 +121,42 @@ class AIAssistantService {
     }
 
     /**
+     * Generate personalized weekly reminders using AI analysis
+     * @param {string} userId - User ID for personalization
+     * @param {Array} voiceLogs - Recent voice logs for analysis
+     * @param {Object} userProfile - User profile data
+     * @returns {Promise<Object>} AI-generated reminders
+     */
+    async generateReminders(userId, voiceLogs, userProfile) {
+        try {
+            const response = await axios.post(`${this.baseURL}/generate-reminders`, {
+                user_id: userId,
+                voice_logs: voiceLogs,
+                user_profile: userProfile
+            }, {
+                timeout: 30000, // 30 second timeout
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            return {
+                success: true,
+                data: response.data
+            };
+        } catch (error) {
+            console.error('AI Reminder Generation Error:', error.message);
+            return {
+                success: false,
+                error: error.message,
+                data: {
+                    reminders: this.getDefaultReminders()
+                }
+            };
+        }
+    }
+
+    /**
      * Get chat response from AI Assistant
      * @param {string} message - User's chat message
      * @param {string} userId - User ID for memory tracking
@@ -171,6 +207,50 @@ class AIAssistantService {
         } catch (error) {
             return false;
         }
+    }
+
+    /**
+     * Get default fallback reminders
+     * @returns {Array} Default reminder array
+     */
+    getDefaultReminders() {
+        return [
+            {
+                id: 'reminder_1',
+                text: 'Take prenatal vitamins with breakfast',
+                category: 'medication',
+                icon: '💊',
+                priority: 'high'
+            },
+            {
+                id: 'reminder_2',
+                text: 'Drink 8-10 glasses of water throughout the day',
+                category: 'nutrition',
+                icon: '💧',
+                priority: 'high'
+            },
+            {
+                id: 'reminder_3',
+                text: '20-minute gentle walk or prenatal yoga',
+                category: 'exercise',
+                icon: '🧘‍♀️',
+                priority: 'medium'
+            },
+            {
+                id: 'reminder_4',
+                text: 'Monitor baby movements and kick counts',
+                category: 'monitoring',
+                icon: '👶',
+                priority: 'medium'
+            },
+            {
+                id: 'reminder_5',
+                text: 'Schedule next prenatal checkup appointment',
+                category: 'appointment',
+                icon: '👩‍⚕️',
+                priority: 'medium'
+            }
+        ];
     }
 }
 

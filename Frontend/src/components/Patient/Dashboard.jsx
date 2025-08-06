@@ -15,6 +15,7 @@ import {
 } from "@heroicons/react/24/outline";
 import LanguageSwitcher from '../LanguageSwitcher';
 import AssistantHover from '../AssistantHover';
+import PersonalizedReminders from '../PersonalizedReminders';
 import { getNearbyAshaWorkers, assignAshaWorker } from '../../services/pregnantLadyAPI';
 import ReportAnalysis from './ReportAnalysis';
 
@@ -296,49 +297,9 @@ export default function PatientDashboard({ onNavigateToVoiceLog }) {
           </section>
 
           {/* My Reminders */}
-          <section className="bg-white p-6 rounded-lg shadow">
-            <div className="flex items-center gap-2 mb-4">
-              <BellIcon className="h-5 w-5 text-yellow-400" />
-              <span className="font-semibold">{t('patientDashboard.myReminders')}</span>
-            </div>
-            <ul className="space-y-4">
-              <li className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <HeartIcon className="h-6 w-6 text-pink-400" />
-                  <div>
-                    <div className="font-medium text-gray-800">{t('patientDashboard.reminders.ironTablet')}</div>
-                    <div className="text-xs text-gray-500">9:00 AM</div>
-                  </div>
-                </div>
-                <span className="px-3 py-0.5 rounded-full text-xs bg-pink-100 text-pink-600 border border-pink-200">
-                  {t('patientDashboard.reminders.medication')}
-                </span>
-              </li>
-              <li className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <CalendarIcon className="h-6 w-6 text-blue-400" />
-                  <div>
-                    <div className="font-medium text-gray-800">{t('patientDashboard.reminders.doctorVisit')}</div>
-                    <div className="text-xs text-gray-500">{t('patientDashboard.reminders.tomorrow')} 2:00 PM</div>
-                  </div>
-                </div>
-                <span className="px-3 py-0.5 rounded-full text-xs bg-blue-100 text-blue-600 border border-blue-200">
-                  {t('patientDashboard.reminders.checkup')}
-                </span>
-              </li>
-              <li className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <HeartIcon className="h-6 w-6 text-green-400" />
-                  <div>
-                    <div className="font-medium text-gray-800">{t('patientDashboard.reminders.drinkMilk')}</div>
-                    <div className="text-xs text-gray-500">6:00 PM</div>
-                  </div>
-                </div>
-                <span className="px-3 py-0.5 rounded-full text-xs bg-green-100 text-green-700 border border-green-200">
-                  {t('patientDashboard.reminders.nutrition')}
-                </span>
-              </li>
-            </ul>
+          {/* AI-Powered Personalized Reminders */}
+          <section className="col-span-2">
+            <PersonalizedReminders userId={pregnantLadyId} />
           </section>
 
           {/* Upload and Analyze Report */}
