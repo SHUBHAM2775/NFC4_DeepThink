@@ -11,6 +11,7 @@ import {
   BellAlertIcon,
   DocumentIcon,
   PhotoIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
 import {
   getTotalUserCount,
@@ -52,6 +53,12 @@ const Dashboard = ({ user }) => {
   ]);
   const [pendingVerifications, setPendingVerifications] = useState([]);
   const [actionLoading, setActionLoading] = useState({});
+  const [documentModal, setDocumentModal] = useState({
+    isOpen: false,
+    documents: [],
+    ashaId: null,
+    ashaName: null,
+  });
 
   // Fetch all data when component mounts
   useEffect(() => {
@@ -137,12 +144,38 @@ const Dashboard = ({ user }) => {
     try {
       const response = await showAshaDocuments(ashaId);
       console.log('Documents data:', response);
-      // You can add logic here to display the documents in a modal or navigate to a new page
-      // For now, we'll just log the response
-      alert(`Documents fetched successfully for ASHA ID: ${ashaId}`);
+      
+      // Find the ASHA worker's name from pending verifications
+      const ashaWorker = pendingVerifications.find(pv => pv.ashaId === ashaId);
+      const ashaName = ashaWorker?.name || 'Unknown';
+      
+      // Open modal with documents
+      setDocumentModal({
+        isOpen: true,
+        documents: response.documents || [],
+        ashaId: ashaId,
+        ashaName: ashaName,
+      });
+
+      // Log the document URLs for debugging
+      if (response.documents && response.documents.length > 0) {
+        console.log('Document URLs:');
+        response.documents.forEach(doc => {
+          console.log(`- ${doc}: ${getDocumentUrl(ashaId, doc)}`);
+        });
+      }
     } catch (err) {
       console.error('Error fetching documents:', err);
-      setError('Failed to fetch documents. Please try again.');
+      if (err.response) {
+        // Server responded with error status
+        setError(`Failed to fetch documents: ${err.response.data?.error || err.response.statusText}`);
+      } else if (err.request) {
+        // Server not responding
+        setError('Server is not responding. Please make sure the backend is running on localhost:5000');
+      } else {
+        // Other errors
+        setError('Failed to fetch documents. Please try again.');
+      }
     } finally {
       setActionLoading(prev => {
         const newLoading = { ...prev };
@@ -150,6 +183,19 @@ const Dashboard = ({ user }) => {
         return newLoading;
       });
     }
+  };
+
+  const closeDocumentModal = () => {
+    setDocumentModal({
+      isOpen: false,
+      documents: [],
+      ashaId: null,
+      ashaName: null,
+    });
+  };
+
+  const getDocumentUrl = (ashaId, filename) => {
+    return `http://localhost:5000/api/verification/${ashaId}/document/${filename}`;
   };
 
   const recentActivities = [
@@ -394,6 +440,141 @@ const Dashboard = ({ user }) => {
           </div>
         </div>
       </div>
+
+      {/* Document Review Modal */}
+      {documentModal.isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <div>
+                <h2 className="text-xl font-bold text-gray-800">
+                  Document Review
+                </h2>
+                <p className="text-gray-600 mt-1">
+                  ASHA Worker: {documentModal.ashaName} (ID: {documentModal.ashaId})
+                </p>
+              </div>
+              <button
+                onClick={closeDocumentModal}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <XMarkIcon className="h-6 w-6 text-gray-500" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
+              {documentModal.documents.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <DocumentIcon className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                  <p>No documents found for this ASHA worker.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {documentModal.documents.map((document, index) => (
+                    <div
+                      key={index}
+                      className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex items-center mb-3">
+                        {document.toLowerCase().endsWith('.pdf') ? (
+                          <DocumentIcon className="h-8 w-8 text-red-500 mr-3" />
+                        ) : (
+                          <PhotoIcon className="h-8 w-8 text-blue-500 mr-3" />
+                        )}
+                        <div>
+                          <h3 className="font-semibold text-gray-800 break-all">
+                            {document}
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            {document.toLowerCase().endsWith('.pdf') ? 'PDF Document' : 'Image File'}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Document Preview */}
+                      <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                        {document.toLowerCase().endsWith('.pdf') ? (
+                          <div className="text-center py-8">
+                            <DocumentIcon className="h-16 w-16 mx-auto text-red-300 mb-4" />
+                            <p className="text-gray-600">PDF Document</p>
+                            <p className="text-sm text-gray-500 mt-2">
+                              Click "View Document" to open in new tab
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="text-center">
+                            <img
+                              src={getDocumentUrl(documentModal.ashaId, document)}
+                              alt={document}
+                              className="max-w-full max-h-48 mx-auto rounded-lg shadow-sm"
+                              onLoad={(e) => {
+                                // Hide the fallback message when image loads successfully
+                                const fallback = e.target.nextSibling;
+                                if (fallback) fallback.style.display = 'none';
+                              }}
+                              onError={(e) => {
+                                console.error('Failed to load image:', getDocumentUrl(documentModal.ashaId, document));
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'block';
+                              }}
+                            />
+                            <div 
+                              className="text-center py-8"
+                              style={{ display: 'none' }}
+                            >
+                              <PhotoIcon className="h-16 w-16 mx-auto text-gray-300 mb-4" />
+                              <p className="text-gray-600">Image Preview Unavailable</p>
+                              <p className="text-sm text-gray-500 mt-1">
+                                Server may be offline or file not found
+                              </p>
+                              <p className="text-xs text-gray-400 mt-2">
+                                URL: {getDocumentUrl(documentModal.ashaId, document)}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex gap-2">
+                        <a
+                          href={getDocumentUrl(documentModal.ashaId, document)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 bg-blue-500 text-white text-center py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors font-medium"
+                        >
+                          View Document
+                        </a>
+                        <a
+                          href={getDocumentUrl(documentModal.ashaId, document)}
+                          download={document}
+                          className="flex-1 bg-gray-500 text-white text-center py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors font-medium"
+                        >
+                          Download
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-6 border-t border-gray-200 bg-gray-50">
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={closeDocumentModal}
+                  className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
