@@ -4,7 +4,6 @@ const {
   getHighRiskPregnantLadiesCount,
   getAshaWorkerName,
   getAshaWorkerVerificationStatus,
-  getAllPregnantLadies,
   getPatientsForAshaWorker,
 } = require("../controllers/ashaWorkerController");
 

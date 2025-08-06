@@ -163,13 +163,28 @@ const getPatientsForAshaWorker = async (req, res) => {
       assignedAshaWorker: ashaWorkerId,
     }).lean();
 
-    return res.json({ patients });
+    if (!patients || patients.length === 0) {
+      return res.status(200).json({ patients: [] });
+    }
+
+    const formattedPatients = patients.map((p) => ({
+      name: p.name,
+      phoneNumber: p.phoneNumber,
+      village: p.village,
+      district: p.district,
+      monthsPregnant: p.monthsPregnant,
+      currentlyPregnant: p.currentlyPregnant,
+      complianceScore: "60%",
+      risk: p.status || "high",
+      lastLog: "2 days ago",
+    }));
+
+    return res.status(200).json({ patients: formattedPatients });
   } catch (err) {
     console.error("Error fetching patients for ASHA worker:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
 module.exports = {
   getHighRiskPregnantLadiesCount,
   getAshaWorkerName,
