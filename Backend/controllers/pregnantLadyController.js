@@ -74,7 +74,25 @@ const assignAshaWorker = async (req, res) => {
   }
 };
 
+const getPregnantLadyName = async (req, res) => {
+  try {
+    const { pregnantLadyId } = req.params;
+
+    const lady = await PregnantLady.findById(pregnantLadyId).select("name");
+
+    if (!lady) {
+      return res.status(404).json({ error: "Pregnant lady not found" });
+    }
+
+    return res.json({ name: lady.name });
+  } catch (err) {
+    console.error("Error fetching pregnant lady name:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 module.exports = {
   getNearbyAshaWorkers,
   assignAshaWorker,
+  getPregnantLadyName,
 };
