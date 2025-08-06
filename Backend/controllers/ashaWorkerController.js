@@ -155,21 +155,6 @@ const getAshaWorkerStats = async (req, res) => {
   }
 };
 
-const getPatientsForAshaWorker = async (req, res) => {
-  try {
-    const { ashaWorkerId } = req.params;
-
-    const patients = await PregnantLady.find({
-      assignedAshaWorker: ashaWorkerId,
-    }).lean();
-
-    return res.json({ patients });
-  } catch (err) {
-    console.error("Error fetching patients for ASHA worker:", err);
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
-
 module.exports = {
   getHighRiskPregnantLadiesCount,
   getAshaWorkerName,
@@ -177,5 +162,4 @@ module.exports = {
   getHighRiskPatients,
   getAshaWorkerPatients,
   getAshaWorkerStats,
-  getPatientsForAshaWorker,
 };

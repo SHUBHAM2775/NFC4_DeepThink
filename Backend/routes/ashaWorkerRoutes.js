@@ -4,8 +4,6 @@ const {
   getHighRiskPregnantLadiesCount,
   getAshaWorkerName,
   getAshaWorkerVerificationStatus,
-  getAllPregnantLadies,
-  getPatientsForAshaWorker,
 } = require("../controllers/ashaWorkerController");
 
 // Get high risk pregnant ladies count
@@ -19,7 +17,5 @@ router.get("/:ashaId/name", getAshaWorkerName);
 
 // Get ASHA worker verification status
 router.get("/:ashaId/verification-status", getAshaWorkerVerificationStatus);
-
-router.get("/:ashaWorkerId/patients", getPatientsForAshaWorker);
 
 module.exports = router;
