@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from "react-router-dom";
+
 import {
   BellIcon,
   MicrophoneIcon,
@@ -9,19 +11,21 @@ import {
   PhoneIcon,
   ChevronDownIcon,
   XMarkIcon,
+  DocumentTextIcon,
 } from "@heroicons/react/24/outline";
 import LanguageSwitcher from '../LanguageSwitcher';
+import ReportDiagnosis from "./ReportDiagnosis";
+import AssistantHover from '../AssistantHover';
 
-export default function PatientDashboard() {
+export default function PatientDashboard({ onNavigateToVoiceLog }) {
   const { t } = useTranslation();
-  
+
+
   const defaultContacts = [
     { id: 1, label: t('patientDashboard.defaultContacts.ashaWorker'), number: "+91 98765 43210" },
     { id: 2, label: t('patientDashboard.defaultContacts.nearestHospital'), number: "+91 12345 67890" },
   ];
 
-
-  // State for emergency contacts, initialized from localStorage or defaults
   const [contacts, setContacts] = useState(() => {
     try {
       const stored = localStorage.getItem("emergencyContacts");
@@ -35,19 +39,17 @@ export default function PatientDashboard() {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
+  const [switchToReport, setSwitchToReport] = useState(false); // 🔄 for full switch
 
-  // Save contacts to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem("emergencyContacts", JSON.stringify(contacts));
   }, [contacts]);
 
-  // Add new contact handler
   function handleAddContact() {
     if (!newName.trim()) {
       alert(t('patientDashboard.emergencyContactsModal.enterContactName'));
       return;
     }
-    // Add unique id using max id + 1 or timestamp
     const newContact = {
       id: Date.now(),
       label: newName.trim(),
@@ -59,26 +61,26 @@ export default function PatientDashboard() {
     setAddModalOpen(false);
   }
 
-  // Delete contact handler
   function handleDeleteContact(id) {
     setContacts((prev) => prev.filter((c) => c.id !== id));
   }
 
-  // Logout handler
   function handleLogout() {
-    // Clear any stored authentication data
     localStorage.removeItem("authToken");
     localStorage.removeItem("userType");
     localStorage.removeItem("userData");
-    // Redirect to login page
     window.location.href = "/";
+  }
+
+  // 🔁 Switch entire view to report
+  if (switchToReport) {
+    return <ReportDiagnosis />;
   }
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
-      {/* Header with Emergency Contacts Dropdown and Logout */}
+      {/* Header */}
       <div className="relative bg-white shadow px-8 py-4 flex items-center justify-between">
-        {/* Title and User */}
         <div>
           <h1 className="text-2xl font-bold text-pink-700">
             {t('patientDashboard.welcomeMessage')}
@@ -86,13 +88,8 @@ export default function PatientDashboard() {
           <p className="text-sm text-gray-600">{t('patientDashboard.userName')}</p>
         </div>
 
-        {/* Right Controls: Language Switcher + Emergency Contacts + Logout */}
         <div className="flex items-center space-x-4">
-          {/* Language Switcher */}
-          <div className="flex items-center">
-            <LanguageSwitcher />
-          </div>
-          {/* Emergency Contacts Dropdown */}
+          <LanguageSwitcher />
           <div className="relative">
             <button
               onClick={() => setContactsOpen(!contactsOpen)}
@@ -109,14 +106,9 @@ export default function PatientDashboard() {
                   <p className="text-gray-500">{t('patientDashboard.emergencyContactsModal.noContacts')}</p>
                 )}
                 {contacts.map((contact) => (
-                  <div
-                    key={contact.id}
-                    className="flex items-center justify-between mb-2"
-                  >
+                  <div key={contact.id} className="flex items-center justify-between mb-2">
                     <div>
-                      <div className="font-semibold text-gray-700">
-                        {contact.label}
-                      </div>
+                      <div className="font-semibold text-gray-700">{contact.label}</div>
                       {contact.number !== "N/A" && (
                         <div className="text-xs text-gray-500">{contact.number}</div>
                       )}
@@ -130,8 +122,6 @@ export default function PatientDashboard() {
                     </button>
                   </div>
                 ))}
-
-                {/* Add Contact Button */}
                 <button
                   onClick={() => setAddModalOpen(true)}
                   className="w-full mt-3 px-3 py-1.5 bg-pink-100 hover:bg-pink-200 rounded-md text-pink-700 font-medium"
@@ -142,8 +132,7 @@ export default function PatientDashboard() {
             )}
           </div>
 
-          {/* Logout */}
-          <button 
+          <button
             onClick={handleLogout}
             className="text-gray-600 hover:text-pink-600 px-3 py-2 rounded-md font-medium transition-colors"
           >
@@ -152,7 +141,7 @@ export default function PatientDashboard() {
         </div>
       </div>
 
-      {/* Add Contact Modal */}
+      {/* Add Modal */}
       {addModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-20 px-4">
           <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6">
@@ -197,9 +186,8 @@ export default function PatientDashboard() {
         </div>
       )}
 
-      {/* Main Content */}
+      {/* Main Sections */}
       <main className="max-w-3xl mx-auto mt-8 space-y-6 pb-12">
-        {/* Emergency Labor */}
         <div className="w-full">
           <button className="w-full flex items-center justify-center gap-2 bg-red-600 text-white font-semibold py-4 rounded-lg shadow">
             <ExclamationTriangleIcon className="h-6 w-6" />
@@ -207,65 +195,48 @@ export default function PatientDashboard() {
           </button>
         </div>
 
-        {/* Voice Daily Log */}
         <section className="bg-white p-6 rounded-lg shadow space-y-4">
           <div className="flex items-center gap-2 text-pink-700 font-semibold text-lg">
             <MicrophoneIcon className="h-5 w-5" />
             {t('patientDashboard.voiceDailyLog.title')}
           </div>
           <p className="text-sm text-gray-500">{t('patientDashboard.voiceDailyLog.description')}</p>
-          <button className="w-full mt-2 bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 rounded-lg flex items-center justify-center gap-2">
+          <button 
+            onClick={onNavigateToVoiceLog}
+            className="w-full mt-2 bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 rounded-lg flex items-center justify-center gap-2"
+          >
             <MicrophoneIcon className="h-5 w-5" />
             {t('patientDashboard.voiceDailyLog.startRecording')}
           </button>
         </section>
 
-        {/* My Reminders */}
         <section className="bg-white p-6 rounded-lg shadow">
           <div className="flex items-center gap-2 mb-4">
             <BellIcon className="h-5 w-5 text-yellow-400" />
             <span className="font-semibold">{t('patientDashboard.myReminders')}</span>
           </div>
           <ul className="space-y-4">
-            <li className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <HeartIcon className="h-6 w-6 text-pink-400" />
-                <div>
-                  <div className="font-medium text-gray-800">{t('patientDashboard.reminders.ironTablet')}</div>
-                  <div className="text-xs text-gray-500">9:00 AM</div>
-                </div>
-              </div>
-              <span className="px-3 py-0.5 rounded-full text-xs bg-pink-100 text-pink-600 border border-pink-200">
-                {t('patientDashboard.reminders.medication')}
-              </span>
-            </li>
-            <li className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <CalendarIcon className="h-6 w-6 text-blue-400" />
-                <div>
-                  <div className="font-medium text-gray-800">{t('patientDashboard.reminders.doctorVisit')}</div>
-                  <div className="text-xs text-gray-500">{t('patientDashboard.reminders.tomorrow')} 2:00 PM</div>
-                </div>
-              </div>
-              <span className="px-3 py-0.5 rounded-full text-xs bg-blue-100 text-blue-600 border border-blue-200">
-                {t('patientDashboard.reminders.checkup')}
-              </span>
-            </li>
-            <li className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <HeartIcon className="h-6 w-6 text-green-400" />
-                <div>
-                  <div className="font-medium text-gray-800">{t('patientDashboard.reminders.drinkMilk')}</div>
-                  <div className="text-xs text-gray-500">6:00 PM</div>
-                </div>
-              </div>
-              <span className="px-3 py-0.5 rounded-full text-xs bg-green-100 text-green-700 border border-green-200">
-                {t('patientDashboard.reminders.nutrition')}
-              </span>
-            </li>
+            {/* Reminders here */}
           </ul>
         </section>
+
+        {/* 🔘 Report Switch Button */}
+        <section className="bg-white p-6 rounded-lg shadow space-y-4">
+          <div className="flex items-center gap-2 text-purple-700 font-semibold text-lg">
+            <DocumentTextIcon className="h-5 w-5" />
+            Report Analysis
+          </div>
+          <button
+            onClick={() => setSwitchToReport(true)}
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 rounded-lg"
+          >
+            Upload & Analyze Report
+          </button>
+        </section>
       </main>
+
+      {/* Assistant Chatbot */}
+      <AssistantHover />
     </div>
   );
 }
