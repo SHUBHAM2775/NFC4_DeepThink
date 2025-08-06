@@ -26,19 +26,35 @@ const requestOtp = async (req, res) => {
     const cleanPhone = phoneNumber.replace(/\D/g, '');
     
     if (cleanPhone.length === 10) {
-      // Send real OTP via Twilio for 10-digit numbers
-      const verification = await client.verify.v2
-        .services(process.env.TWILIO_VERIFY_SID)
-        .verifications.create({
-          to: `+91${phoneNumber}`,
-          channel: "sms",
-        });
+      // Special case: Only 9619200100 should use Twilio
+      if (cleanPhone === '9619200100') {
+        try {
+          const verification = await client.verify.v2
+            .services(process.env.TWILIO_VERIFY_SID)
+            .verifications.create({
+              to: `+91${phoneNumber}`,
+              channel: "sms",
+            });
 
-      res.status(200).json({
-        message: "OTP sent via Twilio",
-        sid: verification.sid,
-        useRealOtp: true
-      });
+          res.status(200).json({
+            message: "OTP sent via Twilio",
+            sid: verification.sid,
+            useRealOtp: true
+          });
+        } catch (twilioError) {
+          console.error("Twilio error for 9619200100:", twilioError);
+          return res.status(500).json({ 
+            error: "Failed to send OTP via Twilio",
+            details: twilioError.message
+          });
+        }
+      } else {
+        // For all other 10-digit numbers: use demo mode with OTP "1"
+        res.status(200).json({
+          message: "Demo mode: Use OTP '1'",
+          useRealOtp: false
+        });
+      }
     } else {
       // For non-10-digit numbers, use demo mode with OTP "1"
       res.status(200).json({
@@ -48,21 +64,6 @@ const requestOtp = async (req, res) => {
     }
   } catch (err) {
     console.error("Error in requestOtp:", err);
-    
-    // Handle specific Twilio errors
-    if (err.code === 21608) {
-      return res.status(403).json({ 
-        error: "Phone number not verified for trial account",
-        details: "This phone number needs to be verified in Twilio console for trial accounts. Please verify it at twilio.com/console/phone-numbers/verified or use a different verified number."
-      });
-    }
-    
-    if (err.code === 21614) {
-      return res.status(400).json({ 
-        error: "Invalid phone number",
-        details: "The phone number format is invalid. Please check the number and try again."
-      });
-    }
     
     // Generic error for other cases
     res.status(500).json({ 
@@ -87,16 +88,37 @@ const verifyOtp = async (req, res) => {
     const cleanPhone = phoneNumber.replace(/\D/g, '');
     
     if (cleanPhone.length === 10) {
-      // Verify real OTP via Twilio for 10-digit numbers
-      const verificationCheck = await client.verify.v2
-        .services(process.env.TWILIO_VERIFY_SID)
-        .verificationChecks.create({
-          to: `+91${phoneNumber}`,
-          code: otp,
-        });
+      // Special case: Only 9619200100 should use Twilio verification
+      if (cleanPhone === '9619200100') {
+        try {
+          const verificationCheck = await client.verify.v2
+            .services(process.env.TWILIO_VERIFY_SID)
+            .verificationChecks.create({
+              to: `+91${phoneNumber}`,
+              code: otp,
+            });
 
-      if (verificationCheck.status !== "approved") {
-        return res.status(401).json({ error: "Invalid or expired OTP" });
+          if (verificationCheck.status !== "approved") {
+            return res.status(401).json({ error: "Invalid or expired OTP" });
+          }
+        } catch (twilioError) {
+          console.error("Twilio verification error for 9619200100:", twilioError);
+          if (twilioError.code === 20404) {
+            return res.status(404).json({ 
+              error: "Invalid verification code",
+              details: "The verification code you entered is incorrect or has expired. Please try again."
+            });
+          }
+          return res.status(500).json({ 
+            error: "Failed to verify OTP via Twilio",
+            details: twilioError.message
+          });
+        }
+      } else {
+        // For all other 10-digit numbers, check if OTP is "1"
+        if (otp !== "1") {
+          return res.status(401).json({ error: "Invalid OTP. Use '1' for demo mode." });
+        }
       }
     } else {
       // For non-10-digit numbers, check if OTP is "1"
@@ -125,21 +147,6 @@ const verifyOtp = async (req, res) => {
     });
   } catch (err) {
     console.error("Error in verifyOtp:", err);
-    
-    // Handle specific Twilio errors
-    if (err.code === 20404) {
-      return res.status(404).json({ 
-        error: "Invalid verification code",
-        details: "The verification code you entered is incorrect or has expired. Please try again."
-      });
-    }
-    
-    if (err.code === 21608) {
-      return res.status(403).json({ 
-        error: "Phone number not verified for trial account",
-        details: "This phone number needs to be verified in Twilio console for trial accounts."
-      });
-    }
     
     // Generic error for other cases
     res.status(500).json({ 
