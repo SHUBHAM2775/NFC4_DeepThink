@@ -1,5 +1,6 @@
 const AshaWorker = require("../models/ashaworker");
 const PregnantLady = require("../models/pregnantlady");
+const EmergencyContact = require("../models/emergencyContact");
 
 const getNearbyAshaWorkers = async (req, res) => {
   try {
@@ -91,8 +92,54 @@ const getPregnantLadyName = async (req, res) => {
   }
 };
 
+const getEmergencyContacts = async (req, res) => {
+  try {
+    const { pregnantLadyId } = req.params;
+
+    const contacts = await EmergencyContact.find({
+      pregnantLady: pregnantLadyId,
+    });
+
+    return res.json({ contacts });
+  } catch (err) {
+    console.error("Error fetching emergency contacts:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+const addEmergencyContact = async (req, res) => {
+  try {
+    const { pregnantLadyId } = req.params;
+    const { name, phoneNumber } = req.body;
+
+    if (!name || !phoneNumber) {
+      return res
+        .status(400)
+        .json({ error: "Name and phone number are required" });
+    }
+
+    const newContact = new EmergencyContact({
+      pregnantLady: pregnantLadyId,
+      name,
+      phoneNumber,
+    });
+
+    await newContact.save();
+
+    return res.json({
+      message: "Emergency contact added successfully",
+      contact: newContact,
+    });
+  } catch (err) {
+    console.error("Error adding emergency contact:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 module.exports = {
   getNearbyAshaWorkers,
   assignAshaWorker,
   getPregnantLadyName,
+  getEmergencyContacts,
+  addEmergencyContact,
 };
