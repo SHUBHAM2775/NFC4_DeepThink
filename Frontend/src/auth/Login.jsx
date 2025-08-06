@@ -26,6 +26,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [useRealOtp, setUseRealOtp] = useState(false); // Track if using real OTP or demo mode
 
   // Signup-specific states
   const [name, setName] = useState("");
@@ -38,6 +39,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
     setOtpSent(false);
     setError("");
     setName("");
+    setUseRealOtp(false);
   };
 
   // Handle language change - ensure roleKey is still valid
@@ -103,18 +105,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
       return;
     }
 
-    // DEMO MODE: Simulate OTP sending without actual API call
-    setIsLoading(true);
-    
-    // Simulate loading time
-    setTimeout(() => {
-      setIsLoading(false);
-      setOtpSent(true);
-      setError("");
-    }, 1000);
-
-    /* // COMMENTED OUT: Real OTP API integration
-    // For login: send real OTP using API
+    // For login: send OTP using API (real or demo based on phone number length)
     setIsLoading(true);
     try {
       // Clean phone number - remove +91 and spaces for API call
@@ -137,6 +128,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
       }
 
       setOtpSent(true);
+      setUseRealOtp(data.useRealOtp || false);
       setError("");
     } catch (err) {
       console.error('Error sending OTP:', err);
@@ -144,51 +136,20 @@ const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
     } finally {
       setIsLoading(false);
     }
-    */
   };
 
-  // DEMO MODE: OTP verification with fixed OTP "1"
+  // OTP verification with API integration
   const verifyOtp = async () => {
     setError("");
-    if (otp.length < 1) {
+    const expectedLength = useRealOtp ? 6 : 1; // Real OTP is 6 digits, demo is 1 digit
+    
+    if (otp.length < expectedLength) {
       setError(t("auth.errors.enterCompleteOTP"));
       return;
     }
 
     setIsLoading(true);
     
-    // Simulate loading time
-    setTimeout(() => {
-      setIsLoading(false);
-      
-      // Check if OTP is "1" (demo mode)
-      if (otp !== "1") {
-        setError("Demo Mode: Please enter '1' as OTP");
-        return;
-      }
-
-      // Success - create demo user data and route according to selected role
-      const selectedRole = roles.find(r => r.key === roleKey);
-      const selectedOriginalRole = selectedRole ? selectedRole.originalValue : roles[0].originalValue;
-      
-      // Clean phone number for display
-      const cleanPhone = phone.replace(/\+91\s?/, '').trim();
-
-      const userData = {
-        id: "demo_user_" + Date.now(),
-        name: `Demo ${selectedOriginalRole}`,
-        role: selectedOriginalRole, // Use the role selected during login
-        phone: cleanPhone,
-        roleRef: selectedOriginalRole.replace(/\s/g, ''),
-        refId: "demo_ref_" + Date.now(),
-        databaseRole: selectedOriginalRole.toLowerCase().replace(/\s/g, '_')
-      };
-
-      console.log("Demo login successful:", userData);
-      if (onSuccess) onSuccess(userData);
-    }, 1000);
-
-    /* // COMMENTED OUT: Real OTP verification API integration
     try {
       // Clean phone number - remove +91 and spaces for API call
       const cleanPhone = phone.replace(/\+91\s?/, '').trim();
@@ -233,7 +194,6 @@ const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
     } finally {
       setIsLoading(false);
     }
-    */
   };
 
   return (
@@ -308,11 +268,17 @@ const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
           {isLoginMode ? t("auth.login") : t("auth.signup")}
         </h2>
         
-        {/* Demo Mode Indicator */}
+        {/* Dynamic Mode Indicator */}
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-6">
           <div className="flex items-center justify-center">
             <span className="text-yellow-800 text-sm font-medium">
-              🚀 DEMO MODE - Any phone number accepted, use OTP "1"
+              {!otpSent ? (
+                "📱 Enter phone number - 10 digits for real OTP, others for demo mode"
+              ) : useRealOtp ? (
+                "🔐 Real OTP sent to your phone"
+              ) : (
+                "🚀 Demo Mode - Use OTP '1'"
+              )}
             </span>
           </div>
         </div>
@@ -407,7 +373,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
               </form>
             )}
 
-            {/* OTP form for login - DEMO MODE */}
+            {/* OTP form for login - Dynamic based on useRealOtp */}
             {otpSent && isLoginMode && (
               <form
                 onSubmit={(e) => {
@@ -420,21 +386,24 @@ const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
                   <p className="text-gray-600 mb-2">
                     {t("auth.enterOTPMessage", { phone })}
                   </p>
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-3">
-                    <p className="text-blue-800 text-sm font-medium">
-                      🎯 DEMO MODE: Enter "1" as OTP
-                    </p>
-                  </div>
+                  {!useRealOtp && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-3">
+                      <p className="text-blue-800 text-sm font-medium">
+                        🎯 Demo Mode: Enter "1" as OTP
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <input
                   type="text"
-                  placeholder="Enter '1' for demo"
-                  maxLength="1"
+                  placeholder={useRealOtp ? t("auth.enterOTPPlaceholder") : "Enter '1' for demo"}
+                  maxLength={useRealOtp ? "6" : "1"}
                   className="border border-pink-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-300 transition text-center text-lg tracking-widest"
                   value={otp}
-                  onChange={(e) =>
-                    setOtp(e.target.value.replace(/\D/g, "").slice(0, 1))
-                  }
+                  onChange={(e) => {
+                    const maxLength = useRealOtp ? 6 : 1;
+                    setOtp(e.target.value.replace(/\D/g, "").slice(0, maxLength));
+                  }}
                   required
                   autoFocus
                 />
@@ -448,6 +417,7 @@ const LoginSignupToggleTop = ({ onSuccess, onClose, externalError }) => {
                       setOtpSent(false);
                       setOtp("");
                       setError("");
+                      setUseRealOtp(false);
                     }}
                     className="text-pink-600 hover:text-pink-700 text-sm underline focus:outline-none"
                   >

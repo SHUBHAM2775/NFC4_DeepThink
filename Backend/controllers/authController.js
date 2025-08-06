@@ -22,17 +22,30 @@ const requestOtp = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const verification = await client.verify.v2
-      .services(process.env.TWILIO_VERIFY_SID)
-      .verifications.create({
-        to: `+91${phoneNumber}`,
-        channel: "sms",
-      });
+    // Check if phone number is exactly 10 digits
+    const cleanPhone = phoneNumber.replace(/\D/g, '');
+    
+    if (cleanPhone.length === 10) {
+      // Send real OTP via Twilio for 10-digit numbers
+      const verification = await client.verify.v2
+        .services(process.env.TWILIO_VERIFY_SID)
+        .verifications.create({
+          to: `+91${phoneNumber}`,
+          channel: "sms",
+        });
 
-    res.status(200).json({
-      message: "OTP sent via Twilio",
-      sid: verification.sid,
-    });
+      res.status(200).json({
+        message: "OTP sent via Twilio",
+        sid: verification.sid,
+        useRealOtp: true
+      });
+    } else {
+      // For non-10-digit numbers, use demo mode with OTP "1"
+      res.status(200).json({
+        message: "Demo mode: Use OTP '1'",
+        useRealOtp: false
+      });
+    }
   } catch (err) {
     console.error("Error in requestOtp:", err);
     
@@ -70,15 +83,26 @@ const verifyOtp = async (req, res) => {
         .json({ error: "Phone number and OTP are required" });
     }
 
-    const verificationCheck = await client.verify.v2
-      .services(process.env.TWILIO_VERIFY_SID)
-      .verificationChecks.create({
-        to: `+91${phoneNumber}`,
-        code: otp,
-      });
+    // Check if phone number is exactly 10 digits
+    const cleanPhone = phoneNumber.replace(/\D/g, '');
+    
+    if (cleanPhone.length === 10) {
+      // Verify real OTP via Twilio for 10-digit numbers
+      const verificationCheck = await client.verify.v2
+        .services(process.env.TWILIO_VERIFY_SID)
+        .verificationChecks.create({
+          to: `+91${phoneNumber}`,
+          code: otp,
+        });
 
-    if (verificationCheck.status !== "approved") {
-      return res.status(401).json({ error: "Invalid or expired OTP" });
+      if (verificationCheck.status !== "approved") {
+        return res.status(401).json({ error: "Invalid or expired OTP" });
+      }
+    } else {
+      // For non-10-digit numbers, check if OTP is "1"
+      if (otp !== "1") {
+        return res.status(401).json({ error: "Invalid OTP. Use '1' for demo mode." });
+      }
     }
 
     const user = await User.findOne({ phoneNumber });

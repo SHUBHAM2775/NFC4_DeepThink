@@ -278,6 +278,19 @@
     "defaultContacts": {
       "ashaWorker": "आशा कार्यकर्ता: सुनीता देवी",
       "nearestHospital": "निकटतम अस्पताल"
+    },
+    "nearbyAshaWorkers": {
+      "title": "निकटवर्ती आशा कार्यकर्ता",
+      "loadingMessage": "निकटवर्ती आशा कार्यकर्ता लोड हो रहे हैं...",
+      "errorMessage": "आशा कार्यकर्ता लोड नहीं हो सके",
+      "noWorkersFound": "कोई आशा कार्यकर्ता निकट नहीं मिला",
+      "distance": "दूरी",
+      "experience": "अनुभव",
+      "contact": "संपर्क",
+      "assign": "मुझे सौंपें",
+      "assigned": "सौंपा गया",
+      "years": "वर्ष",
+      "callWorker": "आशा कार्यकर्ता को कॉल करें"
     }
   },
   "ashaDashboard": {
