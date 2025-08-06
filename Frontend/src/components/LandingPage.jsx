@@ -1,5 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import heroImage from '../assets/hero-image.jpg';
+
 import Header from "../navbar/Header";
 import {
   BellIcon,
@@ -159,11 +161,11 @@ const LandingPage = ({ onNavigateToLogin }) => {
           </div>
           {/* Illustrative image */}
           <div className="relative">
-            <img
-              src="your-hero-image.png"
-              alt=""
-              className="rounded-xl w-[410px] h-[270px] object-cover shadow-[0_6px_26px_rgba(167,255,196,0.1)]"
-            />
+<img
+  src={heroImage}
+  alt="heroimage"
+  className="rounded-xl w-[410px] h-[270px] object-cover shadow-[0_6px_26px_rgba(167,255,196,0.1)]"
+/>
             {/* Overlays */}
             <div className="absolute top-[20px] left-[18px] bg-white rounded-lg px-4 py-1.5 text-teal-700 font-semibold text-base inline-block">
               {t('landing.overlayDailyLog')} <span className="text-gray-400 font-normal">{t('landing.overlayDailyLogSubtext')}</span>
