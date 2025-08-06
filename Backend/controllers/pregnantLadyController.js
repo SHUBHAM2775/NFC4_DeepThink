@@ -205,29 +205,23 @@ const getPatientsForAshaWorker = async (req, res) => {
       { assignedAshaWorker: ashaWorkerId },
       {
         name: 1,
-        phoneNumber: 1,
-        village: 1,
-        district: 1,
-        state: 1,
-        currentlyPregnant: 1,
-        monthsPregnant: 1,
-        complianceScore: 1, // static field
+        currentlyPregnant: 1, // We'll use this to determine status
       }
     ).lean();
 
-    // If complianceScore does not exist in DB, set default 60%
-    const patientsWithScore = patients.map((patient) => ({
-      ...patient,
-      complianceScore: patient.complianceScore || "60%",
+    // Map to include only required fields
+    const patientsWithMinimalData = patients.map((patient) => ({
+      name: patient.name,
+      status: patient.currentlyPregnant === "yes" ? "Pregnant" : "Not Pregnant",
+      complianceScore: "60%", // static value
     }));
 
-    return res.json({ patients: patientsWithScore });
+    return res.json({ patients: patientsWithMinimalData });
   } catch (err) {
     console.error("Error fetching patients for ASHA worker:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
 module.exports = {
   getNearbyAshaWorkers,
   assignAshaWorker,
