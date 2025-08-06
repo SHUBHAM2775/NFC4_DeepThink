@@ -1,1 +1,15 @@
 node_modules/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Uploads and temporary files
+uploads/
+temp/
+*.tmp
+
+# Logs
+logs/
+*.log

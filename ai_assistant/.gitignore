@@ -1,0 +1,36 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Pregnancy data (contains sensitive user information)
+pregnancy_data/
+!pregnancy_data/.gitkeep
+
+# Flask instance folder
+instance/
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+temp/
