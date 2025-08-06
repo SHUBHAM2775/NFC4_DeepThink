@@ -1,0 +1,82 @@
+{
+  "user_profile": {
+    "age": 28,
+    "first_pregnancy": true
+  },
+  "logs": [
+    {
+      "timestamp": "2025-08-06T07:05:42.271450",
+      "week": 8,
+      "daily_log": {
+        "mood": "tired",
+        "symptoms": [
+          "nausea"
+        ],
+        "concerns": [
+          "morning sickness"
+        ]
+      }
+    },
+    {
+      "timestamp": "2025-08-06T07:05:42.273692",
+      "week": 12,
+      "daily_log": {
+        "mood": "better",
+        "symptoms": [],
+        "concerns": []
+      }
+    },
+    {
+      "timestamp": "2025-08-06T07:05:42.275465",
+      "week": 16,
+      "daily_log": {
+        "mood": "excited",
+        "symptoms": [],
+        "concerns": [
+          "when will I feel movement?"
+        ]
+      }
+    },
+    {
+      "timestamp": "2025-08-06T07:05:42.277223",
+      "week": 20,
+      "daily_log": {
+        "mood": "happy",
+        "symptoms": [
+          "baby kicks!"
+        ],
+        "concerns": []
+      }
+    },
+    {
+      "timestamp": "2025-08-06T07:28:07.908923",
+      "week": 25,
+      "daily_log": {
+        "mood": "not specified",
+        "energy_level": "not specified",
+        "symptoms": [],
+        "sleep_hours": null,
+        "water_intake": "not specified",
+        "exercise": "not specified",
+        "concerns": [
+          "I am feeling tired today and have some back pain"
+        ]
+      }
+    },
+    {
+      "timestamp": "2025-08-06T07:38:50.665399",
+      "week": 20,
+      "daily_log": {
+        "mood": "not specified",
+        "energy_level": "not specified",
+        "symptoms": [],
+        "sleep_hours": null,
+        "water_intake": "not specified",
+        "exercise": "not specified",
+        "concerns": [
+          "hello I have back pain today"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "user_profile": {},
+  "logs": [
+    {
+      "timestamp": "2025-08-06T07:50:50.912060",
+      "week": 20,
+      "daily_log": {
+        "mood": "not specified",
+        "energy_level": "not specified",
+        "symptoms": [],
+        "sleep_hours": null,
+        "water_intake": "not specified",
+        "exercise": "not specified",
+        "concerns": [
+          "I have a bit of pain and a bleeding"
+        ]
+      }
+    }
+  ]
+}

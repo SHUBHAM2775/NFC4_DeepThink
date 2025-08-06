@@ -8,6 +8,7 @@ import AshaDashboard from "./components/ASHA_worker/Dashboard";
 import AdminDashboard from "./components/Admin_Panel/Dashboard";
 import VoiceLog from "./components/VoiceLog/VoiceLog";
 import Loading from "./components/Loading";
+import AssistantHover from "./components/AssistantHover";
 import { registerAdmin, registerAshaWorker, registerPregnantLady } from "./services/registrationAPI";
 
 const App = () => {
@@ -231,7 +232,7 @@ const App = () => {
       case "admin-dashboard":
         return <AdminDashboard user={user} />;
       case "voice-log":
-        return <VoiceLog onNavigateBack={() => setCurrentView("patient-dashboard")} />;
+        return <VoiceLog onNavigateBack={() => setCurrentView("patient-dashboard")} user={user} />;
       case "main":
         return (
           <div className="p-8">
@@ -263,6 +264,10 @@ const App = () => {
     <div>
       {renderCurrentView()}
       {isLoading && <Loading message="Registering your account..." />}
+      {/* Show AI Assistant Hover on pages with logged-in users */}
+      {user && (currentView === "patient-dashboard" || currentView === "asha-dashboard" || currentView === "admin-dashboard" || currentView === "voice-log") && (
+        <AssistantHover user={user} />
+      )}
     </div>
   );
 };
