@@ -14,7 +14,7 @@ import {
 } from "@heroicons/react/24/outline";
 import LanguageSwitcher from '../LanguageSwitcher';
 import AssistantHover from '../AssistantHover';
-import { getNearbyAshaWorkers } from '../../services/pregnantLadyAPI';
+import { getNearbyAshaWorkers, assignAshaWorker } from '../../services/pregnantLadyAPI';
 
 export default function PatientDashboard({ onNavigateToVoiceLog }) {
   const { t } = useTranslation();
@@ -105,9 +105,24 @@ export default function PatientDashboard({ onNavigateToVoiceLog }) {
   }
 
   // Handle ASHA worker contact
-  function handleContactAshaWorker(phoneNumber) {
-    if (phoneNumber) {
-      window.open(`tel:${phoneNumber}`);
+  async function handleContactAshaWorker(worker) {
+    try {
+      // Call the assigned API
+      const assignmentData = {
+        pregnantLadyId: pregnantLadyId,
+        ashaWorkerId: worker._id
+      };
+      
+      await assignAshaWorker(assignmentData);
+      console.log('ASHA worker assigned successfully');
+      
+      // Show success alert
+      alert(`Successfully assigned to ASHA worker: ${worker.name}`);
+      
+    } catch (error) {
+      console.error('Error assigning ASHA worker:', error);
+      // Show error alert
+      alert('Failed to assign ASHA worker. Please try again.');
     }
   }
 
@@ -364,7 +379,7 @@ export default function PatientDashboard({ onNavigateToVoiceLog }) {
 
                     <div className="flex gap-2">
                       <button
-                        onClick={() => handleContactAshaWorker(worker.phoneNumber)}
+                        onClick={() => handleContactAshaWorker(worker)}
                         className="flex-1 px-3 py-1.5 bg-purple-100 hover:bg-purple-200 text-purple-700 text-xs font-medium rounded-md transition-colors"
                       >
                         <PhoneIcon className="h-3 w-3 inline mr-1" />
