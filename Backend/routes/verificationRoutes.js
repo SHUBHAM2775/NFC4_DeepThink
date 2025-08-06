@@ -7,6 +7,7 @@ const {
   getPendingAshaWorkersCount,
   getVerifiedAshaWorkersCount,
   getAshaWorkerDocuments,
+  serveDocument,
 } = require("../controllers/verificationController");
 
 router.get("/pending", getPendingVerifications);
@@ -18,5 +19,7 @@ router.get("/pending-asha-workers", getPendingAshaWorkersCount);
 router.get("/verified-asha-workers", getVerifiedAshaWorkersCount);
 
 router.get("/:id/show-documents", getAshaWorkerDocuments);
+
+router.get("/:ashaId/document/:filename", serveDocument);
 
 module.exports = router;

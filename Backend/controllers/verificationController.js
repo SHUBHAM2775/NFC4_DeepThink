@@ -1,4 +1,6 @@
 const AshaWorker = require("../models/ashaworker");
+const path = require("path");
+const fs = require("fs");
 
 const getPendingVerifications = async (req, res) => {
   try {
@@ -97,10 +99,59 @@ const getAshaWorkerDocuments = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+const serveDocument = async (req, res) => {
+  try {
+    const { ashaId, filename } = req.params;
+
+    // Verify that the ASHA worker exists and has this document
+    const ashaWorker = await AshaWorker.findOne({ ashaId }, "documents");
+    
+    if (!ashaWorker) {
+      return res.status(404).json({ error: "ASHA Worker not found" });
+    }
+
+    if (!ashaWorker.documents.includes(filename)) {
+      return res.status(404).json({ error: "Document not found for this ASHA worker" });
+    }
+
+    // Construct the file path (assuming documents are stored in uploads/asha-documents/{ashaId}/)
+    const uploadsDir = path.join(__dirname, "../uploads/asha-documents", ashaId);
+    const filePath = path.join(uploadsDir, filename);
+
+    // Check if file exists
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: "Document file not found on server" });
+    }
+
+    // Set appropriate headers based on file type
+    const ext = path.extname(filename).toLowerCase();
+    const contentType = {
+      '.pdf': 'application/pdf',
+      '.jpg': 'image/jpeg',
+      '.jpeg': 'image/jpeg',
+      '.png': 'image/png',
+      '.gif': 'image/gif'
+    }[ext] || 'application/octet-stream';
+
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
+
+    // Stream the file
+    const fileStream = fs.createReadStream(filePath);
+    fileStream.pipe(res);
+
+  } catch (err) {
+    console.error("Error in serveDocument:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 module.exports = {
   getPendingVerifications,
   updateVerificationStatus,
   getPendingAshaWorkersCount,
   getVerifiedAshaWorkersCount,
   getAshaWorkerDocuments,
+  serveDocument,
 };
