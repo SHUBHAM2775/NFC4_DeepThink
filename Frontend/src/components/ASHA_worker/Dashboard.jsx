@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../navbar/Header";
+import ASHAPastVoiceLogs from "../ASHAPastVoiceLogs";
 import {
   UserGroupIcon,
   FlagIcon,
@@ -7,7 +8,8 @@ import {
   CheckBadgeIcon,
   UserCircleIcon,
   DocumentTextIcon,
-  PhoneIcon
+  PhoneIcon,
+  ClockIcon
 } from "@heroicons/react/24/outline";
 import {
   getHighRiskPatientsCount,
@@ -32,6 +34,8 @@ const Dashboard = ({ user }) => {
   const [hasAlerted, setHasAlerted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showPastLogs, setShowPastLogs] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState(null);
 
   // Extract ASHA ID from user data (demo mode fallback)
   const getAshaId = () => {
@@ -343,13 +347,23 @@ const Dashboard = ({ user }) => {
                       </div>
                     </div>
 
-                    <div className="flex items-center mt-4">
+                    <div className="flex items-center mt-4 space-x-3">
                       <button
                         onClick={() => handleNotes(p.name)}
                         className="bg-gray-100 hover:bg-gray-200 text-sm font-medium px-4 py-2 rounded flex items-center"
                       >
                         <DocumentTextIcon className="w-4 h-4 mr-2 text-gray-500" />
                         View Details
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedPatient({ id: p._id || 'demo_patient_' + i, name: p.name });
+                          setShowPastLogs(true);
+                        }}
+                        className="bg-purple-100 hover:bg-purple-200 text-purple-700 text-sm font-medium px-4 py-2 rounded flex items-center"
+                      >
+                        <ClockIcon className="w-4 h-4 mr-2" />
+                        Past Logs
                       </button>
                       <button
                         onClick={() => handleContact(p.name, p.phoneNumber)}
@@ -369,6 +383,18 @@ const Dashboard = ({ user }) => {
             )}
           </div>
         </>
+      )}
+
+      {/* Past Voice Logs Modal */}
+      {showPastLogs && selectedPatient && (
+        <ASHAPastVoiceLogs 
+          patientId={selectedPatient.id} 
+          patientName={selectedPatient.name}
+          onClose={() => {
+            setShowPastLogs(false);
+            setSelectedPatient(null);
+          }} 
+        />
       )}
     </div>
   );

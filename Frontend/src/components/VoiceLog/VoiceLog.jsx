@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { submitVoiceLog } from '../../services/voiceLogAPI';
 
-const VoiceLog = ({ onNavigateBack }) => {
+const VoiceLog = ({ user, onNavigateBack }) => {
   const [isListening, setIsListening] = useState(false);
 
   const {
@@ -12,26 +12,49 @@ const VoiceLog = ({ onNavigateBack }) => {
     browserSupportsSpeechRecognition
   } = useSpeechRecognition();
 
+  // Get user ID - prioritize user.id, then user._id, then fallback to hardcoded demo ID
+  const getUserId = () => {
+    if (user?.id) {
+      return user.id;
+    }
+    if (user?._id) {
+      return user._id;
+    }
+    if (user?.refId && user.refId !== "demo_ref_" + user.refId) {
+      return user.refId;
+    }
+    // Fallback to demo ID for testing
+    console.warn('No valid user ID found in VoiceLog, using demo ID');
+    return "6892683647b1656bc9d5f7ea";
+  };
+
   // Toggle listening
   const handleToggle = async () => {
-    if (!isListening) {
+    if (!listening) {
+      // Start recording
       resetTranscript();
+      setIsListening(true);
       SpeechRecognition.startListening({ continuous: true, language: 'en-IN' });
     } else {
+      // Stop recording
       SpeechRecognition.stopListening();
+      setIsListening(false);
+      
       // Submit transcript to backend here
       if (transcript.trim()) {
         try {
-          const dummyUserId = '64cbe981e458d243b5c1e7ab'; // Replace with actual logged-in user ID
-          const res = await submitVoiceLog(transcript, dummyUserId);
-          alert('Voice log submitted!');
+          const userId = getUserId();
+          console.log('Submitting voice log for user:', userId);
+          const res = await submitVoiceLog(transcript, userId);
+          alert('Voice log submitted successfully!');
           console.log('Server response:', res);
+          resetTranscript(); // Clear transcript after successful submission
         } catch (error) {
-          alert('Failed to submit voice log');
+          console.error('Error submitting voice log:', error);
+          alert('Failed to submit voice log. Please try again.');
         }
       }
     }
-    setIsListening(!isListening);
   };
 
   if (!browserSupportsSpeechRecognition) {
@@ -52,10 +75,10 @@ const VoiceLog = ({ onNavigateBack }) => {
         onClick={handleToggle} 
         style={{
           ...styles.button,
-          backgroundColor: isListening ? '#ef4444' : '#4CAF50'
+          backgroundColor: listening ? '#ef4444' : '#4CAF50'
         }}
       >
-        {isListening ? '🛑 Stop Recording' : '🎤 Start Recording'}
+        {listening ? '🛑 Stop Recording' : '🎤 Start Recording'}
       </button>
       <div style={styles.transcriptBox}>
         <h4>Transcript:</h4>

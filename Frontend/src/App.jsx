@@ -7,6 +7,7 @@ import PatientDashboard from "./components/Patient/Dashboard";
 import AshaDashboard from "./components/ASHA_worker/Dashboard";
 import AdminDashboard from "./components/Admin_Panel/Dashboard";
 import VoiceLog from "./components/VoiceLog/VoiceLog";
+import UserTestPage from "./components/UserTestPage";
 import Loading from "./components/Loading";
 import AssistantHover from "./components/AssistantHover";
 import { registerAdmin, registerAshaWorker, registerPregnantLady } from "./services/registrationAPI";
@@ -193,6 +194,12 @@ const App = () => {
   };
 
   const renderCurrentView = () => {
+    // Check URL for test page
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('test') === 'users') {
+      return <UserTestPage />;
+    }
+
     switch (currentView) {
       case "landing":
         return <LandingPage onNavigateToLogin={() => setCurrentView("login")} />;

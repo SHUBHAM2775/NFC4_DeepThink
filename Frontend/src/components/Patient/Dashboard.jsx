@@ -12,16 +12,19 @@ import {
   MapPinIcon,
   UserIcon,
   DocumentTextIcon,
+  ClockIcon,
 } from "@heroicons/react/24/outline";
 import LanguageSwitcher from '../LanguageSwitcher';
 import AssistantHover from '../AssistantHover';
 import PersonalizedReminders from '../PersonalizedReminders';
+import PastVoiceLogs from '../PastVoiceLogs';
 import { getNearbyAshaWorkers, assignAshaWorker } from '../../services/pregnantLadyAPI';
 import ReportAnalysis from './ReportAnalysis';
 
-export default function PatientDashboard({ onNavigateToVoiceLog }) {
+export default function PatientDashboard({ user, onNavigateToVoiceLog }) {
   const { t } = useTranslation();
   const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard' or 'reportAnalysis'
+  const [showPastLogs, setShowPastLogs] = useState(false);
   
   const defaultContacts = [
     { id: 1, label: t('patientDashboard.defaultContacts.ashaWorker'), number: "+91 98765 43210" },
@@ -48,8 +51,23 @@ export default function PatientDashboard({ onNavigateToVoiceLog }) {
   const [loadingAshaWorkers, setLoadingAshaWorkers] = useState(true);
   const [ashaWorkersError, setAshaWorkersError] = useState(null);
 
-  // Hardcoded pregnant lady ID for demo purposes
-  const pregnantLadyId = "6892683647b1656bc9d5f7ea";
+  // Get user ID - prioritize user.id, then user._id, then fallback to hardcoded demo ID
+  const getUserId = () => {
+    if (user?.id) {
+      return user.id;
+    }
+    if (user?._id) {
+      return user._id;
+    }
+    if (user?.refId && user.refId !== "demo_ref_" + user.refId) {
+      return user.refId;
+    }
+    // Fallback to demo ID for testing
+    console.warn('No valid user ID found, using demo ID');
+    return "6892683647b1656bc9d5f7ea";
+  };
+
+  const pregnantLadyId = getUserId();
 
   // Save contacts to localStorage whenever they change
   useEffect(() => {
@@ -287,13 +305,22 @@ export default function PatientDashboard({ onNavigateToVoiceLog }) {
               {t('patientDashboard.voiceDailyLog.title')}
             </div>
             <p className="text-sm text-gray-500">{t('patientDashboard.voiceDailyLog.description')}</p>
-            <button 
-              onClick={onNavigateToVoiceLog}
-              className="w-full mt-2 bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 rounded-lg flex items-center justify-center gap-2"
-            >
-              <MicrophoneIcon className="h-5 w-5" />
-              {t('patientDashboard.voiceDailyLog.startRecording')}
-            </button>
+            <div className="flex gap-3">
+              <button 
+                onClick={onNavigateToVoiceLog}
+                className="flex-1 bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 rounded-lg flex items-center justify-center gap-2 transition-colors"
+              >
+                <MicrophoneIcon className="h-5 w-5" />
+                {t('patientDashboard.voiceDailyLog.startRecording')}
+              </button>
+              <button 
+                onClick={() => setShowPastLogs(true)}
+                className="px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 rounded-lg flex items-center justify-center gap-2 transition-colors"
+              >
+                <ClockIcon className="h-5 w-5" />
+                {t('patientDashboard.voiceDailyLog.viewPastLogs', 'Past Logs')}
+              </button>
+            </div>
           </section>
 
           {/* My Reminders */}
@@ -390,6 +417,14 @@ export default function PatientDashboard({ onNavigateToVoiceLog }) {
           </section>
         </aside>
       </div>
+
+      {/* Past Voice Logs Modal */}
+      {showPastLogs && (
+        <PastVoiceLogs 
+          userId={pregnantLadyId} 
+          onClose={() => setShowPastLogs(false)} 
+        />
+      )}
 
       {/* Assistant Chatbot */}
       <AssistantHover />
