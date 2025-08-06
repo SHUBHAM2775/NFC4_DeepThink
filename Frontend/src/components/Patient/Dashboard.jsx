@@ -11,13 +11,16 @@ import {
   XMarkIcon,
   MapPinIcon,
   UserIcon,
+  DocumentTextIcon,
 } from "@heroicons/react/24/outline";
 import LanguageSwitcher from '../LanguageSwitcher';
 import AssistantHover from '../AssistantHover';
 import { getNearbyAshaWorkers, assignAshaWorker } from '../../services/pregnantLadyAPI';
+import ReportAnalysis from './ReportAnalysis';
 
 export default function PatientDashboard({ onNavigateToVoiceLog }) {
   const { t } = useTranslation();
+  const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard' or 'reportAnalysis'
   
   const defaultContacts = [
     { id: 1, label: t('patientDashboard.defaultContacts.ashaWorker'), number: "+91 98765 43210" },
@@ -94,6 +97,16 @@ export default function PatientDashboard({ onNavigateToVoiceLog }) {
     setContacts((prev) => prev.filter((c) => c.id !== id));
   }
 
+  // Handle navigation to report analysis
+  function handleNavigateToReportAnalysis() {
+    setCurrentView('reportAnalysis');
+  }
+
+  // Handle back to dashboard
+  function handleBackToDashboard() {
+    setCurrentView('dashboard');
+  }
+
   // Logout handler
   function handleLogout() {
     // Clear any stored authentication data
@@ -124,6 +137,11 @@ export default function PatientDashboard({ onNavigateToVoiceLog }) {
       // Show error alert
       alert('Failed to assign ASHA worker. Please try again.');
     }
+  }
+
+  // Render report analysis view
+  if (currentView === 'reportAnalysis') {
+    return <ReportAnalysis onBack={handleBackToDashboard} />;
   }
 
   return (
@@ -321,6 +339,24 @@ export default function PatientDashboard({ onNavigateToVoiceLog }) {
                 </span>
               </li>
             </ul>
+          </section>
+
+          {/* Upload and Analyze Report */}
+          <section className="bg-white p-6 rounded-lg shadow">
+            <div className="flex items-center gap-2 mb-4">
+              <DocumentTextIcon className="h-5 w-5 text-pink-500" />
+              <span className="font-semibold text-lg">{t('patientDashboard.reportAnalysis.title')}</span>
+            </div>
+            <p className="text-sm text-gray-500 mb-4">
+              {t('patientDashboard.reportAnalysis.description')}
+            </p>
+            <button 
+              onClick={handleNavigateToReportAnalysis}
+              className="w-full mt-2 bg-pink-500 hover:bg-pink-600 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2 transition-colors"
+            >
+              <DocumentTextIcon className="h-5 w-5" />
+              {t('patientDashboard.reportAnalysis.uploadButton')}
+            </button>
           </section>
         </main>
 
