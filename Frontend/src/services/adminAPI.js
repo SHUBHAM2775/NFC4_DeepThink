@@ -58,3 +58,14 @@ export const updateVerificationStatus = async (ashaId, status) => {
     throw error.response?.data || error;
   }
 };
+
+// Show documents for ASHA worker
+export const showAshaDocuments = async (ashaId) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/verification/${ashaId}/show-documents`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching ASHA documents:', error);
+    throw error.response?.data || error;
+  }
+};

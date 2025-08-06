@@ -18,6 +18,7 @@ import {
   getVerifiedAshaWorkersCount,
   getPendingVerifications,
   updateVerificationStatus,
+  showAshaDocuments,
 } from "../../services/adminAPI";
 
 const Dashboard = ({ user }) => {
@@ -126,6 +127,26 @@ const Dashboard = ({ user }) => {
       setActionLoading(prev => {
         const newLoading = { ...prev };
         delete newLoading[ashaId];
+        return newLoading;
+      });
+    }
+  };
+
+  const handleReviewDocuments = async (ashaId) => {
+    setActionLoading(prev => ({ ...prev, [`${ashaId}_review`]: true }));
+    try {
+      const response = await showAshaDocuments(ashaId);
+      console.log('Documents data:', response);
+      // You can add logic here to display the documents in a modal or navigate to a new page
+      // For now, we'll just log the response
+      alert(`Documents fetched successfully for ASHA ID: ${ashaId}`);
+    } catch (err) {
+      console.error('Error fetching documents:', err);
+      setError('Failed to fetch documents. Please try again.');
+    } finally {
+      setActionLoading(prev => {
+        const newLoading = { ...prev };
+        delete newLoading[`${ashaId}_review`];
         return newLoading;
       });
     }
@@ -309,9 +330,13 @@ const Dashboard = ({ user }) => {
                       >
                         {actionLoading[pv.ashaId] === 'rejected' ? 'Processing...' : 'Reject'}
                       </button>
-                      <button className="flex items-center bg-gray-100 text-gray-700 px-6 py-2 rounded border border-gray-200 hover:bg-gray-200 transition ml-1 whitespace-nowrap">
+                      <button 
+                        onClick={() => handleReviewDocuments(pv.ashaId)}
+                        disabled={actionLoading[`${pv.ashaId}_review`]}
+                        className="flex items-center bg-gray-100 text-gray-700 px-6 py-2 rounded border border-gray-200 hover:bg-gray-200 transition ml-1 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
                         <EyeIcon className="mr-1 h-5 w-5" />
-                        Review
+                        {actionLoading[`${pv.ashaId}_review`] ? 'Loading...' : 'Review'}
                       </button>
                     </div>
                   </div>
