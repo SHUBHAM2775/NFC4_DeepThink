@@ -1,4 +1,4 @@
-# DeepThink - AI-Powered Pregnancy Care Platform
+# 🤱 Sakhi Saathi - AI Pregnancy Care Platform
 
 [![React](https://img.shields.io/badge/React-19.1.0-blue)](https://reactjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-16%2B-green)](https://nodejs.org/)
@@ -9,7 +9,7 @@ An AI-powered, multilingual pregnancy care platform designed to bridge healthcar
 
 ## Overview
 
-DeepThink addresses critical healthcare challenges faced by pregnant women in rural areas, including language barriers, limited healthcare access, and lack of personalized guidance. The platform leverages local AI processing to ensure complete privacy while providing culturally sensitive, multilingual pregnancy care assistance.
+This project addresses critical healthcare challenges faced by pregnant women in rural areas, including language barriers, limited healthcare access, and lack of personalized guidance. The platform leverages local AI processing to ensure complete privacy while providing culturally sensitive, multilingual pregnancy care assistance.
 
 ## Key Features
 
@@ -130,10 +130,6 @@ The platform consists of three main components:
 - **Telemedicine Features**: Video consultation capabilities
 - **Government System Integration**: Connection with national health ministry platforms
 - **Blockchain Implementation**: Secure and immutable health record management
-
-## Contributing
-
-We welcome contributions to improve DeepThink. Please read our contributing guidelines and submit pull requests for any enhancements.
 
 ## Team
 
