@@ -111,8 +111,6 @@ pip install -r requirements.txt
 
 ## 🎬 Screenshots
 
-*[Add your screenshots here after capturing them]*
-
 | Feature | Screenshot |
 |---------|------------|
 | Landing Page | `![Landing](screenshots/landing-page.png)` |
@@ -136,7 +134,7 @@ pip install -r requirements.txt
 - **Developer**: [Om Mhaske](https://github.com/om-mhaske7)
 - **Developer**: [Shubham Upadhyay](https://github.com/SHUBHAM2775)
 - **Stack**: Full-stack + AI integration
-- **Timeline**: 48 hours hackathon build
+- **Timeline**: 24 hours hackathon build
 
 ---
 
